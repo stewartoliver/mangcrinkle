@@ -2,7 +2,7 @@ class Admin::SessionsController < ApplicationController
   layout 'devise'
 
   def new
-    redirect_to admin_dashboard_path if user_signed_in?
+    redirect_to admin_dashboard_path if user_signed_in? && current_user.admin?
   end
 
   def create
@@ -18,7 +18,7 @@ class Admin::SessionsController < ApplicationController
   end
 
   def destroy
-    sign_out(current_user)
+    sign_out(current_user) if current_user
     redirect_to admin_login_path, notice: 'Signed out successfully.'
   end
 end 

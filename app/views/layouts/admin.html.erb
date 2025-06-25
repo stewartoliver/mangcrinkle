@@ -226,7 +226,7 @@
                       <p class="text-xs text-orange-500">Administrator</p>
                     </div>
                     <%= link_to "Profile Settings", edit_admin_user_path(current_user), class: "block px-4 py-2 text-sm text-orange-700 hover:bg-orange-50" %>
-                    <%= button_to "Sign out", admin_logout_path, method: :delete, class: "block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50" %>
+                    <%= link_to "Sign out", admin_logout_path, method: :delete, data: { turbo_method: :delete, confirm: "Are you sure you want to sign out?" }, class: "block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50" %>
                   </div>
                 </div>
               </div>

@@ -1,0 +1,100 @@
+<% content_for :title, @product.name %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Product Details</h3>
+        <p class="admin-container-subtitle">Detailed information about the product.</p>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to "Edit", edit_admin_product_path(@product), class: "admin-btn-primary" %>
+        <%= link_to "Back to Products", admin_products_path, class: "admin-link" %>
+      </div>
+    </div>
+  </div>
+  <div class="border-t border-orange-200">
+    <dl>
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Name</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @product.name %></dd>
+      </div>
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Category</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+            <%= case @product.category
+                when 'Crinkles'
+                  'bg-orange-100 text-orange-800'
+                when 'Extras'
+                  'bg-green-100 text-green-800'
+                when 'Merch'
+                  'bg-blue-100 text-blue-800'
+                else
+                  'bg-gray-100 text-gray-800'
+                end %>">
+            <%= @product.category_display_name %>
+          </span>
+        </dd>
+      </div>
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Description</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @product.description %></dd>
+      </div>
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Price</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">$<%= number_with_precision(@product.price, precision: 2) %></dd>
+      </div>
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Status</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <span class="admin-status-badge <%= @product.active? ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+            <%= @product.active? ? 'Active' : 'Inactive' %>
+          </span>
+        </dd>
+      </div>
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Image</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <% if @product.image.attached? %>
+            <%= image_tag @product.image, class: "h-32 w-32 object-cover rounded-lg" %>
+          <% else %>
+            <div class="h-32 w-32 rounded-lg bg-orange-100 flex items-center justify-center">
+              <span class="text-orange-600 font-medium">No image</span>
+            </div>
+          <% end %>
+        </dd>
+      </div>
+    </dl>
+  </div>
+</div>
+
+<!-- Product Orders -->
+<div class="mt-8 admin-container">
+  <div class="admin-container-header">
+    <h3 class="admin-container-title">Recent Orders</h3>
+    <p class="admin-container-subtitle">Orders containing this product.</p>
+  </div>
+  <div class="bg-white">
+    <ul class="admin-list-items">
+      <% @product.line_items.includes(:order).order(created_at: :desc).limit(5).each do |line_item| %>
+        <li class="admin-list-item">
+          <div class="admin-list-item-content">
+            <div class="admin-list-item-main">
+              <p class="admin-list-item-title">
+                Order #<%= line_item.order.id %>
+              </p>
+              <p class="admin-list-item-subtitle">
+                <%= line_item.order.created_at.strftime("%B %d, %Y") %>
+                • Quantity: <%= line_item.quantity %>
+              </p>
+            </div>
+            <div class="admin-list-item-actions">
+              <%= link_to "View Order", admin_order_path(line_item.order), class: "admin-link" %>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div> 

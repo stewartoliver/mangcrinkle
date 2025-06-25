@@ -1,0 +1,398 @@
+@layer components {
+
+    /* Admin Container Components */
+    .admin-container {
+        @apply bg-white shadow rounded-lg border border-orange-200;
+    }
+
+    .admin-container-header {
+        @apply px-4 py-5 sm:px-6 border-b border-orange-200;
+    }
+
+    .admin-container-title {
+        @apply text-lg leading-6 font-medium text-orange-950;
+    }
+
+    .admin-container-subtitle {
+        @apply mt-1 max-w-2xl text-sm text-orange-600;
+    }
+
+    .admin-container-content {
+        @apply overflow-x-auto rounded-b-lg;
+    }
+
+    /* Admin Table Components */
+    .admin-table {
+        @apply min-w-full divide-y divide-orange-200;
+    }
+
+    .admin-table-header {
+        @apply bg-orange-50;
+    }
+
+    .admin-table-header-cell {
+        @apply px-6 py-3 text-left text-xs font-medium text-orange-600 uppercase tracking-wider;
+    }
+
+    .admin-table-header-cell-center {
+        @apply px-6 py-3 text-center text-xs font-medium text-orange-600 uppercase tracking-wider;
+    }
+
+    .admin-table-header-cell-right {
+        @apply px-6 py-3 text-right text-xs font-medium text-orange-600 uppercase tracking-wider;
+    }
+
+    .admin-table-body {
+        @apply bg-white divide-y divide-orange-200;
+    }
+
+    .admin-table-row {
+        @apply hover:bg-orange-50;
+    }
+
+    .admin-table-cell {
+        @apply px-6 py-4 whitespace-nowrap;
+    }
+
+    .admin-table-cell-center {
+        @apply px-6 py-4 whitespace-nowrap text-center;
+    }
+
+    .admin-table-cell-right {
+        @apply px-6 py-4 whitespace-nowrap text-right text-sm font-medium;
+    }
+
+    /* Admin Button Components */
+    .admin-btn-primary {
+        @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500;
+    }
+
+    .admin-btn-secondary {
+        @apply inline-flex items-center px-4 py-2 border border-orange-300 text-sm font-medium rounded-md text-orange-700 bg-white hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500;
+    }
+
+    .admin-btn-danger {
+        @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500;
+    }
+
+    /* Admin Action Buttons */
+    .admin-action-btn {
+        @apply text-orange-600 hover:text-orange-900;
+    }
+
+    .admin-action-btn-danger {
+        @apply text-red-600 hover:text-red-900;
+    }
+
+    .admin-action-btn-group {
+        @apply flex justify-end space-x-3;
+    }
+
+    /* Admin Card Components */
+    .admin-card {
+        @apply bg-white rounded-lg shadow p-6 border border-orange-200;
+    }
+
+    .admin-card-header {
+        @apply px-6 py-4 border-b border-orange-200;
+    }
+
+    .admin-card-title {
+        @apply text-lg font-semibold text-orange-950;
+    }
+
+    .admin-card-content {
+        @apply p-6;
+    }
+
+    /* Admin Stats Card */
+    .admin-stats-card {
+        @apply bg-white rounded-lg shadow p-6 border border-orange-200;
+    }
+
+    .admin-stats-icon {
+        @apply p-3 rounded-full;
+    }
+
+    .admin-stats-icon-orange {
+        @apply bg-orange-100 text-orange-600;
+    }
+
+    .admin-stats-icon-green {
+        @apply bg-green-100 text-green-600;
+    }
+
+    .admin-stats-icon-yellow {
+        @apply bg-yellow-100 text-yellow-600;
+    }
+
+    .admin-stats-icon-blue {
+        @apply bg-blue-100 text-blue-600;
+    }
+
+    .admin-stats-content {
+        @apply ml-4;
+    }
+
+    .admin-stats-label {
+        @apply text-gray-600 text-sm;
+    }
+
+    .admin-stats-value {
+        @apply text-2xl font-semibold;
+    }
+
+    .admin-stats-value-orange {
+        @apply text-orange-950;
+    }
+
+    .admin-stats-value-green {
+        @apply text-green-950;
+    }
+
+    .admin-stats-value-yellow {
+        @apply text-yellow-950;
+    }
+
+    .admin-stats-value-blue {
+        @apply text-blue-950;
+    }
+
+    /* Admin Status Badges */
+    .admin-status-badge {
+        @apply px-2 inline-flex text-xs leading-5 font-semibold rounded-full;
+    }
+
+    .admin-status-pending {
+        @apply bg-yellow-100 text-yellow-800;
+    }
+
+    .admin-status-processing {
+        @apply bg-blue-100 text-blue-800;
+    }
+
+    .admin-status-completed {
+        @apply bg-green-100 text-green-800;
+    }
+
+    .admin-status-cancelled {
+        @apply bg-red-100 text-red-800;
+    }
+
+    .admin-status-default {
+        @apply bg-gray-100 text-gray-800;
+    }
+
+    /* Form Components */
+    .form-group {
+        @apply mb-6;
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-orange-950 mb-2;
+    }
+
+    .form-input {
+        @apply block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 bg-white;
+        color: rgb(251 146 60) !important;
+    }
+
+    .form-input-error {
+        @apply block w-full px-3 py-2 border border-red-300 rounded-md shadow-sm placeholder-red-400 focus:outline-none focus:ring-red-500 focus:border-red-500 text-red-950;
+    }
+
+    .form-textarea {
+        @apply block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 text-orange-950;
+    }
+
+    .form-select {
+        @apply block w-full px-3 py-2 pr-8 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 bg-white;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ea580c' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.25em 1.25em;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        color: rgb(251 146 60) !important;
+    }
+
+    .form-select option {
+        color: rgb(251 146 60);
+    }
+
+    .form-date {
+        @apply block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 bg-white;
+        color: rgb(251 146 60) !important;
+    }
+
+    .form-date::-webkit-calendar-picker-indicator {
+        filter: invert(52%) sepia(93%) saturate(745%) hue-rotate(2deg) brightness(103%) contrast(104%);
+    }
+
+    .form-date::-moz-calendar-picker-indicator {
+        filter: invert(52%) sepia(93%) saturate(745%) hue-rotate(2deg) brightness(103%) contrast(104%);
+    }
+
+    .form-checkbox {
+        @apply h-4 w-4 text-orange-600 focus:ring-orange-500 border-orange-300 rounded;
+    }
+
+    .form-radio {
+        @apply h-4 w-4 text-orange-600 focus:ring-orange-500 border-orange-300;
+    }
+
+    .form-error {
+        @apply mt-2 text-sm text-red-600;
+    }
+
+    .form-help {
+        @apply mt-2 text-sm text-orange-600;
+    }
+
+    /* Form Buttons */
+    .form-btn-primary {
+        @apply w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500;
+    }
+
+    .form-btn-secondary {
+        @apply w-full flex justify-center py-2 px-4 border border-orange-300 rounded-md shadow-sm text-sm font-medium text-orange-700 bg-white hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500;
+    }
+
+    /* Grid Layouts */
+    .admin-grid-stats {
+        @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8;
+    }
+
+    .admin-grid-content {
+        @apply grid grid-cols-1 lg:grid-cols-2 gap-6;
+    }
+
+    /* List Components */
+    .admin-list {
+        @apply flow-root;
+    }
+
+    .admin-list-items {
+        @apply -my-5 divide-y divide-orange-200;
+    }
+
+    .admin-list-item {
+        @apply py-4;
+    }
+
+    .admin-list-item-content {
+        @apply flex items-center space-x-4;
+    }
+
+    .admin-list-item-main {
+        @apply flex-1 min-w-0;
+    }
+
+    .admin-list-item-title {
+        @apply text-sm font-medium text-orange-950 truncate;
+    }
+
+    .admin-list-item-subtitle {
+        @apply text-sm text-orange-600;
+    }
+
+    .admin-list-item-meta {
+        @apply text-sm text-gray-500;
+    }
+
+    .admin-list-item-actions {
+        @apply text-right;
+    }
+
+    /* Chart Components */
+    .admin-chart-container {
+        @apply bg-white rounded-lg shadow border border-orange-200 mt-6;
+    }
+
+    .admin-chart-header {
+        @apply px-6 py-4 border-b border-orange-200;
+    }
+
+    .admin-chart-content {
+        @apply p-6;
+    }
+
+    .admin-chart-bar {
+        @apply flex justify-between space-x-4;
+    }
+
+    .admin-chart-bar-item {
+        @apply bg-orange-50 rounded-lg p-4 border border-orange-200 text-center flex-1;
+    }
+
+    .admin-chart-bar-value {
+        @apply text-3xl font-bold text-orange-950 mb-3;
+    }
+
+    .admin-chart-bar-divider {
+        @apply flex items-center justify-center mb-3;
+    }
+
+    .admin-chart-bar-line {
+        @apply flex-1 h-px bg-orange-300;
+    }
+
+    .admin-chart-bar-dot {
+        @apply mx-2 w-2 h-2 bg-orange-400 rounded-full;
+    }
+
+    .admin-chart-bar-label {
+        @apply text-sm text-orange-700;
+    }
+
+    .admin-chart-bar-day {
+        @apply font-medium;
+    }
+
+    .admin-chart-bar-date {
+        @apply text-orange-600;
+    }
+
+    /* Product Components */
+    .product-avatar {
+        @apply flex-shrink-0 h-10 w-10;
+    }
+
+    .product-avatar-image {
+        @apply h-10 w-10 rounded-full object-cover;
+    }
+
+    .product-avatar-placeholder {
+        @apply h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center;
+    }
+
+    .product-avatar-initial {
+        @apply text-orange-600 font-medium;
+    }
+
+    .product-info {
+        @apply ml-4;
+    }
+
+    .product-name {
+        @apply text-sm font-medium text-orange-950;
+    }
+
+    .product-description {
+        @apply text-sm text-orange-600;
+    }
+
+    .product-price {
+        @apply text-sm font-medium text-orange-900;
+    }
+
+    /* Link Components */
+    .admin-link {
+        @apply text-orange-600 hover:text-orange-950 text-sm;
+    }
+
+    .admin-link-primary {
+        @apply text-orange-600 hover:text-orange-900;
+    }
+}

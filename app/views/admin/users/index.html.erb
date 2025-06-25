@@ -1,0 +1,88 @@
+<% content_for :title, "Users" %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex justify-between items-center">
+      <div>
+        <h3 class="admin-container-title">Users</h3>
+        <p class="admin-container-subtitle">Manage all users in the system.</p>
+      </div>
+      <%= link_to "Add New User", new_admin_user_path, class: "admin-btn-primary" %>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="bg-orange-50 px-4 py-3 border-b border-orange-200">
+    <div class="flex justify-between text-sm">
+      <div class="text-center flex-1">
+        <div class="text-2xl font-bold text-orange-600"><%= @users.count %></div>
+        <div class="text-orange-700">Total Users</div>
+      </div>
+      <div class="text-center flex-1">
+        <div class="text-2xl font-bold text-orange-600"><%= @customers.count %></div>
+        <div class="text-orange-700">Customers</div>
+      </div>
+      <div class="text-center flex-1">
+        <div class="text-2xl font-bold text-orange-600"><%= @admins.count %></div>
+        <div class="text-orange-700">Admins</div>
+      </div>
+      <div class="text-center flex-1">
+        <div class="text-2xl font-bold text-orange-600"><%= @newsletter_subscribers.count %></div>
+        <div class="text-orange-700">Newsletter Subscribers</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white">
+    <ul class="divide-y divide-orange-200">
+      <% @users.each do |user| %>
+        <li class="py-4 px-4 sm:px-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="product-avatar">
+                <div class="product-avatar-placeholder">
+                  <span class="product-avatar-initial"><%= user.email.first.upcase %></span>
+                </div>
+              </div>
+              <div class="product-info">
+                <div class="product-name">
+                  <%= user.display_name %>
+                  <span class="ml-2 admin-status-badge <%= user.admin? ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
+                    <%= user.user_type.titleize %>
+                  </span>
+                  <% if user.newsletter_subscribed? %>
+                    <span class="ml-1 admin-status-badge bg-blue-100 text-blue-800">
+                      Newsletter
+                    </span>
+                  <% end %>
+                </div>
+                <div class="product-description">
+                  <%= user.email %>
+                </div>
+                <div class="admin-list-item-meta">
+                  Joined <%= user.created_at.strftime("%B %d, %Y") %>
+                  <% if user.customer? && user.orders.any? %>
+                    • <%= pluralize(user.orders.count, 'order') %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <div class="admin-action-btn-group">
+              <%= link_to admin_user_path(user), class: "admin-action-btn", title: "View" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              <% end %>
+              <%= link_to edit_admin_user_path(user), class: "admin-action-btn", title: "Edit" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              <% end %>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div> 

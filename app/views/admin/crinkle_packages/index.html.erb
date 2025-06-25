@@ -1,0 +1,82 @@
+<% content_for :title, "Crinkle Packages" %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Crinkle Packages</h3>
+        <p class="admin-container-subtitle">Manage your package deals.</p>
+      </div>
+      <%= link_to "Add New Package", new_admin_crinkle_package_path, class: "admin-btn-primary" %>
+    </div>
+  </div>
+  <div class="admin-container-content">
+    <table class="admin-table">
+      <thead class="admin-table-header">
+        <tr>
+          <th scope="col" class="admin-table-header-cell">Package</th>
+          <th scope="col" class="admin-table-header-cell-center">Price</th>
+          <th scope="col" class="admin-table-header-cell-center">Quantity</th>
+          <th scope="col" class="admin-table-header-cell-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="admin-table-body">
+        <% @crinkle_packages.each do |package| %>
+          <tr class="admin-table-row">
+            <td class="admin-table-cell">
+              <div class="flex items-center">
+                <div class="product-avatar">
+                  <% if package.image.attached? %>
+                    <%= image_tag package.image, class: "product-avatar-image" %>
+                  <% else %>
+                    <div class="product-avatar-placeholder">
+                      <span class="product-avatar-initial"><%= package.name.first.upcase %></span>
+                    </div>
+                  <% end %>
+                </div>
+                <div class="product-info">
+                  <div class="product-name">
+                    <%= package.name %>
+                  </div>
+                  <div class="product-description">
+                    <%= truncate(package.description, length: 50) %>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="admin-table-cell-center">
+              <span class="product-price">
+                $<%= number_with_precision(package.price, precision: 2) %>
+              </span>
+            </td>
+            <td class="admin-table-cell-center">
+              <span class="product-price">
+                <%= package.quantity %>
+              </span>
+            </td>
+            <td class="admin-table-cell-right">
+              <div class="admin-action-btn-group">
+                <%= link_to admin_crinkle_package_path(package), class: "admin-action-btn", title: "View" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                <% end %>
+                <%= link_to edit_admin_crinkle_package_path(package), class: "admin-action-btn", title: "Edit" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                <% end %>
+                <%= button_to admin_crinkle_package_path(package), method: :delete, class: "admin-action-btn-danger", form: { data: { turbo_confirm: "Are you sure you want to delete this package?" } }, title: "Delete" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div> 

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mang Crinkle - Admin</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-orange-50 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div class="text-center">
+        <%= link_to root_path, class: "inline-block" do %>
+          <h1 class="text-3xl font-bold text-orange-950">Mang Crinkle</h1>
+        <% end %>
+        <h2 class="mt-6 text-xl text-orange-700">Admin Portal</h2>
+      </div>
+
+      <div class="mt-8 bg-white py-8 px-4 shadow-md rounded-lg sm:px-10 border border-orange-200">
+        <%= yield %>
+      </div>
+
+      <div class="text-center">
+        <%= link_to "Back to Home", root_path, class: "text-orange-600 hover:text-orange-950" %>
+      </div>
+    </div>
+  </body>
+</html> 

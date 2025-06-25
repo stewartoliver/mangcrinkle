@@ -1,0 +1,263 @@
+<% content_for :title, "User Details - #{@user.display_name}" %>
+
+<div class="bg-white shadow rounded-lg border border-orange-200">
+  <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-lg leading-6 font-medium text-orange-950">User Details</h3>
+        <p class="mt-1 max-w-2xl text-sm text-orange-600">Detailed information about this user.</p>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to "Edit", edit_admin_user_path(@user), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" %>
+        <%= link_to "Back to Users", admin_users_path, class: "text-orange-600 hover:text-orange-950" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-t border-orange-200">
+    <dl>
+      <!-- Account Information -->
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Email</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user.email %></dd>
+      </div>
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">User Type</dt>
+        <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @user.admin? ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
+            <%= @user.user_type.titleize %>
+          </span>
+        </dd>
+      </div>
+
+      <!-- Contact Details -->
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Full Name</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user.full_name.present? ? @user.full_name : "Not provided" %></dd>
+      </div>
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Phone Number</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user.phone.present? ? @user.phone : "Not provided" %></dd>
+      </div>
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Address</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user.address.present? ? @user.address : "Not provided" %></dd>
+      </div>
+
+      <!-- Account Status & Preferences -->
+      <% if @user.customer? %>
+        <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-orange-700">Newsletter Subscription</dt>
+          <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+            <% if @user.newsletter_subscribed? %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                Subscribed
+              </span>
+            <% else %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                Not Subscribed
+              </span>
+            <% end %>
+          </dd>
+        </div>
+      <% end %>
+
+      <!-- Account Timeline -->
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Member Since</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+      </div>
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Last Updated</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user.updated_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+      </div>
+    </dl>
+  </div>
+</div>
+
+<% if @user.customer? %>
+  <!-- Recent Orders - Moved to top for prominence -->
+  <% if @recent_orders&.any? %>
+    <div class="mt-8 bg-white shadow rounded-lg border border-orange-200">
+      <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
+        <h3 class="text-lg leading-6 font-medium text-orange-950">Recent Orders</h3>
+        <p class="mt-1 max-w-2xl text-sm text-orange-600">Latest orders for this customer.</p>
+      </div>
+      <div class="bg-white">
+        <ul class="divide-y divide-orange-200">
+          <% @recent_orders.each do |order| %>
+            <li>
+              <div class="px-4 py-4 sm:px-6">
+                <div class="flex items-center justify-between">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center space-x-3">
+                      <p class="text-sm font-medium text-orange-950">
+                        Order #<%= order.id %>
+                      </p>
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        <%= case order.status
+                            when 'pending' then 'bg-yellow-100 text-yellow-800'
+                            when 'processing' then 'bg-blue-100 text-blue-800'
+                            when 'completed' then 'bg-green-100 text-green-800'
+                            when 'cancelled' then 'bg-red-100 text-red-800'
+                            end %>">
+                        <%= order.status.titleize %>
+                      </span>
+                    </div>
+                    <p class="text-sm text-orange-600 mt-1">
+                      <%= order.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+                    </p>
+                    <p class="text-sm text-orange-600">
+                      <%= number_to_currency(order.total_price) %>
+                      <% if order.line_items.any? %>
+                        • <%= pluralize(order.line_items.sum(&:quantity), 'item') %>
+                      <% end %>
+                    </p>
+                  </div>
+                  <div class="ml-2 flex-shrink-0 flex items-center space-x-2">
+                    <%= link_to "View Order", admin_order_path(order), class: "inline-flex items-center px-3 py-1 border border-orange-300 text-sm font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100" %>
+                  </div>
+                </div>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+        <% if @all_orders.count > 5 %>
+          <div class="px-4 py-3 bg-orange-50 border-t border-orange-200">
+            <div class="text-center">
+              <%= link_to "View All #{@total_orders} Orders", admin_orders_path(email: @user.email), class: "text-sm text-orange-600 hover:text-orange-950 font-medium" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Order Statistics -->
+  <% if @all_orders&.any? %>
+    <div class="mt-8 bg-white shadow rounded-lg border border-orange-200">
+      <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
+        <h3 class="text-lg leading-6 font-medium text-orange-950">Order Statistics</h3>
+        <p class="mt-1 max-w-2xl text-sm text-orange-600">Summary of all orders for this customer.</p>
+      </div>
+      <div class="border-t border-orange-200">
+        <dl>
+          <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-orange-700">Total Orders</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @total_orders %></dd>
+          </div>
+          <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-orange-700">Total Spent</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= number_to_currency(@total_spent) %></dd>
+          </div>
+          <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-orange-700">Average Order Value</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= number_to_currency(@average_order_value) %></dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Order Status Breakdown -->
+    <div class="mt-8 bg-white shadow rounded-lg border border-orange-200">
+      <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
+        <h3 class="text-lg leading-6 font-medium text-orange-950">Order Status Breakdown</h3>
+        <p class="mt-1 max-w-2xl text-sm text-orange-600">Orders grouped by status.</p>
+      </div>
+      <div class="bg-white">
+        <ul class="divide-y divide-orange-200">
+          <% %w[pending processing completed cancelled].each do |status| %>
+            <% count = @orders_by_status[status]&.count || 0 %>
+            <% next if count == 0 %>
+            <li>
+              <div class="px-4 py-4 sm:px-6">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                      <%= case status
+                          when 'pending' then 'bg-yellow-100 text-yellow-800'
+                          when 'processing' then 'bg-blue-100 text-blue-800'
+                          when 'completed' then 'bg-green-100 text-green-800'
+                          when 'cancelled' then 'bg-red-100 text-red-800'
+                          end %>">
+                      <%= status.titleize %>
+                    </span>
+                  </div>
+                  <div class="text-sm text-orange-950 font-medium"><%= count %> orders</div>
+                </div>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Order Sources -->
+    <div class="mt-8 bg-white shadow rounded-lg border border-orange-200">
+      <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
+        <h3 class="text-lg leading-6 font-medium text-orange-950">Order Sources</h3>
+        <p class="mt-1 max-w-2xl text-sm text-orange-600">How orders were matched to this customer.</p>
+      </div>
+      <div class="border-t border-orange-200">
+        <dl>
+          <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-orange-700">Direct User Orders</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user_orders&.count || 0 %></dd>
+          </div>
+          <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-orange-700">Orders by Email</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @orders_by_email&.count || 0 %></dd>
+          </div>
+          <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-orange-700">Orders by Phone</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @orders_by_phone&.count || 0 %></dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <!-- Monthly Spending -->
+    <% if @monthly_spending&.any? %>
+      <div class="mt-8 bg-white shadow rounded-lg border border-orange-200">
+        <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
+          <h3 class="text-lg leading-6 font-medium text-orange-950">Monthly Spending</h3>
+          <p class="mt-1 max-w-2xl text-sm text-orange-600">Spending over the last 12 months.</p>
+        </div>
+        <div class="bg-white">
+          <ul class="divide-y divide-orange-200">
+            <% @monthly_spending.reverse_each do |month, amount| %>
+              <% next if amount == 0 %>
+              <li>
+                <div class="px-4 py-4 sm:px-6">
+                  <div class="flex items-center justify-between">
+                    <div class="text-sm font-medium text-orange-950"><%= month %></div>
+                    <div class="text-sm text-orange-600"><%= number_to_currency(amount) %></div>
+                  </div>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <!-- No Orders Message -->
+    <div class="mt-8 bg-white shadow rounded-lg border border-orange-200">
+      <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
+        <h3 class="text-lg leading-6 font-medium text-orange-950">Order History</h3>
+        <p class="mt-1 max-w-2xl text-sm text-orange-600">This customer hasn't placed any orders yet.</p>
+      </div>
+      <div class="px-4 py-5 sm:px-6">
+        <div class="text-center py-8">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-orange-950 mb-2">No Orders Yet</h3>
+          <p class="text-orange-600">This customer hasn't placed any orders yet.</p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %> 

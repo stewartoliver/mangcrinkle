@@ -1,0 +1,186 @@
+<!-- Hero Section -->
+<div class="relative bg-orange-200 text-orange-950">
+  <div class="absolute inset-0 bg-orange-950 opacity-10"></div>
+  <div class="relative max-w-7xl mx-auto py-24 px-4 sm:py-32 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl transform hover:scale-105 transition-transform duration-300">
+        Mang Crinkle Cookies
+      </h1>
+      <p class="mt-6 text-xl max-w-3xl mx-auto">
+        Handcrafted Filipino-style crinkle cookies, baked with love and a touch of kilig! 🤎🇵🇭
+      </p>
+      <div class="mt-10 flex justify-center space-x-4">
+        <%= link_to "Order Now", products_path, class: "inline-block bg-orange-950 text-orange-200 px-8 py-3 rounded-md font-semibold hover:bg-orange-900 transition duration-150 transform hover:scale-105" %>
+        <%= link_to "Learn More", "#story", class: "inline-block border-2 border-orange-950 text-orange-950 px-8 py-3 rounded-md font-semibold hover:bg-orange-950 hover:text-orange-200 transition duration-150 transform hover:scale-105" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Featured Products Section -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-3xl font-bold text-orange-950 mb-8">Our Flavors</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <% @products.each do |product| %>
+      <div class="bg-white rounded-lg shadow-md overflow-hidden border border-orange-200 hover:border-orange-500 transition duration-150">
+        <% if product.image.present? %>
+          <%= image_tag product.image, class: "w-full h-48 object-cover" %>
+        <% else %>
+          <div class="h-48 bg-orange-100"></div>
+        <% end %>
+        <div class="p-6">
+          <h3 class="text-xl font-semibold mb-2 text-orange-950"><%= product.name %></h3>
+          <p class="text-orange-700 mb-4"><%= truncate(product.description, length: 100) %></p>
+          <div class="flex justify-between items-center">
+            <span class="text-lg font-bold text-orange-950">$<%= number_with_precision(product.price, precision: 2) %></span>
+            <%= link_to "View Details", product_path(product), class: "text-orange-600 hover:text-orange-950 font-semibold" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Price List Section -->
+  <div class="mt-16 bg-white rounded-lg shadow-md p-8 border border-orange-200">
+    <h3 class="text-2xl font-bold text-orange-950 mb-6">Package Options</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <% CrinklePackage.active.each do |package| %>
+        <div class="text-center p-4 border border-orange-200 rounded-lg">
+          <h4 class="text-xl font-semibold text-orange-950"><%= package.name %></h4>
+          <p class="text-2xl font-bold text-orange-700 mt-2">$<%= number_with_precision(package.price, precision: 2) %></p>
+          <p class="text-orange-600 mt-2"><%= package.description %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Story Section -->
+<div class="bg-orange-50 py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
+      <div>
+        <!-- Note: Add Mang's photo here -->
+        <div class="h-96 bg-orange-100 rounded-lg border-2 border-orange-200"><%= image_tag "founder_img.jpg", class: "w-full h-full object-cover rounded-lg" %></div>
+      </div>
+      <div class="mt-8 lg:mt-0">
+        <h2 class="text-3xl font-bold text-orange-950 mb-4">Meet Mang</h2>
+        <p class="text-lg text-orange-700 mb-6">
+          Meet the man behind Mang Crinkles! 👴🍪 Your favorite fudgy crinkle cookies are made by this hardworking Filipino man 
+          who's on a mission to perfect every bite.
+        </p>
+        <p class="text-lg text-orange-700 mb-6">
+          Each batch is baked with love, care, and a touch of kilig! From traditional Filipino flavors like Ube to modern favorites 
+          like Matcha and Espresso, Mang brings his passion for baking to every cookie.
+        </p>
+        <div class="flex flex-wrap gap-2 mt-6">
+          <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full">💜 Ube</span>
+          <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full">🍵 Matcha</span>
+          <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full">🍫 Chocolate</span>
+          <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full">❤️ Red Velvet</span>
+          <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full">☕ Espresso</span>
+          <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full">🌿 Chocolate Mint</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Why Choose Us Section -->
+<div class="bg-white py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl font-bold text-orange-950 mb-12 text-center">Why Choose Mang Crinkles?</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center p-6 rounded-lg hover:shadow-lg transition duration-300">
+        <div class="text-4xl mb-4">🌟</div>
+        <h3 class="text-xl font-semibold mb-2 text-orange-950">Premium Ingredients</h3>
+        <p class="text-orange-700">We use only the finest ingredients, from authentic Filipino ube to premium Japanese matcha.</p>
+      </div>
+      <div class="text-center p-6 rounded-lg hover:shadow-lg transition duration-300">
+        <div class="text-4xl mb-4">❤️</div>
+        <h3 class="text-xl font-semibold mb-2 text-orange-950">Made with Love</h3>
+        <p class="text-orange-700">Each batch is handcrafted with care and attention to detail.</p>
+      </div>
+      <div class="text-center p-6 rounded-lg hover:shadow-lg transition duration-300">
+        <div class="text-4xl mb-4">🚚</div>
+        <h3 class="text-xl font-semibold mb-2 text-orange-950">Fresh Delivery</h3>
+        <p class="text-orange-700">Baked fresh daily and delivered straight to your door.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Testimonials Section -->
+<div class="bg-white py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl font-bold text-orange-950 mb-12 text-center">What Our Customers Say</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-orange-50 p-6 rounded-lg">
+        <div class="flex items-center mb-4">
+          <div class="text-2xl">⭐️⭐️⭐️⭐️⭐️</div>
+        </div>
+        <p class="text-orange-700 mb-4">"The ube crinkles are absolutely amazing! Perfect texture and just the right amount of sweetness."</p>
+        <p class="font-semibold text-orange-950">- Maria S.</p>
+      </div>
+      <div class="bg-orange-50 p-6 rounded-lg">
+        <div class="flex items-center mb-4">
+          <div class="text-2xl">⭐️⭐️⭐️⭐️⭐️</div>
+        </div>
+        <p class="text-orange-700 mb-4">"Best matcha cookies I've ever had! The quality is outstanding."</p>
+        <p class="font-semibold text-orange-950">- James T.</p>
+      </div>
+      <div class="bg-orange-50 p-6 rounded-lg">
+        <div class="flex items-center mb-4">
+          <div class="text-2xl">⭐️⭐️⭐️⭐️⭐️</div>
+        </div>
+        <p class="text-orange-700 mb-4">"Mang's cookies bring back memories of my childhood in the Philippines. So authentic!"</p>
+        <p class="font-semibold text-orange-950">- Liza M.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Newsletter Section -->
+<div class="bg-orange-100 py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h2 class="text-3xl font-bold text-orange-950 mb-4">Stay Updated</h2>
+      <p class="text-orange-700 mb-8">Subscribe to our newsletter for exclusive offers and new flavor announcements!</p>
+      <div class="max-w-md mx-auto">
+        <div class="flex gap-4">
+          <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-3 rounded-md border border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-500">
+          <button class="bg-orange-950 text-orange-200 px-6 py-3 rounded-md font-semibold hover:bg-orange-900 transition duration-150">
+            Subscribe
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Call to Action Section -->
+<div class="bg-orange-200 text-orange-950">
+  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
+    <div class="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
+      <div>
+        <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">
+          Ready to taste the perfect crinkle?
+        </h2>
+        <p class="mt-4 text-lg">
+          Order now and experience the perfect blend of Filipino tradition and modern flavors.
+        </p>
+      </div>
+      <div class="mt-8 lg:mt-0">
+        <%= link_to "Order Now", products_path, class: "inline-block bg-orange-950 text-orange-200 px-8 py-3 rounded-md font-semibold hover:bg-orange-900 transition duration-150" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Note: Consider adding these sections later:
+1. Customer testimonials with photos
+2. Instagram feed of cookie photos
+3. Newsletter signup
+4. Baking process animation/video
+5. Seasonal specials carousel
+-->

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mang Crinkle - Artisanal Baked Goods</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-orange-50">
+    <%= render "shared/navigation" %>
+
+    <% if notice %>
+      <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">
+        <p class="font-bold">Success!</p>
+        <p><%= notice %></p>
+      </div>
+    <% end %>
+    
+    <% if alert %>
+      <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+        <p class="font-bold">Error!</p>
+        <p><%= alert %></p>
+      </div>
+    <% end %>
+
+    <main>
+      <%= yield %>
+    </main>
+
+    <footer class="bg-orange-950 text-orange-100">
+      <div class="max-w-7xl mx-auto py-12 px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 class="text-lg font-semibold mb-4 text-orange-200">Mang Crinkle</h3>
+            <p class="text-orange-200">Artisanal baked goods made with love and the finest ingredients.</p>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4 text-orange-200">Quick Links</h3>
+            <ul class="space-y-2">
+              <li><%= link_to "Products", products_path, class: "text-orange-200 hover:text-white" %></li>
+              <li><%= link_to "About Us", about_path, class: "text-orange-200 hover:text-white" %></li>
+              <li><%= link_to "Contact", "#", class: "text-orange-200 hover:text-white" %></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4 text-orange-200">Contact Us</h3>
+            <p class="text-orange-200">Email: info@mangcrinkle.com</p>
+            <p class="text-orange-200">Phone: (555) 123-4567</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

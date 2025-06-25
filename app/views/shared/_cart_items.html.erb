@@ -1,0 +1,33 @@
+<% if cart_items.any? %>
+  <div class="space-y-4">
+    <% cart_items.each do |item| %>
+      <div class="flex items-center justify-between py-4 border-b border-orange-200">
+        <div class="flex-1">
+          <h3 class="text-sm font-medium text-orange-950"><%= item.name %></h3>
+          <% if item.description.present? %>
+            <p class="text-sm text-orange-600"><%= item.description %></p>
+          <% end %>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="text-sm text-orange-600">
+            <%= item.quantity %> × $<%= number_with_precision(item.price, precision: 2) %>
+          </div>
+          <div class="text-sm font-medium text-orange-950">
+            $<%= number_with_precision(item.subtotal, precision: 2) %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    
+    <div class="flex justify-between items-center pt-4">
+      <span class="text-base font-medium text-orange-950">Total:</span>
+      <span class="text-base font-medium text-orange-950">
+        $<%= number_with_precision(cart_items.sum(&:subtotal), precision: 2) %>
+      </span>
+    </div>
+  </div>
+<% else %>
+  <div class="text-center py-8">
+    <p class="text-orange-600">Your cart is empty</p>
+  </div>
+<% end %> 

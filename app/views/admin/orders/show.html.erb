@@ -1,0 +1,202 @@
+<% content_for :title, "Order ##{@order.id}" %>
+
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+  <!-- Main Order Details -->
+  <div class="lg:col-span-4">
+    <div class="admin-container">
+      <div class="admin-container-header">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="admin-container-title">Order Details</h3>
+            <p class="admin-container-subtitle">Detailed information about the order.</p>
+          </div>
+          <div class="flex space-x-3">
+            <%= link_to "Edit", edit_admin_order_path(@order), class: "admin-btn-primary" %>
+            <%= link_to "Back to Orders", admin_orders_path, class: "admin-link" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-orange-200">
+        <!-- Order Information -->
+        <dl>
+          <div class="bg-orange-50 px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-orange-700">Order ID</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">#<%= @order.id %></dd>
+          </div>
+          <div class="bg-white px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="flex flex-col justify-center text-sm font-medium text-orange-700">Customer</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+              <div class="flex items-center justify-between">
+                <span><%= @order.customer_name %></span>
+                <% if @order.user.present? %>
+                  <%= link_to "View Customer", admin_user_path(@order.user), 
+                      class: "inline-flex items-center px-3 py-1 border border-orange-300 text-sm font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100" %>
+                <% end %>
+              </div>
+            </dd>
+          </div>
+          <div class="bg-orange-50 px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-orange-700">Email</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @order.email %></dd>
+          </div>
+          <div class="bg-white px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-orange-700">Phone</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @order.phone %></dd>
+          </div>
+          <div class="bg-orange-50 px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-orange-700">Order Date</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @order.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+          </div>
+          <div class="bg-white px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-orange-700">Status</dt>
+            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+              <span class="admin-status-badge 
+                <%= case @order.status
+                    when 'pending' then 'admin-status-pending'
+                    when 'processing' then 'admin-status-processing'
+                    when 'completed' then 'admin-status-completed'
+                    when 'cancelled' then 'admin-status-cancelled'
+                    else 'admin-status-default'
+                    end %>">
+                <%= @order.status.titleize %>
+              </span>
+            </dd>
+          </div>
+          <div class="bg-orange-50 px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-orange-700">Order Source</dt>
+            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+              <span class="admin-status-badge 
+                <%= case @order.order_source
+                    when 'website' then 'bg-blue-100 text-blue-800'
+                    when 'admin_phone' then 'bg-purple-100 text-purple-800'
+                    when 'admin_email' then 'bg-indigo-100 text-indigo-800'
+                    else 'bg-gray-100 text-gray-800'
+                    end %>">
+                <%= @order.order_source_display %>
+              </span>
+            </dd>
+          </div>
+        </dl>
+
+        <!-- Order Items -->
+        <div class="px-6 py-6 border-t border-orange-200">
+          <h4 class="text-lg font-medium text-orange-950 mb-4">Order Items</h4>
+          <div class="overflow-x-auto">
+            <table class="admin-table">
+              <thead class="admin-table-header">
+                <tr>
+                  <th scope="col" class="admin-table-header-cell">Item</th>
+                  <th scope="col" class="admin-table-header-cell-center">Quantity</th>
+                  <th scope="col" class="admin-table-header-cell-center">Price</th>
+                  <th scope="col" class="admin-table-header-cell-center">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody class="admin-table-body">
+                <% @order.line_items.each do |item| %>
+                  <tr>
+                    <td class="admin-table-cell">
+                      <div class="text-sm font-medium text-orange-950"><%= item.name %></div>
+                      <% if item.description.present? %>
+                        <div class="text-sm text-orange-600"><%= item.description %></div>
+                      <% end %>
+                      <% if item.purchasable.is_a?(CrinklePackage) && item.selected_products.any? %>
+                        <div class="mt-2 text-xs text-orange-500">
+                          <div class="font-medium mb-1">Selected items:</div>
+                          <% item.selected_products.each do |selected| %>
+                            <div class="ml-2">• <%= selected[:quantity] %>x <%= selected[:product].name %></div>
+                          <% end %>
+                        </div>
+                      <% end %>
+                    </td>
+                    <td class="admin-table-cell-center text-sm text-orange-600">
+                      <%= item.quantity %>
+                    </td>
+                    <td class="admin-table-cell-center text-sm text-orange-600">
+                      $<%= number_with_precision(item.price, precision: 2) %>
+                    </td>
+                    <td class="admin-table-cell-center text-sm text-orange-600">
+                      $<%= number_with_precision(item.subtotal, precision: 2) %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+              <tfoot class="bg-orange-50">
+                <tr>
+                  <td colspan="3" class="px-6 py-4 text-right text-sm font-medium text-orange-950">Total:</td>
+                  <td class="px-6 py-4 text-center text-sm font-medium text-orange-950">
+                    $<%= number_with_precision(@order.total_price, precision: 2) %>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- Shipping Information -->
+        <div class="px-6 py-6 border-t border-orange-200">
+          <h4 class="text-lg font-medium text-orange-950 mb-4">Shipping Information</h4>
+          <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+            <div class="sm:col-span-1">
+              <dt class="text-sm font-medium text-orange-700">Name</dt>
+              <dd class="mt-1 text-sm text-orange-950"><%= @order.customer_name %></dd>
+            </div>
+            <div class="sm:col-span-1">
+              <dt class="text-sm font-medium text-orange-700">Email</dt>
+              <dd class="mt-1 text-sm text-orange-950"><%= @order.email %></dd>
+            </div>
+            <div class="sm:col-span-1">
+              <dt class="text-sm font-medium text-orange-700">Phone</dt>
+              <dd class="mt-1 text-sm text-orange-950"><%= @order.phone %></dd>
+            </div>
+            <div class="sm:col-span-2">
+              <dt class="text-sm font-medium text-orange-700">Address</dt>
+              <dd class="mt-1 text-sm text-orange-950">
+                <%= @order.address %>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar - Order Notes Only -->
+  <div class="lg:col-span-1">
+    <!-- Order Notes -->
+    <div class="admin-container">
+      <div class="admin-container-header">
+        <h3 class="admin-container-title">Order Notes</h3>
+        <p class="admin-container-subtitle">Internal notes and comments.</p>
+      </div>
+      
+      <div class="px-4 py-5">
+        <!-- Add Note Form -->
+        <%= form_with url: admin_order_path(@order), method: :patch, local: true, class: "mb-6" do |form| %>
+          <div class="form-group">
+            <label class="form-label">Add Note</label>
+            <%= form.text_area :note_content, placeholder: "Add a note...", rows: 3, class: "form-textarea" %>
+          </div>
+          <%= form.submit "Add Note", class: "form-btn-primary" %>
+        <% end %>
+
+        <!-- Notes List -->
+        <div class="space-y-3">
+          <% if @order_notes&.any? %>
+            <% @order_notes.each do |note| %>
+              <div class="bg-orange-50 rounded-lg p-3">
+                <div class="flex justify-between items-start mb-2">
+                  <span class="text-xs font-medium text-orange-700"><%= note.admin_user %></span>
+                  <span class="text-xs text-orange-500"><%= note.created_at.strftime("%m/%d/%Y %I:%M %p") %></span>
+                </div>
+                <p class="text-sm text-orange-900"><%= note.content %></p>
+              </div>
+            <% end %>
+          <% else %>
+            <p class="text-sm text-orange-600 text-center py-4">No notes yet</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

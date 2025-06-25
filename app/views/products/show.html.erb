@@ -1,0 +1,42 @@
+<!-- Product Header -->
+<div class="bg-orange-200 text-orange-950 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-4xl font-extrabold tracking-tight text-center"><%= @product.name %></h1>
+  </div>
+</div>
+
+<!-- Product Details -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="bg-white rounded-lg shadow-md overflow-hidden border border-orange-200">
+    <div class="md:flex">
+      <div class="md:w-1/2">
+        <% if @product.image.present? %>
+          <%= image_tag @product.image, class: "w-full h-full object-cover" %>
+        <% else %>
+          <div class="h-96 bg-orange-100"></div>
+        <% end %>
+      </div>
+      
+      <div class="p-8 md:w-1/2">
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold text-orange-950 mb-4">About this Flavor</h2>
+          <p class="text-orange-700"><%= @product.description %></p>
+        </div>
+        
+        <div class="mb-8">
+          <span class="text-3xl font-bold text-orange-950">$<%= number_with_precision(@product.price, precision: 2) %></span>
+        </div>
+        
+        <%= form_with url: new_order_path, method: :get, class: "space-y-6" do |f| %>
+          <%= f.hidden_field :product_id, value: @product.id %>
+          <div>
+            <%= f.label :quantity, class: "block text-sm font-medium text-orange-950" %>
+            <%= f.number_field :quantity, min: 1, value: 1, class: "mt-1 block w-full rounded-md border-orange-200 shadow-sm focus:border-orange-500 focus:ring-orange-500" %>
+          </div>
+          
+          <%= f.submit "Add to Order", class: "w-full bg-orange-950 text-orange-200 px-6 py-3 rounded-md font-semibold hover:bg-orange-900 transition duration-150" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div> 

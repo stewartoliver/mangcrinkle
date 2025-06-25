@@ -1,0 +1,82 @@
+<% content_for :title, @crinkle_package.name %>
+
+<div class="bg-white shadow rounded-lg border border-orange-200">
+  <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-lg leading-6 font-medium text-orange-950">Package Details</h3>
+        <p class="mt-1 max-w-2xl text-sm text-orange-600">Detailed information about the package.</p>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to "Edit", edit_admin_crinkle_package_path(@crinkle_package), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" %>
+        <%= link_to "Back to Packages", admin_crinkle_packages_path, class: "text-orange-600 hover:text-orange-950" %>
+      </div>
+    </div>
+  </div>
+  <div class="border-t border-orange-200">
+    <dl>
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Name</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @crinkle_package.name %></dd>
+      </div>
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Price</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">$<%= number_with_precision(@crinkle_package.price, precision: 2) %></dd>
+      </div>
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Quantity</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @crinkle_package.quantity %></dd>
+      </div>
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Status</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @crinkle_package.active? ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+            <%= @crinkle_package.active? ? 'Active' : 'Inactive' %>
+          </span>
+        </dd>
+      </div>
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Description</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @crinkle_package.description %></dd>
+      </div>
+    </dl>
+  </div>
+</div>
+
+<!-- Package Orders -->
+<div class="mt-8 bg-white shadow rounded-lg border border-orange-200">
+  <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
+    <h3 class="text-lg leading-6 font-medium text-orange-950">Recent Orders</h3>
+    <p class="mt-1 max-w-2xl text-sm text-orange-600">Orders containing this package.</p>
+  </div>
+  <div class="bg-white">
+    <% if @crinkle_package.line_items.any? %>
+      <ul class="divide-y divide-orange-200">
+        <% @crinkle_package.line_items.includes(:order).order(created_at: :desc).limit(5).each do |line_item| %>
+          <li>
+            <div class="px-4 py-4 sm:px-6">
+              <div class="flex items-center justify-between">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-orange-950 truncate">
+                    Order #<%= line_item.order.id %>
+                  </p>
+                  <p class="text-sm text-orange-600">
+                    <%= line_item.order.created_at.strftime("%B %d, %Y") %>
+                    • Quantity: <%= line_item.quantity %>
+                  </p>
+                </div>
+                <div class="ml-2 flex-shrink-0 flex">
+                  <%= link_to "View Order", admin_order_path(line_item.order), class: "text-orange-600 hover:text-orange-950" %>
+                </div>
+              </div>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <div class="px-4 py-5 sm:px-6">
+        <p class="text-sm text-orange-600">No orders containing this package yet.</p>
+      </div>
+    <% end %>
+  </div>
+</div> 

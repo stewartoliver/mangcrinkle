@@ -1,0 +1,139 @@
+/* Animated Hero Section with Falling Crinkle SVGs - Original Version */
+
+.hero-container {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #fed7aa 0%, #fdba74 50%, #fb923c 100%);
+    min-height: 100vh;
+}
+
+.falling-crinkle {
+    position: absolute;
+    width: 60px;
+    height: 36px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 1;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    /* Hardware acceleration */
+}
+
+/* All crinkles are now dynamic and styled by JavaScript */
+.falling-crinkle.dynamic {
+    animation: fall linear;
+    /* Individual properties set by JavaScript */
+}
+
+.falling-crinkle.dynamic.float {
+    animation: float-fall linear;
+    /* Individual properties set by JavaScript */
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.3;
+    }
+
+    90% {
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Floating animation for some crinkles */
+@keyframes float-fall {
+    0% {
+        transform: translateY(-100px) translateX(0px) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.3;
+    }
+
+    50% {
+        transform: translateY(50vh) translateX(20px) rotate(180deg);
+    }
+
+    90% {
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: translateY(100vh) translateX(-20px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Hero content styling */
+.hero-content {
+    position: relative;
+    z-index: 10;
+}
+
+/* Performance optimizations */
+.falling-crinkle img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .falling-crinkle {
+        width: 40px;
+        height: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .falling-crinkle {
+        width: 30px;
+        height: 18px;
+    }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .falling-crinkle {
+        animation: none !important;
+        opacity: 0.1 !important;
+    }
+}
+
+/* Loading state */
+.hero-container.loading .falling-crinkle {
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
+}
+
+.hero-container.loaded .falling-crinkle {
+    opacity: 0.3;
+}
+
+/* Intersection Observer support for better performance */
+.hero-container:not(.in-viewport) .falling-crinkle {
+    animation-play-state: paused;
+}
+
+/* Optimize for low-end devices */
+@media (max-width: 768px) and (max-device-width: 768px) {
+    .falling-crinkle {
+        animation-duration: 8s !important;
+    }
+
+    .falling-crinkle.float {
+        animation: fall linear infinite !important;
+    }
+}

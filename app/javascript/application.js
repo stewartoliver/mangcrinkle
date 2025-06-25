@@ -3,6 +3,7 @@ import "@hotwired/turbo-rails"
 import "./controllers"
 import "./admin_navigation"
 import "./form_interactions"
+import "./hero_animations"
 
 // Global variable for package limit
 let currentPackageLimit = 0;

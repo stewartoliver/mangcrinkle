@@ -1,5 +1,16 @@
 @layer components {
 
+    /* Typography Components */
+    .brand-heading {
+        font-family: 'Cooper Black', serif;
+        color: rgb(194 65 12);
+    }
+
+    .brand-text {
+        font-family: 'Rubik', sans-serif;
+        color: rgb(194 65 12);
+    }
+
     /* Admin Container Components */
     .admin-container {
         @apply bg-white shadow rounded-lg border border-orange-200;

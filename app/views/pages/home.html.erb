@@ -3,6 +3,9 @@
   <div class="absolute inset-0 bg-orange-950 opacity-10"></div>
   <div class="relative max-w-7xl mx-auto py-24 px-4 sm:py-32 sm:px-6 lg:px-8">
     <div class="text-center">
+      <div class="flex justify-center mb-6">
+        <%= image_tag "Mang-logo.svg", alt: "MangCrinkle Logo", class: "h-48 w-auto sm:h-64 md:h-72 lg:h-96" %>
+      </div>
       <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl transform hover:scale-105 transition-transform duration-300">
         Mang Crinkle Cookies
       </h1>
@@ -19,7 +22,12 @@
 
 <!-- Featured Products Section -->
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-  <h2 class="text-3xl font-bold text-orange-950 mb-8">Our Flavors</h2>
+  <div class="text-center mb-12">
+    <h2 class="text-3xl font-bold text-orange-950 mb-4">Our Crinkles</h2>
+    <p class="text-lg text-orange-700 max-w-3xl mx-auto">
+      Handcrafted with love, each flavor tells a unique story of Filipino tradition and modern innovation.
+    </p>
+  </div>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
     <% @products.each do |product| %>
       <div class="bg-white rounded-lg shadow-md overflow-hidden border border-orange-200 hover:border-orange-500 transition duration-150">

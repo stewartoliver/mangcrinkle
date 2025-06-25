@@ -1,28 +1,117 @@
 <!-- Navigation -->
-<nav class="bg-white shadow">
+<nav class="bg-white shadow sticky top-0 z-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16">
       <div class="flex">
         <div class="flex-shrink-0 flex items-center">
-          <%= link_to root_path, class: "text-2xl font-bold text-orange-950" do %>
-            MangCrinkle
+          <%= link_to root_path, class: "flex items-center" do %>
+            <%= image_tag "Mang-not-text-logo.svg", alt: "MangCrinkle Logo", class: "h-10 w-auto" %>
+            <span class="ml-2 text-xl text-orange-950 font-medium uppercase tracking-wide leading-none" style="font-family: 'Cooper Black', serif; font-weight: 900; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility;">Mang Crinkle</span>
           <% end %>
         </div>
-        <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-          <%= link_to "Home", root_path, class: "inline-flex items-center px-1 pt-1 text-sm font-medium text-orange-600 hover:text-orange-950" %>
-          <%= link_to "Products", products_path, class: "inline-flex items-center px-1 pt-1 text-sm font-medium text-orange-600 hover:text-orange-950" %>
-          <%= link_to "About", about_path, class: "inline-flex items-center px-1 pt-1 text-sm font-medium text-orange-600 hover:text-orange-950" %>
-          <%= link_to "Contact", contact_path, class: "inline-flex items-center px-1 pt-1 text-sm font-medium text-orange-600 hover:text-orange-950" %>
+        <div class="hidden sm:ml-6 sm:flex sm:space-x-2">
+          <%= link_to "Home", root_path, class: "inline-flex items-center px-4 md:px-8 lg:px-12 py-2 text-sm font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 transition-all duration-200 active:bg-orange-100 active:scale-95 #{current_page?(root_path) ? 'border-b-2 border-orange-600' : ''}" %>
+          <%= link_to "Products", products_path, class: "inline-flex items-center px-4 md:px-8 lg:px-12 py-2 text-sm font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 transition-all duration-200 active:bg-orange-100 active:scale-95 #{current_page?(products_path) ? 'border-b-2 border-orange-600' : ''}" %>
+          <%= link_to "About", about_path, class: "inline-flex items-center px-4 md:px-8 lg:px-12 py-2 text-sm font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 transition-all duration-200 active:bg-orange-100 active:scale-95 #{current_page?(about_path) ? 'border-b-2 border-orange-600' : ''}" %>
+          <%= link_to "Contact", contact_path, class: "inline-flex items-center px-4 md:px-8 lg:px-12 py-2 text-sm font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 transition-all duration-200 active:bg-orange-100 active:scale-95 #{current_page?(contact_path) ? 'border-b-2 border-orange-600' : ''}" %>
         </div>
       </div>
       <div class="flex items-center">
         <%= render "shared/cart_icon" %>
-        <% if user_signed_in? %>
-          <div class="ml-4">
-            <%= link_to "Account", edit_admin_user_path(current_user), class: "text-orange-600 hover:text-orange-950" %>
-          </div>
-        <% end %>
+        <!-- Mobile menu button -->
+        <button id="mobile-menu-button" class="sm:hidden ml-3 p-2 rounded-md text-orange-600 hover:text-orange-950 hover:bg-orange-50 transition-all duration-200">
+          <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="sm:hidden hidden">
+      <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-orange-100">
+        <%= link_to "Home", root_path, class: "block px-3 py-2 text-base font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 rounded-md transition-all duration-200 #{current_page?(root_path) ? 'bg-orange-100 text-orange-950' : ''}" %>
+        <%= link_to "Products", products_path, class: "block px-3 py-2 text-base font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 rounded-md transition-all duration-200 #{current_page?(products_path) ? 'bg-orange-100 text-orange-950' : ''}" %>
+        <%= link_to "About", about_path, class: "block px-3 py-2 text-base font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 rounded-md transition-all duration-200 #{current_page?(about_path) ? 'bg-orange-100 text-orange-950' : ''}" %>
+        <%= link_to "Contact", contact_path, class: "block px-3 py-2 text-base font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 rounded-md transition-all duration-200 #{current_page?(contact_path) ? 'bg-orange-100 text-orange-950' : ''}" %>
       </div>
     </div>
   </div>
-</nav> 
+</nav>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    initializeMobileNavigation();
+  });
+
+  document.addEventListener('turbo:load', function() {
+    initializeMobileNavigation();
+  });
+
+  function initializeMobileNavigation() {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    let isMenuOpen = false;
+
+    if (mobileMenuButton && mobileMenu) {
+      // Toggle menu on button click
+      mobileMenuButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (isMenuOpen) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      // Prevent menu from closing when clicking inside it
+      mobileMenu.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener('click', function(e) {
+        if (isMenuOpen && !mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+          closeMenu();
+        }
+      });
+
+      // Close menu on window resize
+      window.addEventListener('resize', function() {
+        if (window.innerWidth >= 640 && isMenuOpen) {
+          closeMenu();
+        }
+      });
+
+      function openMenu() {
+        mobileMenu.classList.remove('hidden');
+        mobileMenu.style.display = 'block';
+        setTimeout(() => {
+          mobileMenu.style.opacity = '1';
+          mobileMenu.style.transform = 'translateY(0)';
+        }, 10);
+        isMenuOpen = true;
+      }
+
+      function closeMenu() {
+        mobileMenu.style.opacity = '0';
+        mobileMenu.style.transform = 'translateY(-10px)';
+        setTimeout(() => {
+          mobileMenu.classList.add('hidden');
+          mobileMenu.style.display = 'none';
+        }, 200);
+        isMenuOpen = false;
+      }
+    }
+  }
+</script>
+
+<style>
+  #mobile-menu {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+</style> 

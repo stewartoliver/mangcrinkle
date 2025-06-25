@@ -1,15 +1,15 @@
 <!-- Order Header -->
-<div class="bg-orange-200 text-orange-950 py-12">
+<div class="bg-orange-200 text-orange-950 py-8 sm:py-12">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h1 class="text-4xl font-extrabold tracking-tight text-center">Complete Your Order</h1>
-    <p class="mt-4 text-xl text-center max-w-3xl mx-auto">
+    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-center">Complete Your Order</h1>
+    <p class="mt-4 text-lg sm:text-xl text-center max-w-3xl mx-auto px-4">
       Review your cart and provide your contact information
     </p>
   </div>
 </div>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-  <%= form_with model: @order, class: "space-y-8" do |f| %>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16">
+  <%= form_with model: @order, class: "space-y-6 sm:space-y-8" do |f| %>
     <% if @order.errors.any? %>
       <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
         <div class="flex">
@@ -36,10 +36,52 @@
 
     <!-- Order Summary -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden border border-orange-200">
-      <div class="px-6 py-4 border-b border-orange-200">
-        <h2 class="text-xl font-semibold text-orange-950">Order Summary</h2>
+      <div class="px-4 sm:px-6 py-4 border-b border-orange-200">
+        <h2 class="text-lg sm:text-xl font-semibold text-orange-950">Order Summary</h2>
       </div>
-      <div class="overflow-x-auto">
+      
+      <!-- Mobile Order Summary -->
+      <div class="block sm:hidden">
+        <% @cart_items.each do |item| %>
+          <div class="p-4 border-b border-orange-200 last:border-b-0">
+            <div class="flex justify-between items-start mb-2">
+              <div class="flex-1">
+                <div class="text-sm font-medium text-orange-950"><%= item.name %></div>
+                <% if item.description.present? %>
+                  <div class="text-sm text-orange-600 mt-1"><%= item.description %></div>
+                <% end %>
+                <% if item.crinkle_package.present? && item.selected_products.any? %>
+                  <div class="mt-2 text-xs text-orange-500">
+                    <div class="font-medium mb-1">Selected items:</div>
+                    <% item.selected_products.each do |selected| %>
+                      <div class="ml-2">• <%= selected[:quantity] %>x <%= selected[:product].name %></div>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+              <div class="text-right ml-4">
+                <div class="text-sm font-medium text-orange-600">$<%= number_with_precision(item.price, precision: 2) %></div>
+                <div class="text-xs text-orange-500">each</div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-orange-600">Qty: <%= item.quantity %></span>
+              <span class="text-sm font-medium text-orange-950">$<%= number_with_precision(item.subtotal, precision: 2) %></span>
+            </div>
+          </div>
+        <% end %>
+        
+        <!-- Mobile Total -->
+        <div class="p-4 bg-orange-50 border-t border-orange-200">
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-medium text-orange-950">Total:</span>
+            <span class="text-lg font-bold text-orange-950">$<%= number_with_precision(@cart.total_price, precision: 2) %></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop Order Summary Table -->
+      <div class="hidden sm:block overflow-x-auto">
         <table class="min-w-full divide-y divide-orange-200">
           <thead class="bg-orange-50">
             <tr>
@@ -91,10 +133,10 @@
     </div>
 
     <!-- Contact Information -->
-    <div class="bg-white rounded-lg shadow-md p-6 border border-orange-200">
-      <h2 class="text-xl font-semibold mb-6 text-orange-950">Contact Information</h2>
+    <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 border border-orange-200">
+      <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-orange-950">Contact Information</h2>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <%= f.label :first_name, "First Name", class: "block text-sm font-medium text-orange-700" %>
           <div class="mt-1">
@@ -124,26 +166,28 @@
         </div>
       </div>
 
-      <div class="mt-6">
+      <div class="mt-4 sm:mt-6">
         <%= f.label :address, "Delivery Address", class: "block text-sm font-medium text-orange-700" %>
         <div class="mt-1">
           <%= f.text_area :address, rows: 4, class: "appearance-none block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm", placeholder: "Please provide your complete delivery address..." %>
         </div>
       </div>
 
-      <div class="mt-6">
-        <div class="flex items-center">
-          <%= f.check_box :newsletter_subscribed, class: "h-4 w-4 text-orange-600 focus:ring-orange-500 border-orange-300 rounded" %>
-          <%= f.label :newsletter_subscribed, "Subscribe to our newsletter for updates and special offers", class: "ml-2 block text-sm text-orange-700" %>
+      <div class="mt-4 sm:mt-6">
+        <div class="flex items-start">
+          <%= f.check_box :newsletter_subscribed, class: "h-4 w-4 text-orange-600 focus:ring-orange-500 border-orange-300 rounded mt-1" %>
+          <div class="ml-2">
+            <%= f.label :newsletter_subscribed, "Subscribe to our newsletter for updates and special offers", class: "block text-sm text-orange-700" %>
+            <p class="mt-1 text-xs text-orange-500">We'll send you updates about new products, special offers, and baking tips. You can unsubscribe at any time.</p>
+          </div>
         </div>
-        <p class="mt-1 text-xs text-orange-500">We'll send you updates about new products, special offers, and baking tips. You can unsubscribe at any time.</p>
       </div>
     </div>
 
     <!-- Action Buttons -->
-    <div class="flex justify-between items-center">
-      <%= link_to "Back to Cart", cart_path, class: "text-orange-600 hover:text-orange-950 font-medium" %>
-      <%= f.submit "Place Order", class: "inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" %>
+    <div class="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
+      <%= link_to "Back to Cart", cart_path, class: "w-full sm:w-auto text-center text-orange-600 hover:text-orange-950 font-medium" %>
+      <%= f.submit "Place Order", class: "w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" %>
     </div>
   <% end %>
 </div>

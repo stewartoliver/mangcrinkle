@@ -6,6 +6,11 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cooper+Black&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -36,7 +41,9 @@
       <div class="max-w-7xl mx-auto py-12 px-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 class="text-lg font-semibold mb-4 text-orange-200">Mang Crinkle</h3>
+            <div class="flex items-center mb-4">
+              <%= image_tag "Mang-not-text-logo.svg", alt: "MangCrinkle Logo", class: "h-10 w-auto" %>
+            </div>
             <p class="text-orange-200">Artisanal baked goods made with love and the finest ingredients.</p>
           </div>
           <div>

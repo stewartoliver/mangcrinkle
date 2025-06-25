@@ -26,19 +26,15 @@ MangCrinkle is a comprehensive e-commerce solution that allows customers to brow
 - **Ruby on Rails 7.1.4** - Full-stack web framework
 - **PostgreSQL** - Relational database
 - **Devise** - User authentication system
-- **Pundit** - Authorization and access control
-
+  
 ### Frontend
 - **Tailwind CSS** - Utility-first CSS framework
 - **Stimulus** - Lightweight JavaScript framework
 - **Turbo** - SPA-like page transitions
-- **Hotwire** - Modern Rails frontend approach
 
 ### Development & Testing
 - **RSpec** - Testing framework
-- **Capybara** - Integration testing
 - **Factory Bot** - Test data generation
-- **Faker** - Realistic test data
 
 ### Deployment
 - **Render** - Cloud hosting platform

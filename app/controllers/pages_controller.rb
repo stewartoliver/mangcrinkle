@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   def home
-    @products = Product.active
+    @products = Product.active.crinkles
   end
 
   def about

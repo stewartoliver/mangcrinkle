@@ -1,7 +1,7 @@
 <% content_for :title, @product.name %>
 
-<div class="admin-container">
-  <div class="admin-container-header">
+<div class="admin-show-container">
+  <div class="admin-show-header">
     <div class="flex items-center justify-between">
       <div>
         <h3 class="admin-container-title">Product Details</h3>
@@ -9,11 +9,11 @@
       </div>
       <div class="flex space-x-3">
         <%= link_to "Edit", edit_admin_product_path(@product), class: "admin-btn-primary" %>
-        <%= link_to "Back to Products", admin_products_path, class: "admin-link" %>
+        <%= link_to "Back to Products", admin_products_path, class: "admin-btn-back" %>
       </div>
     </div>
   </div>
-  <div class="border-t border-orange-200">
+  <div class="admin-show-content">
     <dl>
       <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
         <dt class="text-sm font-medium text-orange-700">Name</dt>
@@ -70,12 +70,12 @@
 </div>
 
 <!-- Product Orders -->
-<div class="mt-8 admin-container">
-  <div class="admin-container-header">
+<div class="mt-8 admin-show-container">
+  <div class="admin-show-header">
     <h3 class="admin-container-title">Recent Orders</h3>
     <p class="admin-container-subtitle">Orders containing this product.</p>
   </div>
-  <div class="bg-white">
+  <div class="admin-show-content">
     <ul class="admin-list-items">
       <% @product.line_items.includes(:order).order(created_at: :desc).limit(5).each do |line_item| %>
         <li class="admin-list-item">

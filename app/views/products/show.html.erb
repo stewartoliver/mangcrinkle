@@ -30,8 +30,8 @@
         <%= form_with url: new_order_path, method: :get, class: "space-y-6" do |f| %>
           <%= f.hidden_field :product_id, value: @product.id %>
           <div>
-            <%= f.label :quantity, class: "block text-sm font-medium text-orange-950 mb-2" %>
-            <%= f.number_field :quantity, min: 1, value: 1, class: "appearance-none block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+            <%= f.label :quantity, class: "form-label" %>
+            <%= f.number_field :quantity, min: 1, value: 1, class: "form-input" %>
           </div>
           
           <%= f.submit "Add to Order", class: "w-full inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-150" %>

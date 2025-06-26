@@ -12,18 +12,18 @@
   <% end %>
 
   <div>
-    <%= label_tag :email, "Email", class: "block text-sm font-medium text-orange-700" %>
+    <%= label_tag :email, "Email", class: "form-label" %>
     <div class="mt-1">
       <%= email_field_tag :email, nil, autofocus: true, autocomplete: "email", 
-          class: "appearance-none block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500" %>
+          class: "form-input" %>
     </div>
   </div>
 
   <div>
-    <%= label_tag :password, "Password", class: "block text-sm font-medium text-orange-700" %>
+    <%= label_tag :password, "Password", class: "form-label" %>
     <div class="mt-1">
       <%= password_field_tag :password, nil, autocomplete: "current-password",
-          class: "appearance-none block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500" %>
+          class: "form-input" %>
     </div>
   </div>
 

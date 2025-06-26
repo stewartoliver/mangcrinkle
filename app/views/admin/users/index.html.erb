@@ -1,7 +1,7 @@
 <% content_for :title, "Users" %>
 
-<div class="admin-container">
-  <div class="admin-container-header">
+<div class="admin-list-container">
+  <div class="admin-list-header">
     <div class="flex justify-between items-center">
       <div>
         <h3 class="admin-container-title">Users</h3>
@@ -33,7 +33,7 @@
     </div>
   </div>
 
-  <div class="bg-white">
+  <div class="admin-list-content">
     <ul class="divide-y divide-orange-200">
       <% @users.each do |user| %>
         <li class="py-4 px-4 sm:px-6">

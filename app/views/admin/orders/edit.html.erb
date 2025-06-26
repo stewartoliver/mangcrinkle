@@ -52,7 +52,7 @@
       <h3 class="text-lg font-medium text-orange-950 mb-4">Order Status</h3>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <%= form.label :status, "Status", class: "block text-sm font-medium text-orange-700" %>
+          <%= form.label :status, "Status", class: "form-label" %>
           <div class="mt-1">
             <%= form.select :status, 
                 options_for_select([
@@ -62,12 +62,12 @@
                   ['Cancelled', 'cancelled']
                 ], @order.status),
                 {},
-                class: "appearance-none block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+                class: "form-select" %>
           </div>
         </div>
 
         <div>
-          <%= form.label :shipping_carrier, "Shipping Carrier", class: "block text-sm font-medium text-orange-700" %>
+          <%= form.label :shipping_carrier, "Shipping Carrier", class: "form-label" %>
           <div class="mt-1">
             <%= form.select :shipping_carrier, 
                 options_for_select([
@@ -79,30 +79,30 @@
                   ['Local Delivery', 'local']
                 ], @order.shipping_carrier),
                 {},
-                class: "appearance-none block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+                class: "form-select" %>
           </div>
         </div>
 
         <div>
-          <%= form.label :tracking_number, "Tracking Number", class: "block text-sm font-medium text-orange-700" %>
+          <%= form.label :tracking_number, "Tracking Number", class: "form-label" %>
           <div class="mt-1">
-            <%= form.text_field :tracking_number, class: "appearance-none block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+            <%= form.text_field :tracking_number, class: "form-input" %>
           </div>
         </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
-          <%= form.label :estimated_delivery, "Estimated Delivery", class: "block text-sm font-medium text-orange-700" %>
+          <%= form.label :estimated_delivery, "Estimated Delivery", class: "form-label" %>
           <div class="mt-1">
-            <%= form.date_field :estimated_delivery, class: "appearance-none block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+            <%= form.date_field :estimated_delivery, class: "form-date" %>
           </div>
         </div>
 
         <div>
-          <%= form.label :shipped_at, "Shipped Date", class: "block text-sm font-medium text-orange-700" %>
+          <%= form.label :shipped_at, "Shipped Date", class: "form-label" %>
           <div class="mt-1">
-            <%= form.datetime_local_field :shipped_at, class: "appearance-none block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+            <%= form.datetime_local_field :shipped_at, class: "form-input" %>
           </div>
         </div>
       </div>
@@ -116,41 +116,41 @@
       <div id="customer-details-form">
         <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
           <div class="sm:col-span-3">
-            <%= form.label :customer_name, "Customer Name", class: "block text-sm font-medium text-orange-700" %>
+            <%= form.label :customer_name, "Customer Name", class: "form-label" %>
             <div class="mt-1">
-              <%= form.text_field :customer_name, class: "appearance-none block w-full px-3 py-2 border #{@order&.errors[:customer_name]&.any? ? 'border-red-300' : 'border-orange-300'} rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+              <%= form.text_field :customer_name, class: "form-input" %>
               <% if @order&.errors[:customer_name]&.any? %>
-                <p class="mt-1 text-sm text-red-600"><%= @order.errors[:customer_name].first %></p>
+                <p class="form-error"><%= @order.errors[:customer_name].first %></p>
               <% end %>
             </div>
           </div>
 
           <div class="sm:col-span-3">
-            <%= form.label :email, "Email", class: "block text-sm font-medium text-orange-700" %>
+            <%= form.label :email, "Email", class: "form-label" %>
             <div class="mt-1">
-              <%= form.email_field :email, class: "appearance-none block w-full px-3 py-2 border #{@order&.errors[:email]&.any? ? 'border-red-300' : 'border-orange-300'} rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+              <%= form.email_field :email, class: "form-input" %>
               <% if @order&.errors[:email]&.any? %>
-                <p class="mt-1 text-sm text-red-600"><%= @order.errors[:email].first %></p>
+                <p class="form-error"><%= @order.errors[:email].first %></p>
               <% end %>
             </div>
           </div>
 
           <div class="sm:col-span-3">
-            <%= form.label :phone, "Phone", class: "block text-sm font-medium text-orange-700" %>
+            <%= form.label :phone, "Phone", class: "form-label" %>
             <div class="mt-1">
-              <%= form.telephone_field :phone, class: "appearance-none block w-full px-3 py-2 border #{@order&.errors[:phone]&.any? ? 'border-red-300' : 'border-orange-300'} rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+              <%= form.telephone_field :phone, class: "form-input" %>
               <% if @order&.errors[:phone]&.any? %>
-                <p class="mt-1 text-sm text-red-600"><%= @order.errors[:phone].first %></p>
+                <p class="form-error"><%= @order.errors[:phone].first %></p>
               <% end %>
             </div>
           </div>
 
           <div class="sm:col-span-6">
-            <%= form.label :address, "Address", class: "block text-sm font-medium text-orange-700" %>
+            <%= form.label :address, "Address", class: "form-label" %>
             <div class="mt-1">
-              <%= form.text_area :address, rows: 3, class: "appearance-none block w-full px-3 py-2 border #{@order&.errors[:address]&.any? ? 'border-red-300' : 'border-orange-300'} rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+              <%= form.text_area :address, rows: 3, class: "form-textarea" %>
               <% if @order&.errors[:address]&.any? %>
-                <p class="mt-1 text-sm text-red-600"><%= @order.errors[:address].first %></p>
+                <p class="form-error"><%= @order.errors[:address].first %></p>
               <% end %>
             </div>
           </div>

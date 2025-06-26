@@ -47,7 +47,7 @@
               <div class="flex items-center space-x-3">
                 <%= form_with url: update_quantity_cart_path, method: :patch, class: "flex items-center space-x-2", data: { turbo: false } do |f| %>
                   <%= f.hidden_field :cart_item_id, value: item.id %>
-                  <%= f.number_field :quantity, value: item.quantity, min: 1, class: "appearance-none block w-16 px-2 py-1 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 text-sm" %>
+                  <%= f.number_field :quantity, value: item.quantity, min: 1, class: "form-input w-16" %>
                   <%= f.submit "Update", class: "text-xs text-orange-600 hover:text-orange-950 bg-transparent border-none cursor-pointer" %>
                 <% end %>
               </div>
@@ -103,7 +103,7 @@
                 <td class="px-6 py-4 whitespace-nowrap text-center">
                   <%= form_with url: update_quantity_cart_path, method: :patch, class: "flex items-center justify-center space-x-2", data: { turbo: false } do |f| %>
                     <%= f.hidden_field :cart_item_id, value: item.id %>
-                    <%= f.number_field :quantity, value: item.quantity, min: 1, class: "appearance-none block w-16 px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+                    <%= f.number_field :quantity, value: item.quantity, min: 1, class: "form-input w-16" %>
                     <%= f.submit "Update", class: "text-sm text-orange-600 hover:text-orange-950" %>
                   <% end %>
                 </td>

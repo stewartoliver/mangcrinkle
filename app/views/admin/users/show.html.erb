@@ -1,20 +1,20 @@
 <% content_for :title, "User Details - #{@user.display_name}" %>
 
-<div class="bg-white shadow rounded-lg border border-orange-200">
-  <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
+<div class="admin-show-container">
+  <div class="admin-show-header">
     <div class="flex items-center justify-between">
       <div>
-        <h3 class="text-lg leading-6 font-medium text-orange-950">User Details</h3>
-        <p class="mt-1 max-w-2xl text-sm text-orange-600">Detailed information about this user.</p>
+        <h3 class="admin-container-title">User Details</h3>
+        <p class="admin-container-subtitle">Detailed information about this user.</p>
       </div>
       <div class="flex space-x-3">
-        <%= link_to "Edit", edit_admin_user_path(@user), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" %>
-        <%= link_to "Back to Users", admin_users_path, class: "text-orange-600 hover:text-orange-950" %>
+        <%= link_to "Edit", edit_admin_user_path(@user), class: "admin-btn-primary" %>
+        <%= link_to "Back to Users", admin_users_path, class: "admin-btn-back" %>
       </div>
     </div>
   </div>
 
-  <div class="border-t border-orange-200">
+  <div class="admin-show-content">
     <dl>
       <!-- Account Information -->
       <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -78,12 +78,12 @@
 <% if @user.customer? %>
   <!-- Recent Orders - Moved to top for prominence -->
   <% if @recent_orders&.any? %>
-    <div class="mt-8 bg-white shadow rounded-lg border border-orange-200">
-      <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
-        <h3 class="text-lg leading-6 font-medium text-orange-950">Recent Orders</h3>
-        <p class="mt-1 max-w-2xl text-sm text-orange-600">Latest orders for this customer.</p>
+    <div class="mt-8 admin-show-container">
+      <div class="admin-show-header">
+        <h3 class="admin-container-title">Recent Orders</h3>
+        <p class="admin-container-subtitle">Latest orders for this customer.</p>
       </div>
-      <div class="bg-white">
+      <div class="admin-show-content">
         <ul class="divide-y divide-orange-200">
           <% @recent_orders.each do |order| %>
             <li>
@@ -115,7 +115,7 @@
                     </p>
                   </div>
                   <div class="ml-2 flex-shrink-0 flex items-center space-x-2">
-                    <%= link_to "View Order", admin_order_path(order), class: "inline-flex items-center px-3 py-1 border border-orange-300 text-sm font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100" %>
+                    <%= link_to "View Order", admin_order_path(order), class: "admin-link" %>
                   </div>
                 </div>
               </div>
@@ -125,7 +125,7 @@
         <% if @all_orders.count > 5 %>
           <div class="px-4 py-3 bg-orange-50 border-t border-orange-200">
             <div class="text-center">
-              <%= link_to "View All #{@total_orders} Orders", admin_orders_path(email: @user.email), class: "text-sm text-orange-600 hover:text-orange-950 font-medium" %>
+              <%= link_to "View All #{@total_orders} Orders", admin_orders_path(email: @user.email), class: "admin-link-primary" %>
             </div>
           </div>
         <% end %>
@@ -135,12 +135,12 @@
 
   <!-- Order Statistics -->
   <% if @all_orders&.any? %>
-    <div class="mt-8 bg-white shadow rounded-lg border border-orange-200">
-      <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
-        <h3 class="text-lg leading-6 font-medium text-orange-950">Order Statistics</h3>
-        <p class="mt-1 max-w-2xl text-sm text-orange-600">Summary of all orders for this customer.</p>
+    <div class="mt-8 admin-show-container">
+      <div class="admin-show-header">
+        <h3 class="admin-container-title">Order Statistics</h3>
+        <p class="admin-container-subtitle">Summary of all orders for this customer.</p>
       </div>
-      <div class="border-t border-orange-200">
+      <div class="admin-show-content">
         <dl>
           <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-orange-700">Total Orders</dt>
@@ -159,12 +159,12 @@
     </div>
 
     <!-- Order Status Breakdown -->
-    <div class="mt-8 bg-white shadow rounded-lg border border-orange-200">
-      <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
-        <h3 class="text-lg leading-6 font-medium text-orange-950">Order Status Breakdown</h3>
-        <p class="mt-1 max-w-2xl text-sm text-orange-600">Orders grouped by status.</p>
+    <div class="mt-8 admin-show-container">
+      <div class="admin-show-header">
+        <h3 class="admin-container-title">Order Status Breakdown</h3>
+        <p class="admin-container-subtitle">Orders grouped by status.</p>
       </div>
-      <div class="bg-white">
+      <div class="admin-show-content">
         <ul class="divide-y divide-orange-200">
           <% %w[pending processing completed cancelled].each do |status| %>
             <% count = @orders_by_status[status]&.count || 0 %>
@@ -193,12 +193,12 @@
     </div>
 
     <!-- Order Sources -->
-    <div class="mt-8 bg-white shadow rounded-lg border border-orange-200">
-      <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
-        <h3 class="text-lg leading-6 font-medium text-orange-950">Order Sources</h3>
-        <p class="mt-1 max-w-2xl text-sm text-orange-600">How orders were matched to this customer.</p>
+    <div class="mt-8 admin-show-container">
+      <div class="admin-show-header">
+        <h3 class="admin-container-title">Order Sources</h3>
+        <p class="admin-container-subtitle">How orders were matched to this customer.</p>
       </div>
-      <div class="border-t border-orange-200">
+      <div class="admin-show-content">
         <dl>
           <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-orange-700">Direct User Orders</dt>
@@ -218,12 +218,12 @@
 
     <!-- Monthly Spending -->
     <% if @monthly_spending&.any? %>
-      <div class="mt-8 bg-white shadow rounded-lg border border-orange-200">
-        <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
-          <h3 class="text-lg leading-6 font-medium text-orange-950">Monthly Spending</h3>
-          <p class="mt-1 max-w-2xl text-sm text-orange-600">Spending over the last 12 months.</p>
+      <div class="mt-8 admin-show-container">
+        <div class="admin-show-header">
+          <h3 class="admin-container-title">Monthly Spending</h3>
+          <p class="admin-container-subtitle">Spending over the last 12 months.</p>
         </div>
-        <div class="bg-white">
+        <div class="admin-show-content">
           <ul class="divide-y divide-orange-200">
             <% @monthly_spending.reverse_each do |month, amount| %>
               <% next if amount == 0 %>
@@ -242,12 +242,12 @@
     <% end %>
   <% else %>
     <!-- No Orders Message -->
-    <div class="mt-8 bg-white shadow rounded-lg border border-orange-200">
-      <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
-        <h3 class="text-lg leading-6 font-medium text-orange-950">Order History</h3>
-        <p class="mt-1 max-w-2xl text-sm text-orange-600">This customer hasn't placed any orders yet.</p>
+    <div class="mt-8 admin-show-container">
+      <div class="admin-show-header">
+        <h3 class="admin-container-title">Order History</h3>
+        <p class="admin-container-subtitle">This customer hasn't placed any orders yet.</p>
       </div>
-      <div class="px-4 py-5 sm:px-6">
+      <div class="admin-show-content">
         <div class="text-center py-8">
           <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

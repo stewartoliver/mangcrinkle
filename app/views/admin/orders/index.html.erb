@@ -76,14 +76,14 @@
       <!-- First Row -->
       <div class="flex flex-wrap gap-4">
         <div class="flex-1 min-w-0">
-          <%= form.label :customer_name, "Customer Name", class: "block text-sm font-medium text-orange-700" %>
+          <%= form.label :customer_name, "Customer Name", class: "form-label" %>
           <div class="mt-1">
-            <%= form.text_field :customer_name, value: params[:customer_name], placeholder: "Search by name", class: "block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+            <%= form.text_field :customer_name, value: params[:customer_name], placeholder: "Search by name", class: "form-input" %>
           </div>
         </div>
         
         <div class="flex-1 min-w-0">
-          <%= form.label :status, "Status", class: "block text-sm font-medium text-orange-700" %>
+          <%= form.label :status, "Status", class: "form-label" %>
           <div class="mt-1">
             <%= form.select :status, 
                 options_for_select([
@@ -94,12 +94,12 @@
                   ['Cancelled', 'cancelled']
                 ], params[:status]),
                 {},
-                class: "appearance-none block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+                class: "form-select" %>
           </div>
         </div>
         
         <div class="flex-1 min-w-0">
-          <%= form.label :order_source, "Order Source", class: "block text-sm font-medium text-orange-700" %>
+          <%= form.label :order_source, "Order Source", class: "form-label" %>
           <div class="mt-1">
             <%= form.select :order_source, 
                 options_for_select([
@@ -109,14 +109,14 @@
                   ['Admin Email', 'admin_email']
                 ], params[:order_source]),
                 {},
-                class: "appearance-none block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+                class: "form-select" %>
           </div>
         </div>
         
         <div class="flex-1 min-w-0">
-          <%= form.label :order_id, "Order ID", class: "block text-sm font-medium text-orange-700" %>
+          <%= form.label :order_id, "Order ID", class: "form-label" %>
           <div class="mt-1">
-            <%= form.number_field :order_id, value: params[:order_id], placeholder: "Search by ID", class: "block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+            <%= form.number_field :order_id, value: params[:order_id], placeholder: "Search by ID", class: "form-input" %>
           </div>
         </div>
       </div>
@@ -124,23 +124,23 @@
       <!-- Second Row -->
       <div class="flex flex-wrap gap-4">
         <div class="flex-1 min-w-0">
-          <%= form.label :email, "Email", class: "block text-sm font-medium text-orange-700" %>
+          <%= form.label :email, "Email", class: "form-label" %>
           <div class="mt-1">
-            <%= form.email_field :email, value: params[:email], placeholder: "Search by email", class: "block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+            <%= form.email_field :email, value: params[:email], placeholder: "Search by email", class: "form-input" %>
           </div>
         </div>
         
         <div class="flex-1 min-w-0">
-          <%= form.label :start_date, "Start Date", class: "block text-sm font-medium text-orange-700" %>
+          <%= form.label :start_date, "Start Date", class: "form-label" %>
           <div class="mt-1">
-            <%= form.date_field :start_date, value: params[:start_date], class: "block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+            <%= form.date_field :start_date, value: params[:start_date], class: "form-date" %>
           </div>
         </div>
         
         <div class="flex-1 min-w-0">
-          <%= form.label :end_date, "End Date", class: "block text-sm font-medium text-orange-700" %>
+          <%= form.label :end_date, "End Date", class: "form-label" %>
           <div class="mt-1">
-            <%= form.date_field :end_date, value: params[:end_date], class: "block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" %>
+            <%= form.date_field :end_date, value: params[:end_date], class: "form-date" %>
           </div>
         </div>
       </div>

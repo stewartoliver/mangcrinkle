@@ -1,16 +1,18 @@
 <% content_for :title, "New Product" %>
 
-<div class="bg-white shadow rounded-lg border border-orange-200">
-  <div class="px-4 py-5 sm:px-6 border-b border-orange-200">
+<div class="admin-container">
+  <div class="admin-container-header">
     <div class="flex items-center justify-between">
       <div>
-        <h3 class="text-lg leading-6 font-medium text-orange-950">New Product</h3>
-        <p class="mt-1 max-w-2xl text-sm text-orange-600">Add a new product to your catalog.</p>
+        <h3 class="admin-container-title">New Product</h3>
+        <p class="admin-container-subtitle">Create a new product.</p>
       </div>
-      <%= link_to "Back to Products", admin_products_path, class: "text-orange-600 hover:text-orange-950" %>
+      <%= link_to "Back to Products", admin_products_path, class: "admin-btn-back" %>
     </div>
   </div>
-  <div class="px-4 py-5 sm:p-6">
-    <%= render "form", product: @product %>
+  <div class="admin-container-content">
+    <div class="px-4 py-5 sm:p-6">
+      <%= render "form", product: @product %>
+    </div>
   </div>
 </div> 

@@ -32,6 +32,37 @@
         @apply overflow-x-auto rounded-b-lg;
     }
 
+    /* Admin Show Page Container - for pages that don't use tables */
+    .admin-show-container {
+        @apply bg-white shadow rounded-lg border border-orange-200;
+    }
+
+    .admin-show-header {
+        @apply px-4 py-5 sm:px-6 border-b border-orange-200;
+    }
+
+    .admin-show-content {
+        @apply rounded-b-lg;
+    }
+
+    /* Last item in admin show content should have rounded bottom corners */
+    .admin-show-content dl>div:last-child {
+        @apply rounded-b-lg;
+    }
+
+    /* Admin List Container - for list-based pages like users index */
+    .admin-list-container {
+        @apply bg-white shadow rounded-lg border border-orange-200;
+    }
+
+    .admin-list-header {
+        @apply px-4 py-5 sm:px-6 border-b border-orange-200;
+    }
+
+    .admin-list-content {
+        @apply rounded-b-lg;
+    }
+
     /* Admin Table Components */
     .admin-table {
         @apply min-w-full divide-y divide-orange-200;
@@ -84,6 +115,11 @@
 
     .admin-btn-danger {
         @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500;
+    }
+
+    /* Admin Back Button - Unique orange shade */
+    .admin-btn-back {
+        @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-400 hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300 transition-colors duration-200;
     }
 
     /* Admin Action Buttons */
@@ -200,24 +236,110 @@
     }
 
     .form-label {
-        @apply block text-sm font-medium text-orange-950 mb-2;
+        @apply block text-sm font-medium text-orange-600 mb-2;
     }
 
     .form-input {
-        @apply block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 bg-white;
-        color: rgb(251 146 60) !important;
+        @apply block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 bg-white text-orange-950;
+    }
+
+    .form-input::placeholder {
+        @apply text-orange-400;
+    }
+
+    /* More specific selectors for form inputs */
+    input.form-input {
+        @apply text-orange-950;
+        color: rgb(255, 137, 4) !important;
+    }
+
+    input.form-input::placeholder {
+        @apply text-orange-400;
+        color: rgb(255, 137, 4) !important;
+    }
+
+    input[type="text"].form-input,
+    input[type="email"].form-input,
+    input[type="number"].form-input,
+    input[type="search"].form-input,
+    input[type="tel"].form-input,
+    input[type="datetime-local"].form-input,
+    input[type="password"].form-input {
+        @apply text-orange-950;
+        color: rgb(255, 137, 4) !important;
+    }
+
+    input[type="text"].form-input::placeholder,
+    input[type="email"].form-input::placeholder,
+    input[type="number"].form-input::placeholder,
+    input[type="search"].form-input::placeholder,
+    input[type="tel"].form-input::placeholder,
+    input[type="datetime-local"].form-input::placeholder,
+    input[type="password"].form-input::placeholder {
+        @apply text-orange-400;
+        color: rgb(255, 137, 4) !important;
+    }
+
+    /* Webkit-specific placeholder selectors for stronger specificity */
+    input.form-input::-webkit-input-placeholder {
+        @apply text-orange-400;
+        color: rgb(255, 137, 4) !important;
+    }
+
+    input.form-input::-moz-placeholder {
+        @apply text-orange-400;
+        color: rgb(255, 137, 4) !important;
+    }
+
+    input.form-input:-ms-input-placeholder {
+        @apply text-orange-400;
+        color: rgb(255, 137, 4) !important;
+    }
+
+    input.form-input:-moz-placeholder {
+        @apply text-orange-400;
+        color: rgb(255, 137, 4) !important;
+    }
+
+    /* Specific input type placeholders */
+    input[type="text"].form-input::-webkit-input-placeholder,
+    input[type="email"].form-input::-webkit-input-placeholder,
+    input[type="number"].form-input::-webkit-input-placeholder,
+    input[type="tel"].form-input::-webkit-input-placeholder,
+    input[type="datetime-local"].form-input::-webkit-input-placeholder,
+    input[type="password"].form-input::-webkit-input-placeholder {
+        @apply text-orange-400;
+        color: rgb(255, 137, 4) !important;
+    }
+
+    input[type="text"].form-input::-moz-placeholder,
+    input[type="email"].form-input::-moz-placeholder,
+    input[type="number"].form-input::-moz-placeholder,
+    input[type="tel"].form-input::-moz-placeholder,
+    input[type="datetime-local"].form-input::-moz-placeholder,
+    input[type="password"].form-input::-moz-placeholder {
+        @apply text-orange-400;
+        color: rgb(255, 137, 4) !important;
     }
 
     .form-input-error {
-        @apply block w-full px-3 py-2 border border-red-300 rounded-md shadow-sm placeholder-red-400 focus:outline-none focus:ring-red-500 focus:border-red-500 text-red-950;
+        @apply block w-full px-3 py-2 border border-red-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 text-red-950;
+    }
+
+    .form-input-error::placeholder {
+        @apply text-red-400;
     }
 
     .form-textarea {
-        @apply block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm placeholder-orange-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 text-orange-950;
+        @apply block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 text-orange-950;
+    }
+
+    .form-textarea::placeholder {
+        @apply text-orange-400;
     }
 
     .form-select {
-        @apply block w-full px-3 py-2 pr-8 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 bg-white;
+        @apply block w-full px-3 py-2 pr-8 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 bg-white text-orange-950;
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ea580c' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
         background-position: right 0.5rem center;
         background-repeat: no-repeat;
@@ -225,16 +347,32 @@
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
-        color: rgb(251 146 60) !important;
+    }
+
+    /* More specific selectors for form select */
+    select.form-select {
+        @apply text-orange-950;
+        color: rgb(255, 137, 4) !important;
     }
 
     .form-select option {
-        color: rgb(251 146 60);
+        @apply text-orange-950 bg-white;
+        color: rgb(255, 137, 4) !important;
+    }
+
+    .form-select option:first-child {
+        @apply text-orange-400;
+        color: rgb(255, 137, 4) !important;
     }
 
     .form-date {
-        @apply block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 bg-white;
-        color: rgb(251 146 60) !important;
+        @apply block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 bg-white text-orange-950;
+    }
+
+    /* More specific selectors for form date */
+    input[type="date"].form-date {
+        @apply text-orange-950;
+        color: rgb(255, 137, 4) !important;
     }
 
     .form-date::-webkit-calendar-picker-indicator {
@@ -398,12 +536,12 @@
         @apply text-sm font-medium text-orange-900;
     }
 
-    /* Link Components */
+    /* Admin Link Components */
     .admin-link {
-        @apply text-orange-600 hover:text-orange-950 text-sm;
+        @apply text-orange-600 hover:text-orange-950;
     }
 
     .admin-link-primary {
-        @apply text-orange-600 hover:text-orange-900;
+        @apply text-orange-600 hover:text-orange-950 font-medium;
     }
 }

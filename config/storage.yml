@@ -32,3 +32,16 @@ local:
 #   service: Mirror
 #   primary: local
 #   mirrors: [ amazon, google, microsoft ]
+
+<% if ENV["AWS_ACCESS_KEY_ID"] && ENV["AWS_SECRET_ACCESS_KEY"] && ENV["AWS_ENDPOINT_URL_S3"] && ENV["BUCKET_NAME"] %>
+tigris:
+  service: S3
+  access_key_id: <%= ENV["AWS_ACCESS_KEY_ID"] %>
+  secret_access_key: <%= ENV["AWS_SECRET_ACCESS_KEY"] %>
+  endpoint: <%= ENV["AWS_ENDPOINT_URL_S3"] %>
+  bucket: <%= ENV["BUCKET_NAME"] %>
+<% else %>
+tigris:
+  service: Disk
+  root: <%= Rails.root.join("storage") %>
+<% end %>

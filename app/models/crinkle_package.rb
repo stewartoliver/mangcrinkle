@@ -9,6 +9,7 @@ class CrinklePackage < ApplicationRecord
   validates :active, inclusion: { in: [true, false] }
 
   scope :active, -> { where(active: true) }
+  scope :ordered_by_quantity, -> { order(quantity: :asc) }
 
   def formatted_price
     "$#{format('%.2f', price)}"

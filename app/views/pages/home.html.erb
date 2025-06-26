@@ -54,7 +54,7 @@
   <div class="mt-16 bg-white rounded-lg shadow-md p-8 border border-orange-200">
     <h3 class="text-2xl font-bold text-orange-950 mb-6">Package Options</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <% CrinklePackage.active.each do |package| %>
+      <% CrinklePackage.active.ordered_by_quantity.each do |package| %>
         <div class="text-center p-4 border border-orange-200 rounded-lg">
           <h4 class="text-xl font-semibold text-orange-950"><%= package.name %></h4>
           <p class="text-2xl font-bold text-orange-700 mt-2">$<%= number_with_precision(package.price, precision: 2) %></p>

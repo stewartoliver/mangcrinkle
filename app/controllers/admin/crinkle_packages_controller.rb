@@ -2,7 +2,7 @@ class Admin::CrinklePackagesController < Admin::BaseController
   before_action :set_crinkle_package, only: [:show, :edit, :update, :destroy]
 
   def index
-    @crinkle_packages = CrinklePackage.all.order(price: :asc)
+    @crinkle_packages = CrinklePackage.all.ordered_by_quantity
   end
 
   def show

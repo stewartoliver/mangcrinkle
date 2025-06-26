@@ -22,7 +22,7 @@
     </p>
   </div>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <% CrinklePackage.active.each do |package| %>
+    <% CrinklePackage.active.ordered_by_quantity.each do |package| %>
       <div class="bg-white rounded-lg shadow-md overflow-hidden border border-orange-200 hover:border-orange-500 transition duration-150">
         <div class="p-6">
           <h3 class="text-xl font-semibold mb-2 text-orange-950"><%= package.name %></h3>

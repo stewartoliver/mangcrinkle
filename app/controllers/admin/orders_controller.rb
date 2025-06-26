@@ -15,7 +15,7 @@ class Admin::OrdersController < Admin::BaseController
   def new
     @order = Order.new
     @products = Product.active
-    @crinkle_packages = CrinklePackage.active
+    @crinkle_packages = CrinklePackage.active.ordered_by_quantity
   end
 
   def create
@@ -26,7 +26,7 @@ class Admin::OrdersController < Admin::BaseController
     
     @order = Order.new(order_params)
     @products = Product.active
-    @crinkle_packages = CrinklePackage.active
+    @crinkle_packages = CrinklePackage.active.ordered_by_quantity
     
     # Handle customer creation/linking
     if order_params[:email].present?
@@ -98,7 +98,7 @@ class Admin::OrdersController < Admin::BaseController
     else
       # Set instance variables for the view
       @products = Product.active
-      @crinkle_packages = CrinklePackage.active
+      @crinkle_packages = CrinklePackage.active.ordered_by_quantity
       
       # Add flash message with errors
       flash.now[:alert] = "Order creation failed: #{@order.errors.full_messages.join(', ')}"
@@ -113,7 +113,7 @@ class Admin::OrdersController < Admin::BaseController
 
   def edit
     @products = Product.active
-    @crinkle_packages = CrinklePackage.active
+    @crinkle_packages = CrinklePackage.active.ordered_by_quantity
   end
 
   def update
@@ -209,7 +209,7 @@ class Admin::OrdersController < Admin::BaseController
       redirect_to admin_order_path(@order), notice: 'Order was successfully updated.'
     else
       @products = Product.active
-      @crinkle_packages = CrinklePackage.active
+      @crinkle_packages = CrinklePackage.active.ordered_by_quantity
       render :edit, status: :unprocessable_entity
     end
   end

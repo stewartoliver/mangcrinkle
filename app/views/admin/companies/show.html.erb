@@ -1,0 +1,144 @@
+<% content_for :title, @company.display_name %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <% if @company.has_logo? %>
+          <%= image_tag @company.logo, class: "h-12 w-12 rounded-full mr-4 object-cover", alt: "#{@company.name} logo" %>
+        <% else %>
+          <div class="h-12 w-12 rounded-full bg-orange-100 flex items-center justify-center mr-4">
+            <span class="text-lg font-medium text-orange-600"><%= @company.name.first&.upcase %></span>
+          </div>
+        <% end %>
+        <div>
+          <h3 class="admin-container-title"><%= @company.display_name %></h3>
+          <p class="admin-container-subtitle">
+            <% if @company.active? %>
+              <span class="admin-status-badge admin-status-completed">Active</span>
+            <% else %>
+              <span class="admin-status-badge admin-status-pending">Inactive</span>
+            <% end %>
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <%= link_to "Edit Company", edit_admin_company_path(@company), class: "admin-btn-primary" %>
+        <%= link_to "All Companies", admin_companies_path, class: "admin-btn-secondary" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-container-content">
+    <dl>
+      <div class="bg-orange-50 px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm font-medium text-orange-700">Company Name</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <%= @company.display_name %>
+        </dd>
+      </div>
+      
+      <div class="bg-white px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm font-medium text-orange-700">Website</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <% if @company.website.present? %>
+            <%= link_to @company.website, @company.website, target: "_blank", class: "admin-link" %>
+          <% else %>
+            <span class="text-orange-400">Not specified</span>
+          <% end %>
+        </dd>
+      </div>
+      
+      <div class="bg-orange-50 px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm font-medium text-orange-700">Email</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <% if @company.email.present? %>
+            <%= link_to @company.email, "mailto:#{@company.email}", class: "admin-link" %>
+          <% else %>
+            <span class="text-orange-400">Not specified</span>
+          <% end %>
+        </dd>
+      </div>
+      
+      <div class="bg-white px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm font-medium text-orange-700">Phone</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <% if @company.phone.present? %>
+            <%= link_to @company.phone, "tel:#{@company.phone}", class: "admin-link" %>
+          <% else %>
+            <span class="text-orange-400">Not specified</span>
+          <% end %>
+        </dd>
+      </div>
+      
+      <div class="bg-orange-50 px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm font-medium text-orange-700">Address</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <% if @company.address.present? %>
+            <%= simple_format(@company.address) %>
+          <% else %>
+            <span class="text-orange-400">Not specified</span>
+          <% end %>
+        </dd>
+      </div>
+      
+      <div class="bg-white px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm font-medium text-orange-700">Business Hours</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <%= @company.formatted_business_hours %>
+        </dd>
+      </div>
+      
+      <% if @company.description.present? %>
+        <div class="bg-orange-50 px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-orange-700">Description</dt>
+          <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+            <%= simple_format(@company.description) %>
+          </dd>
+        </div>
+      <% end %>
+      
+      <div class="bg-white px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm font-medium text-orange-700">Logo</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <% if @company.has_logo? %>
+            <div class="flex items-center space-x-4">
+              <%= image_tag @company.logo, class: "h-16 w-16 rounded-lg object-cover border border-orange-200" %>
+              <div>
+                <p class="text-sm font-medium"><%= @company.logo.filename %></p>
+                <p class="text-xs text-orange-600"><%= number_to_human_size(@company.logo.byte_size) %></p>
+              </div>
+            </div>
+          <% else %>
+            <span class="text-orange-400">No logo uploaded</span>
+          <% end %>
+        </dd>
+      </div>
+      
+      <div class="bg-orange-50 px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm font-medium text-orange-700">Status</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <% if @company.active? %>
+            <span class="admin-status-badge admin-status-completed">Active</span>
+          <% else %>
+            <span class="admin-status-badge admin-status-pending">Inactive</span>
+          <% end %>
+        </dd>
+      </div>
+      
+      <div class="bg-white px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm font-medium text-orange-700">Created</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <%= @company.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+        </dd>
+      </div>
+      
+      <div class="bg-orange-50 px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+        <dt class="text-sm font-medium text-orange-700">Last Updated</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <%= @company.updated_at.strftime("%B %d, %Y at %I:%M %p") %>
+        </dd>
+      </div>
+    </dl>
+  </div>
+</div> 

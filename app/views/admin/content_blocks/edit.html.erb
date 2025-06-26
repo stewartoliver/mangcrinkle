@@ -1,0 +1,19 @@
+<% content_for :title, "Edit Content Block" %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Edit Content Block</h3>
+        <p class="admin-container-subtitle">Update the content and settings for "<%= @content_block.title %>"</p>
+      </div>
+      <%= link_to "Back to Content Blocks", admin_content_blocks_path, class: "admin-btn-back" %>
+    </div>
+  </div>
+
+  <div class="admin-container-content">
+    <div class="px-4 py-5 sm:p-6">
+      <%= render 'form', content_block: @content_block %>
+    </div>
+  </div>
+</div> 

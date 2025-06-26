@@ -1,0 +1,206 @@
+<%= form_with model: [:admin, content_block], local: true, html: { multipart: true, class: "space-y-6" } do |form| %>
+  <% if content_block.errors.any? %>
+    <div class="bg-red-50 border border-red-200 rounded-md p-4">
+      <div class="flex">
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">
+            Please fix the following errors:
+          </h3>
+          <div class="mt-2 text-sm text-red-700">
+            <ul class="list-disc pl-5 space-y-1">
+              <% content_block.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Main Content Editing - For Regular Admins -->
+    <div class="space-y-6">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h4 class="admin-card-title">Content Editing</h4>
+        </div>
+        <div class="admin-card-content">
+          <p class="text-sm text-orange-600 mb-6">Edit the content that appears on your website</p>
+          
+          <div class="space-y-6">
+            <div class="form-group">
+              <%= form.label :title, class: "form-label" %>
+              <%= form.text_field :title, class: "form-input", placeholder: "Display Title" %>
+            </div>
+
+            <!-- Text Content -->
+            <div id="text_content" class="content-type-field form-group" style="display: none;">
+              <%= form.label :content, "Content", class: "form-label" %>
+              <%= form.text_area :content, class: "form-textarea", rows: 10, placeholder: "Enter your text content here..." %>
+            </div>
+
+            <!-- JSON Content -->
+            <div id="json_content" class="content-type-field form-group" style="display: none;">
+              <%= form.label :content, "JSON Data", class: "form-label" %>
+              
+              <!-- Special Company Values Editor -->
+              <% if content_block.key == 'company_values' %>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                  <button type="button" 
+                          id="company-values-toggle" 
+                          class="flex items-center justify-between w-full text-left">
+                    <div class="flex items-center">
+                      <svg class="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <h5 class="text-sm font-medium text-blue-800">Company Values Editor</h5>
+                    </div>
+                    <svg id="company-values-chevron" class="h-4 w-4 text-blue-600 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  
+                  <div id="company-values-content" class="hidden mt-3">
+                    <p class="text-xs text-blue-700 mb-3">This content block powers the company values section on your About page. Each value should have an icon (emoji), title, and description.</p>
+                    
+                    <div class="bg-white rounded border p-3">
+                      <p class="text-xs font-medium text-gray-700 mb-2">Expected format:</p>
+                      <pre class="text-xs text-gray-600 overflow-x-auto">
+[
+  {
+    "icon": "🌟",
+    "title": "Value Title",
+    "description": "Description of the value..."
+  }
+]</pre>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              
+              <div class="relative">
+                <%= form.text_area :content, 
+                    class: "form-textarea font-mono text-sm", 
+                    rows: content_block.key == 'company_values' ? 20 : 12, 
+                    placeholder: content_block.key == 'company_values' ? 
+                      '[{"icon": "🌟", "title": "Your Value", "description": "Description of your company value..."}]' : 
+                      '{"key": "value", "items": []}' %>
+                      
+                <!-- JSON Validation Indicator -->
+                <div class="absolute top-2 right-2">
+                  <div id="json-status" class="hidden px-2 py-1 rounded text-xs font-medium"></div>
+                </div>
+              </div>
+              
+              <div class="mt-2 flex items-center justify-between">
+                <p class="text-sm text-orange-600">Enter valid JSON data</p>
+                <button type="button" 
+                        id="format-json-btn" 
+                        class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded border text-gray-700">
+                  Format JSON
+                </button>
+              </div>
+            </div>
+
+            <!-- Image Content -->
+            <div id="image_content" class="content-type-field form-group" style="display: none;">
+              <%= form.label :image, "Upload Image", class: "form-label" %>
+              <%= form.file_field :image, class: "form-input", accept: "image/*" %>
+              <% if content_block.image.attached? %>
+                <div class="mt-3">
+                  <p class="text-sm text-orange-600 mb-2">Current image:</p>
+                  <%= image_tag content_block.image, class: "rounded-md border border-orange-200", style: "max-width: 200px;" %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Developer Settings - Orange Background -->
+    <div class="space-y-6">
+      <div class="admin-card bg-orange-50 border-orange-300">
+        <div class="admin-card-header border-orange-300">
+          <div class="flex items-center">
+            <svg class="h-5 w-5 text-orange-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <h4 class="admin-card-title text-orange-950">Developer Settings</h4>
+          </div>
+        </div>
+        <div class="admin-card-content">
+          <p class="text-sm text-orange-700 mb-6">These settings are for developers only and control how content is organized and displayed</p>
+          
+          <div class="space-y-6">
+            <div class="form-group">
+              <%= form.label :content_type, class: "form-label text-orange-800" %>
+              <%= form.select :content_type, 
+                              [
+                                ['Text', 'text'],
+                                ['JSON Data', 'json'],
+                                ['Image', 'image']
+                              ], 
+                              {}, 
+                              { class: "form-select border-orange-300 focus:border-orange-500 focus:ring-orange-500", id: "content_type_select" } %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :page_locations, "Used On Pages", class: "form-label text-orange-800" %>
+              <div class="mt-3 bg-white rounded-md border border-orange-300 p-4">
+                <% page_options = [
+                     ['About Page', 'About Page'],
+                     ['Home Page', 'Home Page'],
+                     ['Contact Page', 'Contact Page'],
+                     ['Products Page', 'Products Page'],
+                     ['Footer', 'Footer'],
+                     ['Header', 'Header']
+                   ] %>
+                <div class="grid grid-cols-2 gap-3">
+                  <% page_options.each do |page_name, page_value| %>
+                    <div class="flex items-center">
+                      <%= check_box_tag "content_block[page_locations][]", page_value, 
+                                        content_block.page_locations&.include?(page_value), 
+                                        { class: "rounded border-orange-300 text-orange-600 focus:ring-orange-500 focus:ring-2", 
+                                          id: "content_block_page_locations_#{page_value.downcase.gsub(' ', '_')}" } %>
+                      <%= label_tag "content_block_page_locations_#{page_value.downcase.gsub(' ', '_')}", page_name, 
+                                    class: "ml-2 text-sm text-orange-800 font-medium" %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              <p class="mt-2 text-sm text-orange-700">Select which pages use this content block</p>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :preview_url, "Preview URL", class: "form-label text-orange-800" %>
+              <%= form.text_field :preview_url, class: "form-input border-orange-300 focus:border-orange-500 focus:ring-orange-500", placeholder: "/about" %>
+              <p class="mt-1 text-sm text-orange-700">URL where this content can be previewed (optional)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="flex justify-end space-x-3 pt-6 border-t border-orange-200">
+    <%= link_to "Cancel", admin_content_blocks_path, class: "admin-btn-secondary" %>
+    <button type="button" onclick="showDebugInfo()" class="text-xs bg-gray-200 px-3 py-2 rounded">Show Debug</button>
+    <%= form.submit content_block.new_record? ? "Create Content Block" : "Update Content Block", 
+                    class: "admin-btn-primary" %>
+  </div>
+  
+  <!-- Debugging Info (remove after fixing) -->
+  <div id="debug-info" class="mt-4 p-4 bg-gray-100 border border-gray-300 rounded text-xs" style="display: none;">
+    <h5 class="font-bold mb-2">Debug Information:</h5>
+    <div id="debug-content"></div>
+    <button type="button" onclick="document.getElementById('debug-info').style.display='none'" class="mt-2 text-red-600">Hide Debug</button>
+  </div>
+<% end %>
+
+<script type="module">
+  import "admin_content_blocks"
+</script> 

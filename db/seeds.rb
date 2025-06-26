@@ -10,6 +10,91 @@
 
 puts "🌱 Starting database seeding..."
 
+# Clean up existing content blocks to ensure only our two remain
+puts "🧹 Cleaning up existing content blocks..."
+ContentBlock.destroy_all
+
+# Create only the essential content blocks
+puts "📝 Creating essential content blocks..."
+
+# Founder Story Content Block
+founder_story = ContentBlock.find_or_create_by(key: 'founder_story') do |cb|
+  cb.title = 'Founder Story'
+  cb.content = 'Born and raised in Manila, our founder discovered his passion for baking at an early age. His grandmother\'s kitchen was his first classroom, where he learned the art of traditional Filipino baking and the importance of using quality ingredients.
+
+After years of perfecting his craft, he decided to share his love for Filipino-style crinkle cookies with the world. What started as a small home-based business quickly grew into a beloved local brand, known for its authentic flavors and perfect texture.
+
+Today, he continues to personally oversee every batch of cookies, ensuring that each one meets his high standards of quality and taste. His dedication to tradition, combined with a willingness to experiment with new flavors, has made our crinkle cookies a favorite among cookie enthusiasts.'
+  cb.content_type = 'text'
+end
+
+if founder_story.persisted?
+  puts "✅ Created content block: Founder Story"
+else
+  puts "❌ Failed to create founder story: #{founder_story.errors.full_messages.join(', ')}"
+end
+
+# Company Values Content Block
+company_values = ContentBlock.find_or_create_by(key: 'company_values') do |cb|
+  cb.title = 'Our Values'
+  cb.content = '[
+    {
+      "icon": "🌟",
+      "title": "Authenticity",
+      "description": "We stay true to traditional Filipino baking methods while adding our own unique twist."
+    },
+    {
+      "icon": "❤️",
+      "title": "Quality",
+      "description": "We use only the finest ingredients, sourced locally whenever possible."
+    },
+    {
+      "icon": "🤝",
+      "title": "Community",
+      "description": "We believe in supporting our local community and sharing our culture through food."
+    }
+  ]'
+  cb.content_type = 'json'
+end
+
+if company_values.persisted?
+  puts "✅ Created content block: Company Values"
+else
+  puts "❌ Failed to create company values: #{company_values.errors.full_messages.join(', ')}"
+end
+
+# Create main company details
+puts "🏢 Creating company information..."
+
+# Clean up existing companies first (optional - remove if you want to keep existing)
+Company.destroy_all
+
+# Create the main company with details from the front-facing website
+main_company = Company.find_or_create_by(name: 'Mang Crinkle Cookies') do |company|
+  company.email = 'info@mangcrinkle.com'
+  company.phone = '(555) 123-4567'
+  company.website = 'https://mangcrinkle.com'
+  company.address = '123 Cookie Street
+Sweet City, SC 12345'
+  company.description = 'Artisanal Filipino-style crinkle cookies, baked with love and a touch of kilig! From traditional flavors like Ube to modern favorites like Matcha and Espresso, each batch is handcrafted with premium ingredients and authentic baking methods passed down through generations.'
+  company.business_hours = {
+    "monday" => "9:00 AM - 6:00 PM",
+    "tuesday" => "9:00 AM - 6:00 PM", 
+    "wednesday" => "9:00 AM - 6:00 PM",
+    "thursday" => "9:00 AM - 6:00 PM",
+    "friday" => "9:00 AM - 6:00 PM",
+    "saturday" => "10:00 AM - 4:00 PM",
+    "sunday" => "Closed"
+  }
+  company.active = true
+end
+
+if main_company.persisted?
+  puts "✅ Created main company: #{main_company.name}"
+else
+  puts "❌ Failed to create main company: #{main_company.errors.full_messages.join(', ')}"
+end
+
 # Create admin user
 admin_email = ENV['ADMIN_EMAIL'] || 'admin@mangcrinkle.com'
 admin_password = ENV['ADMIN_PASSWORD']
@@ -321,6 +406,8 @@ end
 puts "🌱 Database seeding completed!"
 puts ""
 puts "📊 Summary:"
+puts "   • #{ContentBlock.count} content blocks created (founder_story, company_values)"
+puts "   • #{Company.count} company created"
 puts "   • #{Product.count} products created"
 puts "   • #{CrinklePackage.count} packages created"
 puts "   • #{User.count} users created"

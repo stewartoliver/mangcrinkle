@@ -197,6 +197,41 @@
               </svg>
               Users
             <% end %>
+
+            <!-- Content Management Section -->
+            <div class="pt-4 pb-2">
+              <p class="px-3 text-xs font-semibold text-orange-400 uppercase tracking-wider">
+                Content Management
+              </p>
+            </div>
+
+            <%= link_to admin_content_management_path, class: "group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 #{controller_name == 'content_management' ? 'bg-orange-800 text-white shadow-lg' : 'text-orange-200 hover:bg-orange-800 hover:text-white'}" do %>
+              <svg class="mr-3 h-5 w-5 #{controller_name == 'content_management' ? 'text-orange-300' : 'text-orange-400 group-hover:text-orange-300'}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+              </svg>
+              Content Dashboard
+            <% end %>
+
+            <%= link_to admin_content_blocks_path, class: "group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 #{controller_name == 'content_blocks' ? 'bg-orange-800 text-white shadow-lg' : 'text-orange-200 hover:bg-orange-800 hover:text-white'}" do %>
+              <svg class="mr-3 h-5 w-5 #{controller_name == 'content_blocks' ? 'text-orange-300' : 'text-orange-400 group-hover:text-orange-300'}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Content Blocks
+            <% end %>
+
+            <%= link_to admin_companies_path, class: "group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 #{controller_name == 'companies' ? 'bg-orange-800 text-white shadow-lg' : 'text-orange-200 hover:bg-orange-800 hover:text-white'}" do %>
+              <svg class="mr-3 h-5 w-5 #{controller_name == 'companies' ? 'text-orange-300' : 'text-orange-400 group-hover:text-orange-300'}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+              Companies
+            <% end %>
+
+            <%= link_to admin_reviews_path, class: "group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 #{controller_name == 'reviews' && request.path.start_with?('/admin') ? 'bg-orange-800 text-white shadow-lg' : 'text-orange-200 hover:bg-orange-800 hover:text-white'}" do %>
+              <svg class="mr-3 h-5 w-5 #{controller_name == 'reviews' && request.path.start_with?('/admin') ? 'text-orange-300' : 'text-orange-400 group-hover:text-orange-300'}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+              </svg>
+              Reviews
+            <% end %>
           </div>
         </nav>
 

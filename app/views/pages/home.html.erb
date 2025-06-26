@@ -66,7 +66,7 @@
 </div>
 
 <!-- Story Section -->
-<div class="bg-orange-50 py-16">
+<div class="bg-orange-50 py-16" id="story">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
       <div>
@@ -74,15 +74,17 @@
         <div class="h-96 bg-orange-100 rounded-lg border-2 border-orange-200"><%= image_tag "founder_img.jpg", class: "w-full h-full object-cover rounded-lg" %></div>
       </div>
       <div class="mt-8 lg:mt-0">
-        <h2 class="text-3xl font-bold text-orange-950 mb-4">Meet Mang</h2>
-        <p class="text-lg text-orange-700 mb-6">
-          Meet the man behind Mang Crinkles! 👴🍪 Your favorite fudgy crinkle cookies are made by this hardworking Filipino man 
-          who's on a mission to perfect every bite.
-        </p>
-        <p class="text-lg text-orange-700 mb-6">
-          Each batch is baked with love, care, and a touch of kilig! From traditional Filipino flavors like Ube to modern favorites 
-          like Matcha and Espresso, Mang brings his passion for baking to every cookie.
-        </p>
+        <h2 class="text-3xl font-bold text-orange-950 mb-6">
+          <%= content_block_with_default('founder_section_title', 'Meet Our Founder') %>
+        </h2>
+        <div class="text-lg text-orange-700 space-y-6">
+          <%= render_content_block('founder_story', 
+            '<p>Meet the man behind Mang Crinkles! 👴🍪 Your favorite fudgy crinkle cookies are made by this hardworking Filipino man 
+            who\'s on a mission to perfect every bite.</p>
+            
+            <p>Each batch is baked with love, care, and a touch of kilig! From traditional Filipino flavors like Ube to modern favorites 
+            like Matcha and Espresso, Mang brings his passion for baking to every cookie.</p>') %>
+        </div>
         <div class="flex flex-wrap gap-2 mt-6">
           <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full">💜 Ube</span>
           <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full">🍵 Matcha</span>

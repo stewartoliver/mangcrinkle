@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_14_000002) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_14_000007) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -58,6 +58,37 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_14_000002) do
   create_table "carts", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "companies", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "website"
+    t.text "address"
+    t.string "phone"
+    t.string "email"
+    t.json "business_hours"
+    t.text "description"
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_companies_on_active"
+    t.index ["email"], name: "index_companies_on_email"
+    t.index ["name"], name: "index_companies_on_name"
+  end
+
+  create_table "content_blocks", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "title", null: false
+    t.text "content"
+    t.string "content_type", default: "text"
+    t.json "metadata"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "page_locations", default: [], array: true
+    t.datetime "last_used_at"
+    t.string "preview_url"
+    t.index ["content_type"], name: "index_content_blocks_on_content_type"
+    t.index ["key"], name: "index_content_blocks_on_key", unique: true
   end
 
   create_table "crinkle_packages", force: :cascade do |t|
@@ -129,6 +160,30 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_14_000002) do
     t.index ["category"], name: "index_products_on_category"
   end
 
+  create_table "reviews", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "order_id"
+    t.string "customer_name", null: false
+    t.string "email", null: false
+    t.integer "rating", null: false
+    t.text "content", null: false
+    t.boolean "approved", default: false
+    t.boolean "featured", default: false
+    t.text "admin_notes"
+    t.datetime "approved_at"
+    t.bigint "approved_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["approved"], name: "index_reviews_on_approved"
+    t.index ["approved_by_id"], name: "index_reviews_on_approved_by_id"
+    t.index ["created_at"], name: "index_reviews_on_created_at"
+    t.index ["email"], name: "index_reviews_on_email"
+    t.index ["featured"], name: "index_reviews_on_featured"
+    t.index ["order_id"], name: "index_reviews_on_order_id"
+    t.index ["rating"], name: "index_reviews_on_rating"
+    t.index ["user_id"], name: "index_reviews_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -157,4 +212,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_14_000002) do
   add_foreign_key "line_items", "orders"
   add_foreign_key "order_notes", "orders"
   add_foreign_key "orders", "users"
+  add_foreign_key "reviews", "orders"
+  add_foreign_key "reviews", "users"
+  add_foreign_key "reviews", "users", column: "approved_by_id"
 end

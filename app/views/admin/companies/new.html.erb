@@ -1,0 +1,18 @@
+<% content_for :title, "New Company" %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">New Company</h3>
+        <p class="admin-container-subtitle">Add a new company to the system.</p>
+      </div>
+      <%= link_to "Back to Companies", admin_companies_path, class: "admin-btn-back" %>
+    </div>
+  </div>
+  <div class="admin-container-content">
+    <div class="px-4 py-5 sm:p-6">
+      <%= render 'form', company: @company %>
+    </div>
+  </div>
+</div> 

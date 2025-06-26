@@ -1,0 +1,365 @@
+<% content_for :title, "Reviews Management" %>
+
+<!-- Statistics Dashboard -->
+<div class="admin-grid-stats">
+  <div class="admin-stats-card">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-orange">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <p class="admin-stats-label">Total Reviews</p>
+        <p class="admin-stats-value admin-stats-value-orange"><%= @stats[:total] %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-green">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <p class="admin-stats-label">Approved</p>
+        <p class="admin-stats-value admin-stats-value-green"><%= @stats[:approved] %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-yellow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <p class="admin-stats-label">Pending</p>
+        <p class="admin-stats-value admin-stats-value-yellow"><%= @stats[:pending] %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-blue">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <p class="admin-stats-label">Featured</p>
+        <p class="admin-stats-value admin-stats-value-blue"><%= @stats[:featured] %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reviews Management -->
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Customer Reviews</h3>
+        <p class="admin-container-subtitle">Manage and moderate customer reviews for your products.</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <% if @reviews.any? %>
+          <button id="bulk-actions-btn" class="admin-btn-secondary" disabled>
+            Bulk Actions
+          </button>
+        <% end %>
+        <%= link_to "View Public Reviews", reviews_path, class: "admin-btn-primary", target: "_blank" %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filters -->
+  <%= form_with url: admin_reviews_path, method: :get, local: true, class: "px-6 py-4 border-b border-orange-200 bg-gray-50" do |form| %>
+    <div class="flex flex-wrap gap-4">
+      <div class="flex-1 min-w-0">
+        <%= form.label :search, "Search", class: "form-label" %>
+        <div class="mt-1">
+          <%= form.text_field :search, placeholder: "Search by customer name or content...", 
+                              value: params[:search], class: "form-input" %>
+        </div>
+      </div>
+      
+      <div class="flex-1 min-w-0">
+        <%= form.label :status, "Status", class: "form-label" %>
+        <div class="mt-1">
+          <%= form.select :status, 
+                          options_for_select([
+                            ['All Reviews', ''],
+                            ['Pending Approval', 'pending'],
+                            ['Approved', 'approved'],
+                            ['Featured', 'featured']
+                          ], params[:status]), 
+                          {}, { class: "form-select" } %>
+        </div>
+      </div>
+      
+      <div class="flex-1 min-w-0">
+        <%= form.label :rating, "Rating", class: "form-label" %>
+        <div class="mt-1">
+          <%= form.select :rating, 
+                          options_for_select([
+                            ['All Ratings', ''],
+                            ['5 Stars', '5'],
+                            ['4 Stars', '4'],
+                            ['3 Stars', '3'],
+                            ['2 Stars', '2'],
+                            ['1 Star', '1']
+                          ], params[:rating]), 
+                          {}, { class: "form-select" } %>
+        </div>
+      </div>
+      
+      <div class="flex items-end">
+        <%= form.submit "Filter", class: "admin-btn-primary" %>
+        <%= link_to "Clear", admin_reviews_path, class: "ml-2 admin-btn-secondary" %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Bulk Actions Bar -->
+  <% if @reviews.any? %>
+    <div id="bulk-actions-bar" class="px-6 py-3 bg-orange-50 border-b border-orange-200" style="display: none;">
+      <div class="flex items-center justify-between">
+        <span id="selected-count" class="text-sm text-orange-600">0 reviews selected</span>
+        <div class="flex items-center space-x-3">
+          <button id="approve-selected" class="admin-btn-primary">Approve Selected</button>
+          <button id="unapprove-selected" class="admin-btn-secondary">Unapprove Selected</button>
+          <button id="feature-selected" class="admin-btn-secondary">Feature Selected</button>
+          <button id="unfeature-selected" class="admin-btn-secondary">Unfeature Selected</button>
+          <button id="delete-selected" class="admin-btn-danger">Delete Selected</button>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Reviews Table -->
+  <div class="admin-container-content">
+    <table class="admin-table">
+      <thead class="admin-table-header">
+        <tr>
+          <% if @reviews.any? %>
+            <th scope="col" class="admin-table-header-cell w-12">
+              <input type="checkbox" id="select-all" class="form-checkbox">
+            </th>
+          <% end %>
+          <th scope="col" class="admin-table-header-cell">Review</th>
+          <th scope="col" class="admin-table-header-cell-center">Rating</th>
+          <th scope="col" class="admin-table-header-cell-center">Status</th>
+          <th scope="col" class="admin-table-header-cell-center">Date</th>
+          <th scope="col" class="admin-table-header-cell-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="admin-table-body">
+        <% @reviews.each do |review| %>
+          <tr class="admin-table-row">
+            <td class="admin-table-cell">
+              <input type="checkbox" class="form-checkbox review-checkbox" value="<%= review.id %>">
+            </td>
+            <td class="admin-table-cell">
+              <div class="flex items-start">
+                <div class="product-avatar">
+                  <div class="product-avatar-placeholder">
+                    <span class="product-avatar-initial">
+                      <%= review.customer_display_name.first.upcase %>
+                    </span>
+                  </div>
+                </div>
+                <div class="product-info">
+                  <div class="product-name">
+                    <%= review.customer_display_name %>
+                  </div>
+                  <% if review.user.present? %>
+                    <div class="product-description">
+                      Customer • <%= review.email %>
+                    </div>
+                  <% else %>
+                    <div class="product-description">
+                      Guest • <%= review.email %>
+                    </div>
+                  <% end %>
+                  <div class="admin-list-item-meta">
+                    <%= truncate(review.content, length: 120) %>
+                  </div>
+                  <% if review.admin_notes.present? %>
+                    <div class="mt-2 text-xs text-orange-500">
+                      <strong>Admin Notes:</strong> <%= truncate(review.admin_notes, length: 80) %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </td>
+            <td class="admin-table-cell-center">
+              <div class="flex items-center justify-center">
+                <% 5.times do |i| %>
+                  <svg class="h-4 w-4 <%= i < review.rating ? 'text-yellow-400' : 'text-gray-300' %>" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                  </svg>
+                <% end %>
+                <span class="ml-1 text-sm text-orange-600">(<%= review.rating %>)</span>
+              </div>
+            </td>
+            <td class="admin-table-cell-center">
+              <div class="flex flex-col items-center space-y-1">
+                <% if review.approved? %>
+                  <span class="admin-status-badge bg-green-100 text-green-800">Approved</span>
+                <% else %>
+                  <span class="admin-status-badge bg-yellow-100 text-yellow-800">Pending</span>
+                <% end %>
+                <% if review.featured? %>
+                  <span class="admin-status-badge bg-blue-100 text-blue-800">Featured</span>
+                <% end %>
+              </div>
+            </td>
+            <td class="admin-table-cell-center text-sm text-orange-600">
+              <div class="flex flex-col items-center">
+                <span><%= review.created_at.strftime("%b %d, %Y") %></span>
+                <span class="text-xs text-gray-500"><%= review.created_at.strftime("%I:%M %p") %></span>
+              </div>
+            </td>
+            <td class="admin-table-cell-right">
+              <div class="admin-action-btn-group">
+                <%= link_to admin_review_path(review), class: "admin-action-btn", title: "View Details" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                <% end %>
+                
+                <% if review.approved? %>
+                  <%= link_to unapprove_admin_review_path(review), method: :patch, 
+                              class: "admin-action-btn", title: "Unapprove",
+                              data: { confirm: "Are you sure you want to unapprove this review?" } do %>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  <% end %>
+                <% else %>
+                  <%= link_to approve_admin_review_path(review), method: :patch, 
+                              class: "admin-action-btn", title: "Approve" do %>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  <% end %>
+                <% end %>
+
+                <%= link_to "#{review.featured? ? 'Unfeature' : 'Feature'}", 
+                            toggle_featured_admin_review_path(review), 
+                            method: :patch, 
+                            class: "admin-action-btn",
+                            title: "#{review.featured? ? 'Remove from Featured' : 'Add to Featured'}",
+                            data: { 
+                              confirm: "Are you sure you want to #{review.featured? ? 'unfeature' : 'feature'} this review?" 
+                            } do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                <% end %>
+
+                <%= button_to admin_review_path(review), 
+                            method: :delete, 
+                            class: "admin-action-btn-danger",
+                            form: { data: { turbo_confirm: "Are you sure you want to delete this review? This action cannot be undone." } },
+                            title: "Delete" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    
+    <% if @reviews.empty? %>
+      <div class="text-center py-12">
+        <div class="text-gray-400 mb-4">
+          <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">No reviews found</h3>
+        <p class="text-gray-500 mb-4">
+          <% if params[:search].present? || params[:status].present? || params[:rating].present? %>
+            No reviews match your search criteria.
+          <% else %>
+            Customer reviews will appear here once they start submitting them.
+          <% end %>
+        </p>
+        <%= link_to "View Public Reviews Page", reviews_path, class: "admin-btn-primary", target: "_blank" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const selectAllCheckbox = document.getElementById('select-all');
+  const reviewCheckboxes = document.querySelectorAll('.review-checkbox');
+  const bulkActionsBtn = document.getElementById('bulk-actions-btn');
+  const bulkActionsBar = document.getElementById('bulk-actions-bar');
+  const selectedCountSpan = document.getElementById('selected-count');
+
+  if (selectAllCheckbox && reviewCheckboxes.length > 0) {
+    function updateBulkActions() {
+      const selectedCheckboxes = document.querySelectorAll('.review-checkbox:checked');
+      const count = selectedCheckboxes.length;
+      
+      if (count > 0) {
+        bulkActionsBar.style.display = 'block';
+        bulkActionsBtn.disabled = false;
+        selectedCountSpan.textContent = `${count} review${count === 1 ? '' : 's'} selected`;
+      } else {
+        bulkActionsBar.style.display = 'none';
+        bulkActionsBtn.disabled = true;
+      }
+    }
+
+    selectAllCheckbox.addEventListener('change', function() {
+      reviewCheckboxes.forEach(checkbox => {
+        checkbox.checked = this.checked;
+      });
+      updateBulkActions();
+    });
+
+    reviewCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const allChecked = Array.from(reviewCheckboxes).every(cb => cb.checked);
+        const noneChecked = Array.from(reviewCheckboxes).every(cb => !cb.checked);
+        
+        selectAllCheckbox.checked = allChecked;
+        selectAllCheckbox.indeterminate = !allChecked && !noneChecked;
+        
+        updateBulkActions();
+      });
+    });
+
+    // Bulk action handlers
+    document.getElementById('approve-selected')?.addEventListener('click', function() {
+      const selectedIds = Array.from(document.querySelectorAll('.review-checkbox:checked')).map(cb => cb.value);
+      if (selectedIds.length > 0 && confirm(`Approve ${selectedIds.length} selected reviews?`)) {
+        // Implementation would go here
+        console.log('Approve:', selectedIds);
+      }
+    });
+
+    document.getElementById('delete-selected')?.addEventListener('click', function() {
+      const selectedIds = Array.from(document.querySelectorAll('.review-checkbox:checked')).map(cb => cb.value);
+      if (selectedIds.length > 0 && confirm(`Delete ${selectedIds.length} selected reviews? This action cannot be undone.`)) {
+        // Implementation would go here
+        console.log('Delete:', selectedIds);
+      }
+    });
+  }
+});
+</script> 

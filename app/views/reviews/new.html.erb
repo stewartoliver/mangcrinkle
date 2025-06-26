@@ -1,0 +1,188 @@
+<% content_for :title, "Write a Review" %>
+
+<div class="min-h-screen bg-orange-50 py-12">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-white rounded-lg shadow-lg p-8">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Share Your Experience</h1>
+        <p class="text-gray-600">
+          We'd love to hear about your experience with our crinkle cookies!
+        </p>
+      </div>
+
+      <%= form_with model: @review, local: true, class: "space-y-6" do |form| %>
+        <% if @review.errors.any? %>
+          <div class="bg-red-50 border border-red-200 rounded-md p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">
+                  Please fix the following errors:
+                </h3>
+                <div class="mt-2 text-sm text-red-700">
+                  <ul class="list-disc list-inside">
+                    <% @review.errors.full_messages.each do |message| %>
+                      <li><%= message %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <!-- Customer Information -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <%= form.label :customer_name, class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= form.text_field :customer_name, 
+                                class: "w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500",
+                                placeholder: "Your full name" %>
+          </div>
+          
+          <div>
+            <%= form.label :email, class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= form.email_field :email, 
+                                 class: "w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500",
+                                 placeholder: "your@email.com" %>
+          </div>
+        </div>
+
+        <!-- Rating -->
+        <div>
+          <%= form.label :rating, "Rating", class: "block text-sm font-medium text-gray-700 mb-2" %>
+          <div class="flex items-center space-x-1" id="star-rating">
+            <% (1..5).each do |star| %>
+              <button type="button" class="star-btn text-3xl text-gray-300 hover:text-yellow-400 transition-colors duration-150" data-rating="<%= star %>">
+                ★
+              </button>
+            <% end %>
+          </div>
+          <%= form.hidden_field :rating, id: "rating-input" %>
+          <p class="mt-1 text-sm text-gray-500">Click the stars to rate your experience</p>
+        </div>
+
+        <!-- Review Content -->
+        <div>
+          <%= form.label :content, "Your Review", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= form.text_area :content, 
+                             rows: 6,
+                             class: "w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500",
+                             placeholder: "Tell us about your experience with our cookies. What did you love? What could we improve?" %>
+          <p class="mt-1 text-sm text-gray-500">Minimum 10 characters, maximum 1000 characters</p>
+        </div>
+
+        <!-- Order Association (if available) -->
+        <% if @order %>
+          <%= form.hidden_field :order_id, value: @order.id %>
+          <div class="bg-green-50 border border-green-200 rounded-md p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-green-800">
+                  <strong>Verified Purchase:</strong> This review will be linked to Order #<%= @order.id %>
+                </p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <!-- Submit Button -->
+        <div class="flex items-center justify-between pt-6">
+          <%= link_to "Cancel", reviews_path, 
+                      class: "px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors duration-200" %>
+          
+          <%= form.submit "Submit Review", 
+                          class: "px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed",
+                          id: "submit-btn",
+                          disabled: true %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Review Guidelines -->
+    <div class="mt-8 bg-blue-50 border border-blue-200 rounded-md p-6">
+      <h3 class="text-lg font-medium text-blue-900 mb-3">Review Guidelines</h3>
+      <ul class="text-sm text-blue-800 space-y-2">
+        <li>• Be honest and specific about your experience</li>
+        <li>• Focus on the product quality, taste, and service</li>
+        <li>• Keep your review respectful and constructive</li>
+        <li>• Reviews are moderated and will be published after approval</li>
+        <li>• Please allow 1-2 business days for review approval</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const starButtons = document.querySelectorAll('.star-btn');
+  const ratingInput = document.getElementById('rating-input');
+  const submitBtn = document.getElementById('submit-btn');
+  const contentTextarea = document.querySelector('textarea[name="review[content]"]');
+  
+  let selectedRating = 0;
+  
+  // Star rating functionality
+  starButtons.forEach((btn, index) => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      selectedRating = parseInt(this.dataset.rating);
+      ratingInput.value = selectedRating;
+      updateStars();
+      checkFormValidity();
+    });
+    
+    btn.addEventListener('mouseenter', function() {
+      const hoverRating = parseInt(this.dataset.rating);
+      highlightStars(hoverRating);
+    });
+  });
+  
+  document.getElementById('star-rating').addEventListener('mouseleave', function() {
+    updateStars();
+  });
+  
+  function highlightStars(rating) {
+    starButtons.forEach((btn, index) => {
+      if (index < rating) {
+        btn.classList.remove('text-gray-300');
+        btn.classList.add('text-yellow-400');
+      } else {
+        btn.classList.remove('text-yellow-400');
+        btn.classList.add('text-gray-300');
+      }
+    });
+  }
+  
+  function updateStars() {
+    highlightStars(selectedRating);
+  }
+  
+  // Form validation
+  function checkFormValidity() {
+    const hasRating = selectedRating > 0;
+    const hasContent = contentTextarea.value.trim().length >= 10;
+    const hasName = document.querySelector('input[name="review[customer_name]"]').value.trim().length > 0;
+    const hasEmail = document.querySelector('input[name="review[email]"]').value.trim().length > 0;
+    
+    submitBtn.disabled = !(hasRating && hasContent && hasName && hasEmail);
+  }
+  
+  // Add event listeners for form inputs
+  document.querySelectorAll('input, textarea').forEach(input => {
+    input.addEventListener('input', checkFormValidity);
+  });
+  
+  // Initial form validation check
+  checkFormValidity();
+});
+</script> 

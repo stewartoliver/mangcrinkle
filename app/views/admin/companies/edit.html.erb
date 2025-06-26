@@ -1,0 +1,18 @@
+<% content_for :title, "Edit #{@company.display_name}" %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Edit <%= @company.display_name %></h3>
+        <p class="admin-container-subtitle">Update company information and settings.</p>
+      </div>
+      <%= link_to "Back to Company", admin_company_path(@company), class: "admin-btn-back" %>
+    </div>
+  </div>
+  <div class="admin-container-content">
+    <div class="px-4 py-5 sm:p-6">
+      <%= render 'form', company: @company %>
+    </div>
+  </div>
+</div> 

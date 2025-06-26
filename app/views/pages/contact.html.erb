@@ -17,26 +17,23 @@
       <div class="space-y-6">
         <div>
           <h3 class="text-lg font-semibold text-orange-950 mb-2">Email</h3>
-          <p class="text-orange-700">info@mangcrinkle.com</p>
+          <p class="text-orange-700"><%= content_block_with_default('contact_email', 'info@mangcrinkle.com') %></p>
         </div>
         <div>
           <h3 class="text-lg font-semibold text-orange-950 mb-2">Phone</h3>
-          <p class="text-orange-700">(555) 123-4567</p>
+          <p class="text-orange-700"><%= content_block_with_default('contact_phone', '(555) 123-4567') %></p>
         </div>
         <div>
           <h3 class="text-lg font-semibold text-orange-950 mb-2">Address</h3>
-          <p class="text-orange-700">
-            123 Cookie Street<br>
-            Sweet City, SC 12345
-          </p>
+          <div class="text-orange-700">
+            <%= simple_format(content_block_with_default('contact_address', "123 Cookie Street\nSweet City, SC 12345")) %>
+          </div>
         </div>
         <div>
           <h3 class="text-lg font-semibold text-orange-950 mb-2">Business Hours</h3>
-          <p class="text-orange-700">
-            Monday - Friday: 9:00 AM - 6:00 PM<br>
-            Saturday: 10:00 AM - 4:00 PM<br>
-            Sunday: Closed
-          </p>
+          <div class="text-orange-700">
+            <%= simple_format(content_block_with_default('business_hours', "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed")) %>
+          </div>
         </div>
       </div>
     </div>

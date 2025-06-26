@@ -51,13 +51,13 @@
             <ul class="space-y-2">
               <li><%= link_to "Products", products_path, class: "text-orange-200 hover:text-white" %></li>
               <li><%= link_to "About Us", about_path, class: "text-orange-200 hover:text-white" %></li>
-              <li><%= link_to "Contact", "#", class: "text-orange-200 hover:text-white" %></li>
+              <li><%= link_to "Contact", contact_path, class: "text-orange-200 hover:text-white" %></li>
             </ul>
           </div>
           <div>
             <h3 class="text-lg font-semibold mb-4 text-orange-200">Contact Us</h3>
-            <p class="text-orange-200">Email: info@mangcrinkle.com</p>
-            <p class="text-orange-200">Phone: (555) 123-4567</p>
+            <p class="text-orange-200">Email: <%= content_block_with_default('contact_email', 'info@mangcrinkle.com') %></p>
+            <p class="text-orange-200">Phone: <%= content_block_with_default('contact_phone', '(555) 123-4567') %></p>
           </div>
         </div>
       </div>

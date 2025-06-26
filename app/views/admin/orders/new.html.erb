@@ -510,7 +510,7 @@ window.addPackageToOrder = function() {
     if (packageButton) {
       const packageCard = packageButton.closest('.bg-white');
       const packageName = packageCard.querySelector('h5').textContent.trim();
-      const priceElement = packageCard.querySelector('.text-lg.font-bold');
+      const priceElement = packageCard.querySelector('.text-2xl.font-bold');
       const packagePrice = parseFloat(priceElement.textContent.replace('$', '').trim());
       
       // Add to selected packages

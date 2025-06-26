@@ -41,37 +41,53 @@
     <!-- Contact Form -->
     <div class="bg-white rounded-lg shadow-md p-6 border border-orange-200">
       <h2 class="text-2xl font-bold text-orange-950 mb-6">Send us a Message</h2>
-      <%= form_with url: contact_path, method: :post, class: "space-y-6" do |f| %>
+      
+      <!-- Early Testing Notice -->
+      <div class="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-md">
+        <div class="text-center">
+          <div class="mb-2 text-lg text-orange-700 font-medium">
+            🚧 Early Testing Phase - Contact Form Currently Offline
+          </div>
+          <div class="text-sm text-orange-600 mb-4">
+            We're keeping contact forms offline for now during testing. Please contact us directly using the information on the left!
+          </div>
+        </div>
+      </div>
+      
+      <!-- Disabled Form -->
+      <div class="space-y-6 opacity-50">
         <div>
-          <%= f.label :name, class: "form-label" %>
+          <label class="form-label">Name</label>
           <div class="mt-1">
-            <%= f.text_field :name, class: "form-input" %>
+            <input type="text" disabled class="form-input bg-gray-100 cursor-not-allowed" placeholder="Contact form disabled">
           </div>
         </div>
 
         <div>
-          <%= f.label :email, class: "form-label" %>
+          <label class="form-label">Email</label>
           <div class="mt-1">
-            <%= f.email_field :email, class: "form-input" %>
+            <input type="email" disabled class="form-input bg-gray-100 cursor-not-allowed" placeholder="Contact form disabled">
           </div>
         </div>
 
         <div>
-          <%= f.label :subject, class: "form-label" %>
+          <label class="form-label">Subject</label>
           <div class="mt-1">
-            <%= f.text_field :subject, class: "form-input" %>
+            <input type="text" disabled class="form-input bg-gray-100 cursor-not-allowed" placeholder="Contact form disabled">
           </div>
         </div>
 
         <div>
-          <%= f.label :message, class: "form-label" %>
+          <label class="form-label">Message</label>
           <div class="mt-1">
-            <%= f.text_area :message, rows: 4, class: "form-textarea" %>
+            <textarea rows="4" disabled class="form-textarea bg-gray-100 cursor-not-allowed" placeholder="Contact form disabled"></textarea>
           </div>
         </div>
 
-        <%= f.submit "Send Message", class: "w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" %>
-      <% end %>
+        <button disabled class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-gray-400 bg-gray-200 cursor-not-allowed opacity-50">
+          Send Message (Disabled)
+        </button>
+      </div>
     </div>
   </div>
 </div> 

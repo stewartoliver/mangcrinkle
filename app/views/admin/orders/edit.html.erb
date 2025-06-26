@@ -333,7 +333,7 @@
     <div class="bg-white shadow rounded-lg border border-orange-200 p-6">
       <div class="flex justify-between items-center mb-6">
         <h3 class="text-lg font-medium text-orange-950">Current Order Items</h3>
-        <button type="button" id="add-items-btn" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+        <button type="button" id="add-items-btn" onclick="showAddItemsSection()" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md text-sm font-medium">
           Add Items
         </button>
       </div>
@@ -634,7 +634,7 @@ window.addPackageToOrder = function() {
     if (packageButton) {
       const packageCard = packageButton.closest('.bg-white');
       const packageName = packageCard.querySelector('h5').textContent.trim();
-      const priceElement = packageCard.querySelector('.text-lg.font-bold');
+      const priceElement = packageCard.querySelector('.text-2xl.font-bold');
       const packagePrice = parseFloat(priceElement.textContent.replace('$', '').trim());
       
       // Check if we're editing an existing line item
@@ -790,6 +790,26 @@ window.closeAdminPackageModal = function() {
   document.getElementById('editingLineItemId').value = '';
 };
 
+// Backup function to show add items section
+window.showAddItemsSection = function() {
+  console.log('showAddItemsSection called');
+  const addItemsSection = document.getElementById('add-items-section');
+  const addItemsBtn = document.getElementById('add-items-btn');
+  
+  console.log('Add items section found:', !!addItemsSection);
+  console.log('Add items button found:', !!addItemsBtn);
+  
+  if (addItemsSection && addItemsBtn) {
+    console.log('Current classes on add-items-section:', addItemsSection.classList.toString());
+    addItemsSection.classList.remove('hidden');
+    console.log('Classes after removing hidden:', addItemsSection.classList.toString());
+    addItemsBtn.style.display = 'none';
+    console.log('Button hidden, section should now be visible');
+  } else {
+    console.error('Elements not found - section:', !!addItemsSection, 'button:', !!addItemsBtn);
+  }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
   // Add event listeners for quantity changes in the add items section
   document.addEventListener('change', function(e) {
@@ -800,13 +820,21 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Show/hide add items section - with proper error handling and event delegation
   document.addEventListener('click', function(e) {
+    console.log('Click event detected:', e.target.id, e.target.classList.toString());
+    
     // Add Items button
     if (e.target.id === 'add-items-btn') {
       console.log('Add Items button clicked');
       const addItemsSection = document.getElementById('add-items-section');
+      console.log('Add items section found:', !!addItemsSection);
       if (addItemsSection) {
+        console.log('Current classes on add-items-section:', addItemsSection.classList.toString());
         addItemsSection.classList.remove('hidden');
+        console.log('Classes after removing hidden:', addItemsSection.classList.toString());
         e.target.style.display = 'none';
+        console.log('Button hidden');
+      } else {
+        console.error('add-items-section not found!');
       }
     }
     

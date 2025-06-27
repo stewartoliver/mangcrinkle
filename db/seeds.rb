@@ -96,29 +96,40 @@ else
 end
 
 # Create admin user
-admin_email = ENV['ADMIN_EMAIL'] || 'admin@mangcrinkle.com'
-admin_password = ENV['ADMIN_PASSWORD']
+admin_email = ENV['ADMIN_EMAIL'] || 'oliverstewart35@gmail.com'
+admin_password = ENV['ADMIN_PASSWORD'] || '0J4VASCRIPTSK1LL!'
 
-if admin_password.blank?
-  puts "⚠️  Warning: ADMIN_PASSWORD environment variable not set."
-  puts "   Skipping admin user creation."
-  puts "   You can create an admin user later via Rails console:"
-  puts "   rails console"
-  puts "   User.create!(email: 'admin@mangcrinkle.com', user_type: 'admin', first_name: 'Admin', last_name: 'User', password: 'your_password', password_confirmation: 'your_password')"
+puts "🔐 Creating admin user..."
+puts "   Email: #{admin_email}"
+
+# Always try to create the admin user
+admin_user = User.find_or_initialize_by(email: admin_email)
+admin_user.user_type = 'admin'
+admin_user.first_name = 'Oliver'
+admin_user.last_name = 'Stewart'
+admin_user.password = admin_password
+admin_user.password_confirmation = admin_password
+
+if admin_user.save
+  puts "✅ Admin user created/updated: #{admin_email}"
+  puts "   Password: #{admin_password}"
 else
-  admin_user = User.find_or_create_by(email: admin_email) do |user|
-    user.user_type = 'admin'
-    user.first_name = 'Oliver'
-    user.last_name = 'Stewart'
-    user.password = admin_password
-    user.password_confirmation = admin_password
-  end
+  puts "❌ Failed to create admin user: #{admin_user.errors.full_messages.join(', ')}"
+  puts "   Trying alternative approach..."
   
-  if admin_user.persisted?
-    puts "✅ Admin user created/updated: #{admin_email}"
-  else
-    puts "❌ Failed to create admin user: #{admin_user.errors.full_messages.join(', ')}"
-  end
+  # Alternative approach - destroy and recreate
+  existing = User.find_by(email: admin_email)
+  existing&.destroy
+  
+  admin_user = User.create!(
+    email: admin_email,
+    user_type: 'admin',
+    first_name: 'Oliver',
+    last_name: 'Stewart',
+    password: admin_password,
+    password_confirmation: admin_password
+  )
+  puts "✅ Admin user created with alternative approach: #{admin_email}"
 end
 
 # Create sample products

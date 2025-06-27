@@ -14,10 +14,6 @@ class HeroAnimations {
     }
 
     init() {
-        // Preload crinkle SVG for better performance
-        this.crinkleImage = new Image();
-        this.crinkleImage.src = '/assets/crinkle.svg';
-
         // Initialize on current page
         this.setupHeroContainer();
 
@@ -32,6 +28,14 @@ class HeroAnimations {
 
         this.heroContainer = document.querySelector(this.containerSelector);
         if (!this.heroContainer) return;
+
+        // Get the correct asset path from data attribute
+        const crinkleImagePath = this.heroContainer.dataset.crinkleImage;
+        if (crinkleImagePath) {
+            // Preload crinkle SVG for better performance
+            this.crinkleImage = new Image();
+            this.crinkleImage.src = crinkleImagePath;
+        }
 
         this.setupIntersectionObserver();
 

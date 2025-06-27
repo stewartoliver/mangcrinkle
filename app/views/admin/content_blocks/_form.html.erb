@@ -1,4 +1,4 @@
-<%= form_with model: [:admin, content_block], local: true, html: { multipart: true, class: "space-y-6" } do |form| %>
+<%= form_with model: [:admin, content_block], local: true, html: { multipart: true, class: "space-y-6", data: { turbo: true } } do |form| %>
   <% if content_block.errors.any? %>
     <div class="bg-red-50 border border-red-200 rounded-md p-4">
       <div class="flex">
@@ -35,13 +35,19 @@
             </div>
 
             <!-- Text Content -->
-            <div id="text_content" class="content-type-field form-group" style="display: none;">
+            <div id="text_content" class="content-type-field form-group" style="<%= content_block.content_type == 'text' ? '' : 'display: none;' %>">
               <%= form.label :content, "Content", class: "form-label" %>
-              <%= form.text_area :content, class: "form-textarea", rows: 10, placeholder: "Enter your text content here..." %>
+              <%= form.text_area :content, 
+                  class: "form-textarea", 
+                  rows: 10, 
+                  placeholder: "Enter your text content here...",
+                  id: "content_block_text_content",
+                  name: content_block.content_type == 'text' ? 'content_block[content]' : 'content_block[text_content_inactive]' %>
+              <p class="mt-1 text-sm text-orange-600">Enter your text content. HTML tags are allowed.</p>
             </div>
 
             <!-- JSON Content -->
-            <div id="json_content" class="content-type-field form-group" style="display: none;">
+            <div id="json_content" class="content-type-field form-group" style="<%= content_block.content_type == 'json' ? '' : 'display: none;' %>">
               <%= form.label :content, "JSON Data", class: "form-label" %>
               
               <!-- Special Company Values Editor -->
@@ -85,7 +91,9 @@
                     rows: content_block.key == 'company_values' ? 20 : 12, 
                     placeholder: content_block.key == 'company_values' ? 
                       '[{"icon": "🌟", "title": "Your Value", "description": "Description of your company value..."}]' : 
-                      '{"key": "value", "items": []}' %>
+                      '{"key": "value", "items": []}',
+                    id: "content_block_json_content",
+                    name: content_block.content_type == 'json' ? 'content_block[content]' : 'content_block[json_content_inactive]' %>
                       
                 <!-- JSON Validation Indicator -->
                 <div class="absolute top-2 right-2">
@@ -104,7 +112,7 @@
             </div>
 
             <!-- Image Content -->
-            <div id="image_content" class="content-type-field form-group" style="display: none;">
+            <div id="image_content" class="content-type-field form-group" style="<%= content_block.content_type == 'image' ? '' : 'display: none;' %>">
               <%= form.label :image, "Upload Image", class: "form-label" %>
               <%= form.file_field :image, class: "form-input", accept: "image/*" %>
               <% if content_block.image.attached? %>
@@ -136,6 +144,12 @@
           
           <div class="space-y-6">
             <div class="form-group">
+              <%= form.label :key, "Unique Key", class: "form-label text-orange-800" %>
+              <%= form.text_field :key, class: "form-input border-orange-300 focus:border-orange-500 focus:ring-orange-500", placeholder: "unique_key_name" %>
+              <p class="mt-1 text-sm text-orange-700">Unique identifier used in code to reference this content block</p>
+            </div>
+
+            <div class="form-group">
               <%= form.label :content_type, class: "form-label text-orange-800" %>
               <%= form.select :content_type, 
                               [
@@ -143,7 +157,7 @@
                                 ['JSON Data', 'json'],
                                 ['Image', 'image']
                               ], 
-                              {}, 
+                              { selected: content_block.content_type }, 
                               { class: "form-select border-orange-300 focus:border-orange-500 focus:ring-orange-500", id: "content_type_select" } %>
             </div>
 
@@ -190,7 +204,8 @@
     <%= link_to "Cancel", admin_content_blocks_path, class: "admin-btn-secondary" %>
     <button type="button" onclick="showDebugInfo()" class="text-xs bg-gray-200 px-3 py-2 rounded">Show Debug</button>
     <%= form.submit content_block.new_record? ? "Create Content Block" : "Update Content Block", 
-                    class: "admin-btn-primary" %>
+                    class: "admin-btn-primary", 
+                    data: { disable_with: "Saving..." } %>
   </div>
   
   <!-- Debugging Info (remove after fixing) -->
@@ -201,6 +216,280 @@
   </div>
 <% end %>
 
-<script type="module">
-  import "admin_content_blocks"
+<!-- Ensure script is loaded after form -->
+<script>
+// Inline script to ensure it always loads
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Form script loading...');
+  
+  // Initialize immediately
+  initializeContentBlockForm();
+  
+  // Also initialize on turbo events
+  document.addEventListener('turbo:load', function() {
+    console.log('Turbo load - reinitializing form...');
+    setTimeout(() => initializeContentBlockForm(), 100);
+  });
+});
+
+function initializeContentBlockForm() {
+  console.log('Initializing content block form...');
+  
+  const contentTypeSelect = document.getElementById('content_type_select');
+  const contentFields = document.querySelectorAll('.content-type-field');
+  const textTextarea = document.getElementById('content_block_text_content');
+  const jsonTextarea = document.getElementById('content_block_json_content');
+  const jsonStatus = document.getElementById('json-status');
+  const formatBtn = document.getElementById('format-json-btn');
+  
+  console.log('Elements found:', {
+    contentTypeSelect: !!contentTypeSelect,
+    contentFields: contentFields.length,
+    textTextarea: !!textTextarea,
+    jsonTextarea: !!jsonTextarea,
+    jsonStatus: !!jsonStatus,
+    formatBtn: !!formatBtn
+  });
+  
+  if (!contentTypeSelect) {
+    console.log('Content type select not found');
+    return;
+  }
+  
+  // Content field visibility management
+  function showContentField() {
+    const selectedType = contentTypeSelect.value || 'text';
+    console.log('Showing content field for type:', selectedType);
+    
+    // Hide all content fields first
+    contentFields.forEach(field => {
+      field.style.display = 'none';
+    });
+    
+    // Update form field names to ensure only the active field is submitted
+    if (textTextarea) {
+      textTextarea.name = selectedType === 'text' ? 'content_block[content]' : 'content_block[text_content_inactive]';
+    }
+    if (jsonTextarea) {
+      jsonTextarea.name = selectedType === 'json' ? 'content_block[content]' : 'content_block[json_content_inactive]';
+    }
+    
+    console.log('Updated field names:', {
+      textField: textTextarea ? textTextarea.name : 'not found',
+      jsonField: jsonTextarea ? jsonTextarea.name : 'not found'
+    });
+    
+    // Show the selected field
+    const activeField = document.getElementById(selectedType + '_content');
+    if (activeField) {
+      activeField.style.display = 'block';
+      console.log('Showing field:', activeField.id);
+      
+      // Focus on the appropriate content input
+      if (selectedType === 'text' && textTextarea) {
+        setTimeout(() => {
+          textTextarea.focus();
+          // Move cursor to end of content
+          textTextarea.setSelectionRange(textTextarea.value.length, textTextarea.value.length);
+        }, 100);
+      } else if (selectedType === 'json' && jsonTextarea) {
+        setTimeout(() => {
+          jsonTextarea.focus();
+          // Move cursor to end of content
+          jsonTextarea.setSelectionRange(jsonTextarea.value.length, jsonTextarea.value.length);
+        }, 100);
+      }
+    } else {
+      console.warn('Could not find content field for type:', selectedType);
+    }
+  }
+  
+  // JSON validation
+  function validateJSON(text) {
+    if (!text.trim()) {
+      return { valid: true, message: '' };
+    }
+    
+    try {
+      JSON.parse(text);
+      return { valid: true, message: 'Valid JSON' };
+    } catch (e) {
+      return { valid: false, message: 'Invalid JSON: ' + e.message };
+    }
+  }
+  
+  function updateJSONStatus() {
+    if (!jsonTextarea || !jsonStatus) return;
+    
+    const result = validateJSON(jsonTextarea.value);
+    
+    if (jsonTextarea.value.trim() === '') {
+      jsonStatus.classList.add('hidden');
+      return;
+    }
+    
+    jsonStatus.classList.remove('hidden');
+    
+    if (result.valid) {
+      jsonStatus.className = 'px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800';
+      jsonStatus.textContent = '✓ Valid';
+      jsonStatus.title = '';
+    } else {
+      jsonStatus.className = 'px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800';
+      jsonStatus.textContent = '✗ Invalid';
+      jsonStatus.title = result.message;
+    }
+  }
+  
+  // Format JSON function
+  function formatJSON() {
+    if (!jsonTextarea) return;
+    
+    try {
+      const parsed = JSON.parse(jsonTextarea.value);
+      jsonTextarea.value = JSON.stringify(parsed, null, 2);
+      updateJSONStatus();
+    } catch (e) {
+      alert('Cannot format invalid JSON. Please fix syntax errors first.');
+    }
+  }
+  
+  // Company Values Toggle
+  function toggleCompanyValuesInfo() {
+    const toggle = document.getElementById('company-values-toggle');
+    const content = document.getElementById('company-values-content');
+    const chevron = document.getElementById('company-values-chevron');
+    
+    if (!toggle || !content || !chevron) return;
+    
+    const isHidden = content.classList.contains('hidden');
+    
+    if (isHidden) {
+      content.classList.remove('hidden');
+      chevron.style.transform = 'rotate(180deg)';
+    } else {
+      content.classList.add('hidden');
+      chevron.style.transform = 'rotate(0deg)';
+    }
+  }
+  
+  // Set up event listeners
+  if (contentTypeSelect) {
+    // Remove existing listeners to prevent duplicates
+    contentTypeSelect.removeEventListener('change', showContentField);
+    // Add new listener
+    contentTypeSelect.addEventListener('change', showContentField);
+  }
+  
+  if (jsonTextarea) {
+    jsonTextarea.removeEventListener('input', updateJSONStatus);
+    jsonTextarea.removeEventListener('blur', updateJSONStatus);
+    jsonTextarea.addEventListener('input', updateJSONStatus);
+    jsonTextarea.addEventListener('blur', updateJSONStatus);
+  }
+  
+  if (formatBtn) {
+    formatBtn.removeEventListener('click', formatJSON);
+    formatBtn.addEventListener('click', formatJSON);
+  }
+  
+  // Company Values Toggle
+  const companyValuesToggle = document.getElementById('company-values-toggle');
+  if (companyValuesToggle) {
+    companyValuesToggle.removeEventListener('click', toggleCompanyValuesInfo);
+    companyValuesToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      toggleCompanyValuesInfo();
+    });
+  }
+  
+  // Form submission handler to prevent double submission
+  const form = document.querySelector('form[action*="content_blocks"]');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      // Debug: Log what's being submitted
+      const textContent = document.getElementById('content_block_text_content');
+      const jsonContent = document.getElementById('content_block_json_content');
+      const contentType = document.getElementById('content_type_select');
+      
+      console.log('=== FORM SUBMISSION DEBUG ===');
+      console.log('Content Type:', contentType ? contentType.value : 'not found');
+      
+      if (contentType) {
+        const activeContentType = contentType.value;
+        
+        if (activeContentType === 'text' && textContent) {
+          console.log('Submitting TEXT content (length):', textContent.value.length);
+          console.log('Text field name:', textContent.name);
+        } else if (activeContentType === 'json' && jsonContent) {
+          console.log('Submitting JSON content (length):', jsonContent.value.length);
+          console.log('JSON field name:', jsonContent.name);
+        }
+      }
+      
+      const submitBtn = form.querySelector('input[type="submit"], button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
+        
+        // Re-enable after 3 seconds as failsafe
+        setTimeout(() => {
+          submitBtn.disabled = false;
+          submitBtn.textContent = submitBtn.textContent.replace('Saving...', 
+            submitBtn.textContent.includes('Create') ? 'Create Content Block' : 'Update Content Block');
+        }, 3000);
+      }
+    });
+  }
+  
+  // Initialize everything
+  showContentField();
+  updateJSONStatus();
+  
+  console.log('Content block form initialization complete');
+}
+
+// Global debug function
+window.showDebugInfo = function() {
+  const debugDiv = document.getElementById('debug-info');
+  if (debugDiv) {
+    debugDiv.style.display = 'block';
+    const debugContent = document.getElementById('debug-content');
+    if (debugContent) {
+      const contentTypeSelect = document.getElementById('content_type_select');
+      const contentFields = document.querySelectorAll('.content-type-field');
+      const textTextarea = document.getElementById('content_block_text_content');
+      const jsonTextarea = document.getElementById('content_block_json_content');
+      const selectedType = contentTypeSelect ? contentTypeSelect.value : 'none';
+      
+      let debugHtml = '<strong>Selected Type:</strong> ' + selectedType + '<br>';
+      debugHtml += '<strong>Available Fields:</strong><br>';
+      
+      contentFields.forEach(field => {
+        const isVisible = field.style.display !== 'none';
+        debugHtml += '- ' + field.id + ': ' + (isVisible ? 'VISIBLE' : 'HIDDEN') + '<br>';
+      });
+      
+      debugHtml += '<br><strong>Content Textareas:</strong><br>';
+      debugHtml += '- Text Content: ' + (textTextarea ? 'FOUND' : 'NOT FOUND');
+      if (textTextarea) {
+        debugHtml += ' (Value length: ' + textTextarea.value.length + ')';
+      }
+      debugHtml += '<br>';
+      
+      debugHtml += '- JSON Content: ' + (jsonTextarea ? 'FOUND' : 'NOT FOUND');
+      if (jsonTextarea) {
+        debugHtml += ' (Value length: ' + jsonTextarea.value.length + ')';
+      }
+      debugHtml += '<br>';
+      
+      debugContent.innerHTML = debugHtml;
+    }
+  }
+};
+
+window.refreshContentFields = function() {
+  console.log('Manual refresh triggered');
+  initializeContentBlockForm();
+};
 </script> 

@@ -1,16 +1,6 @@
-<% if Rails.application.assets&.find_asset('favicon/favicon-96x96.png') %>
-<link rel="icon" type="image/png" href="<%= asset_path 'favicon/favicon-96x96.png' %>" sizes="96x96" />
-<% end %>
-<% if Rails.application.assets&.find_asset('favicon/favicon.svg') %>
-<link rel="icon" type="image/svg+xml" href="<%= asset_path 'favicon/favicon.svg' %>" />
-<% end %>
-<% if Rails.application.assets&.find_asset('favicon/favicon.ico') %>
-<link rel="shortcut icon" href="<%= asset_path 'favicon/favicon.ico' %>" />
-<% end %>
-<% if Rails.application.assets&.find_asset('favicon/apple-touch-icon.png') %>
-<link rel="apple-touch-icon" sizes="180x180" href="<%= asset_path 'favicon/apple-touch-icon.png' %>" />
-<% end %>
+<%= favicon_link_tag 'favicon/favicon.ico' %>
+<%= favicon_link_tag 'favicon/favicon-96x96.png', rel: 'icon', type: 'image/png', sizes: '96x96' %>
+<%= favicon_link_tag 'favicon/favicon.svg', rel: 'icon', type: 'image/svg+xml' %>
+<%= favicon_link_tag 'favicon/apple-touch-icon.png', rel: 'apple-touch-icon', sizes: '180x180' %>
 <meta name="apple-mobile-web-app-title" content="MangCrinkle" />
-<% if Rails.application.assets&.find_asset('favicon/site.webmanifest') %>
-<link rel="manifest" href="<%= asset_path 'favicon/site.webmanifest' %>" />
-<% end %> 
+<link rel="manifest" href="<%= asset_path 'favicon/site.webmanifest' %>" /> 

@@ -43,7 +43,7 @@
 </div>
 
 <!-- Individual Products by Category -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" id="products">
   <div class="text-center mb-12">
     <h2 class="text-3xl font-bold text-orange-950 mb-4">Individual Products</h2>
     <p class="text-lg text-orange-700 max-w-3xl mx-auto">
@@ -54,7 +54,7 @@
   <!-- Crinkles Section -->
   <% crinkles = @products.crinkles %>
   <% if crinkles.any? %>
-    <div class="mb-16">
+    <div class="mb-16" id="crinkles">
       <div class="text-center mb-8">
         <h3 class="text-2xl font-bold text-orange-950 mb-2">Crinkles</h3>
         <p class="text-orange-700">Our signature handcrafted cookies in various delicious flavors.</p>
@@ -62,17 +62,25 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <% crinkles.each do |product| %>
           <div class="bg-white rounded-lg shadow-md overflow-hidden border border-orange-200 hover:border-orange-500 transition duration-150">
-            <% if product.image.present? %>
-              <%= image_tag product.image, class: "w-full h-48 object-cover" %>
-            <% else %>
-              <div class="h-48 bg-orange-100"></div>
-            <% end %>
+            <div class="relative">
+              <% if product.image.present? %>
+                <%= image_tag product.image, class: "w-full h-48 object-cover" %>
+              <% else %>
+                <div class="h-48 bg-orange-100"></div>
+              <% end %>
+              <%= link_to product_path(product), class: "absolute top-4 right-4 inline-flex items-center justify-center w-6 h-6 rounded-full bg-white bg-opacity-90 border border-orange-300 text-orange-600 hover:bg-opacity-100 hover:border-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-orange-500 transition duration-150 shadow-sm", title: "View details" do %>
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                </svg>
+              <% end %>
+            </div>
             
             <div class="p-6">
               <h4 class="text-xl font-semibold mb-2 text-orange-950"><%= product.name %></h4>
-              <p class="text-orange-700 mb-4"><%= truncate(product.description, length: 100) %></p>
-              <div class="flex justify-between items-center">
+              <div class="flex justify-between items-center mb-4">
                 <span class="text-lg font-bold text-orange-950">$<%= number_with_precision(product.price, precision: 2) %></span>
+              </div>
+              <div class="flex justify-between items-center">
                 <div class="flex space-x-2">
                   <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center space-x-2", data: { turbo: false } do |f| %>
                     <%= f.hidden_field :product_id, value: product.id %>

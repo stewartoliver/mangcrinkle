@@ -77,18 +77,14 @@
             
             <div class="p-6">
               <h4 class="text-xl font-semibold mb-2 text-orange-950"><%= product.name %></h4>
-              <div class="flex justify-between items-center mb-4">
-                <span class="text-lg font-bold text-orange-950">$<%= number_with_precision(product.price, precision: 2) %></span>
-              </div>
-              <div class="flex justify-between items-center">
-                <div class="flex space-x-2">
-                  <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center space-x-2", data: { turbo: false } do |f| %>
-                    <%= f.hidden_field :product_id, value: product.id %>
-                    <%= f.number_field :quantity, value: 1, min: 1, class: "form-input w-16" %>
-                    <%= f.submit "Add to Cart", class: "inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" %>
-                  <% end %>
+              <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center justify-between space-x-2", data: { turbo: false } do |f| %>
+                <span class="text-3xl font-bold text-orange-950">$<%= number_with_precision(product.price, precision: 2) %></span>
+                <div class="flex items-center space-x-2">
+                  <%= f.hidden_field :product_id, value: product.id %>
+                  <%= f.number_field :quantity, value: 1, min: 1, class: "form-input w-16" %>
+                  <%= f.submit "Add to Cart", class: "inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" %>
                 </div>
-              </div>
+              <% end %>
             </div>
           </div>
         <% end %>

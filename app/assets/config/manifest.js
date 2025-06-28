@@ -6,3 +6,4 @@
 //= link controllers/hello_controller.js
 //= link controllers/index.js
 //= link controllers/package_modal_controller.js
+//= link favicon/site.webmanifest

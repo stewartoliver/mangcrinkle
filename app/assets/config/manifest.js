@@ -7,3 +7,7 @@
 //= link controllers/index.js
 //= link controllers/package_modal_controller.js
 //= link favicon/site.webmanifest
+//= link favicon/favicon-96x96.png
+//= link favicon/favicon.svg
+//= link favicon/favicon.ico
+//= link favicon/apple-touch-icon.png

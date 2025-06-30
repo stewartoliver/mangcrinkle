@@ -31,7 +31,7 @@
             <span class="text-lg font-bold text-orange-950">$<%= number_with_precision(package.price, precision: 2) %></span>
             <button data-package-modal-package-id-param="<%= package.id %>"
                     data-package-modal-package-limit-param="<%= package.quantity %>"
-                    data-package-modal-products-param='<%= raw Product.active.map { |p| { id: p.id, name: p.name, image_url: p.image.attached? ? rails_blob_url(p.image) : nil } }.to_json %>'
+                    data-package-modal-products-param='<%= raw Product.active.map { |p| { id: p.id, name: p.name, image_url: p.primary_image ? rails_blob_url(p.primary_image) : nil } }.to_json %>'
                     class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
               Select Package
             </button>
@@ -63,8 +63,8 @@
         <% crinkles.each do |product| %>
           <div class="bg-white rounded-lg shadow-md overflow-hidden border border-orange-200 hover:border-orange-500 transition duration-150">
             <div class="relative">
-              <% if product.image.present? %>
-                <%= image_tag product.image, class: "w-full h-48 object-cover" %>
+              <% if product.primary_image %>
+                <%= image_tag product.primary_image, class: "w-full h-48 object-cover" %>
               <% else %>
                 <div class="h-48 bg-orange-100"></div>
               <% end %>
@@ -103,8 +103,8 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <% extras.each do |product| %>
           <div class="bg-white rounded-lg shadow-md overflow-hidden border border-green-200 hover:border-green-500 transition duration-150">
-            <% if product.image.present? %>
-              <%= image_tag product.image, class: "w-full h-48 object-cover" %>
+            <% if product.primary_image %>
+              <%= image_tag product.primary_image, class: "w-full h-48 object-cover" %>
             <% else %>
               <div class="h-48 bg-green-100"></div>
             <% end %>
@@ -140,8 +140,8 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <% merch.each do |product| %>
           <div class="bg-white rounded-lg shadow-md overflow-hidden border border-blue-200 hover:border-blue-500 transition duration-150">
-            <% if product.image.present? %>
-              <%= image_tag product.image, class: "w-full h-48 object-cover" %>
+            <% if product.primary_image %>
+              <%= image_tag product.primary_image, class: "w-full h-48 object-cover" %>
             <% else %>
               <div class="h-48 bg-blue-100"></div>
             <% end %>

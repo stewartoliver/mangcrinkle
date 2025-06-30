@@ -20,6 +20,12 @@
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @product.name %></dd>
       </div>
       <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Short Description</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <%= @product.short_description.present? ? @product.short_description : "No short description provided" %>
+        </dd>
+      </div>
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
         <dt class="text-sm font-medium text-orange-700">Category</dt>
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
@@ -37,15 +43,15 @@
           </span>
         </dd>
       </div>
-      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
         <dt class="text-sm font-medium text-orange-700">Description</dt>
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @product.description %></dd>
       </div>
-      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
         <dt class="text-sm font-medium text-orange-700">Price</dt>
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">$<%= number_with_precision(@product.price, precision: 2) %></dd>
       </div>
-      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
         <dt class="text-sm font-medium text-orange-700">Status</dt>
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
           <span class="admin-status-badge <%= @product.active? ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
@@ -53,14 +59,28 @@
           </span>
         </dd>
       </div>
-      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-        <dt class="text-sm font-medium text-orange-700">Image</dt>
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Images</dt>
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
-          <% if @product.image.attached? %>
-            <%= image_tag @product.image, class: "h-32 w-32 object-cover rounded-lg" %>
+          <% if @product.all_images.any? %>
+            <div class="flex flex-wrap gap-4">
+              <% @product.all_images_with_primary_status.each do |img_data| %>
+                <div class="relative">
+                  <%= image_tag img_data[:image], class: "h-20 w-20 object-cover rounded-lg" %>
+                  <% if img_data[:is_primary] %>
+                    <div class="absolute -top-1 -right-1 bg-orange-600 text-white rounded-full p-1">
+                      <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                    <div class="mt-1 text-xs text-orange-600 font-medium text-center">Primary</div>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
           <% else %>
-            <div class="h-32 w-32 rounded-lg bg-orange-100 flex items-center justify-center">
-              <span class="text-orange-600 font-medium">No image</span>
+            <div class="h-20 w-20 rounded-lg bg-orange-100 flex items-center justify-center">
+              <span class="text-orange-600 font-medium text-xs">No images</span>
             </div>
           <% end %>
         </dd>
@@ -70,31 +90,85 @@
 </div>
 
 <!-- Product Orders -->
-<div class="mt-8 admin-show-container">
-  <div class="admin-show-header">
-    <h3 class="admin-container-title">Recent Orders</h3>
-    <p class="admin-container-subtitle">Orders containing this product.</p>
+<div class="mt-8 admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <h3 class="admin-container-title">Recent Orders</h3>
+      <p class="admin-container-subtitle">Orders containing this product.</p>
+    </div>
   </div>
-  <div class="admin-show-content">
-    <ul class="admin-list-items">
-      <% @product.line_items.includes(:order).order(created_at: :desc).limit(5).each do |line_item| %>
-        <li class="admin-list-item">
-          <div class="admin-list-item-content">
-            <div class="admin-list-item-main">
-              <p class="admin-list-item-title">
-                Order #<%= line_item.order.id %>
-              </p>
-              <p class="admin-list-item-subtitle">
-                <%= line_item.order.created_at.strftime("%B %d, %Y") %>
-                • Quantity: <%= line_item.quantity %>
-              </p>
-            </div>
-            <div class="admin-list-item-actions">
-              <%= link_to "View Order", admin_order_path(line_item.order), class: "admin-link" %>
-            </div>
-          </div>
-        </li>
-      <% end %>
-    </ul>
+  <div class="admin-container-content">
+    <% recent_orders = @product.line_items.includes(:order).order(created_at: :desc).limit(5) %>
+    <% if recent_orders.any? %>
+      <table class="admin-table">
+        <thead class="admin-table-header">
+          <tr>
+            <th scope="col" class="admin-table-header-cell">Order</th>
+            <th scope="col" class="admin-table-header-cell">Customer</th>
+            <th scope="col" class="admin-table-header-cell-center">Date</th>
+            <th scope="col" class="admin-table-header-cell-center">Quantity</th>
+            <th scope="col" class="admin-table-header-cell-center">Status</th>
+            <th scope="col" class="admin-table-header-cell-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="admin-table-body">
+          <% recent_orders.each do |line_item| %>
+            <tr class="admin-table-row">
+              <td class="admin-table-cell">
+                <div class="text-sm font-medium text-orange-950">Order #<%= line_item.order.id %></div>
+                <div class="text-xs text-orange-600">$<%= number_with_precision(line_item.order.total_price, precision: 2) %></div>
+              </td>
+              <td class="admin-table-cell">
+                <div class="text-sm font-medium text-orange-950"><%= line_item.order.customer_name %></div>
+                <div class="text-xs text-orange-600"><%= line_item.order.email %></div>
+              </td>
+              <td class="admin-table-cell-center">
+                <div class="text-sm font-medium text-orange-950">
+                  <%= line_item.order.created_at.strftime("%m/%d/%Y") %>
+                </div>
+                <div class="text-xs text-orange-600">
+                  <%= time_ago_in_words(line_item.order.created_at) %> ago
+                </div>
+              </td>
+              <td class="admin-table-cell-center text-sm text-orange-600">
+                <%= line_item.quantity %>
+              </td>
+              <td class="admin-table-cell-center text-sm">
+                <span class="admin-status-badge 
+                  <%= case line_item.order.status
+                      when 'pending' then 'admin-status-pending'
+                      when 'processing' then 'admin-status-processing'
+                      when 'completed' then 'admin-status-completed'
+                      when 'cancelled' then 'admin-status-cancelled'
+                      else 'admin-status-default'
+                      end %>">
+                  <%= line_item.order.status.titleize %>
+                </span>
+              </td>
+              <td class="admin-table-cell-right">
+                <div class="admin-action-btn-group">
+                  <%= link_to admin_order_path(line_item.order), class: "admin-action-btn", title: "View Order" do %>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div class="text-center py-8">
+        <div class="text-orange-400 mb-2">
+          <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+          </svg>
+        </div>
+        <h3 class="text-sm font-medium text-orange-900">No recent orders</h3>
+        <p class="text-sm text-orange-600">This product hasn't been ordered yet.</p>
+      </div>
+    <% end %>
   </div>
 </div> 

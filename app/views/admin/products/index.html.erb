@@ -42,12 +42,10 @@
             <td class="admin-table-cell">
               <div class="flex items-center">
                 <div class="product-avatar">
-                  <% if product.image.attached? %>
+                  <% if product.has_image? %>
                     <%= image_tag product.image, class: "product-avatar-image" %>
                   <% else %>
-                    <div class="product-avatar-placeholder">
-                      <span class="product-avatar-initial"><%= product.name.first.upcase %></span>
-                    </div>
+                    <%= image_tag product.fallback_image_path, class: "product-avatar-image" %>
                   <% end %>
                 </div>
                 <div class="product-info">

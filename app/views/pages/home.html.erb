@@ -33,10 +33,10 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
     <% @products.each do |product| %>
       <div class="bg-white rounded-lg shadow-md overflow-hidden border border-orange-200 hover:border-orange-500 transition duration-150">
-        <% if product.image.present? %>
+        <% if product.has_image? %>
           <%= image_tag product.image, class: "w-full h-48 object-cover" %>
         <% else %>
-          <div class="h-48 bg-orange-100"></div>
+          <%= image_tag product.fallback_image_path, class: "w-full h-48 object-cover" %>
         <% end %>
         <div class="p-6">
           <h3 class="text-xl font-semibold mb-2 text-orange-950"><%= product.name %></h3>

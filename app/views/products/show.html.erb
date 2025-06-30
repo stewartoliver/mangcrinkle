@@ -2,6 +2,9 @@
 <div class="bg-orange-200 text-orange-950 py-12">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <h1 class="text-4xl font-extrabold tracking-tight text-center"><%= @product.name %></h1>
+    <% if @product.short_description.present? %>
+      <p class="mt-4 text-xl text-center max-w-3xl mx-auto"><%= @product.short_description %></p>
+    <% end %>
   </div>
 </div>
 
@@ -13,8 +16,8 @@
       <div class="md:flex h-full">
         <!-- Product Image -->
         <div class="md:w-1/2 h-64 md:h-full">
-          <% if @product.image.present? %>
-            <%= image_tag @product.image, class: "w-full h-full object-cover object-center" %>
+          <% if @product.primary_image %>
+            <%= image_tag @product.primary_image, class: "w-full h-full object-cover object-center" %>
           <% else %>
             <div class="w-full h-full bg-orange-100"></div>
           <% end %>

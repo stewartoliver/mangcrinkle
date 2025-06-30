@@ -488,7 +488,7 @@
 
     /* Chart Components */
     .admin-chart-container {
-        @apply bg-white rounded-lg shadow border border-orange-200 mt-6;
+        @apply bg-white rounded-lg shadow border border-orange-200;
     }
 
     .admin-chart-header {

@@ -139,42 +139,48 @@ puts "📦 Creating sample products..."
 crinkle_products = [
   {
     name: "Chocolate Crinkle",
-    description: "Our signature chocolate crinkle cookie with a perfect crackled top and rich chocolate flavor. Made with premium cocoa and dusted with powdered sugar for that classic Filipino bakery taste.",
+    short_description: "Rich chocolate crinkle with a perfect crackled top",
+    description: "Our signature chocolate crinkle cookie with a perfect crackled top and rich chocolate flavor. Made with premium cocoa and dusted with powdered sugar for that classic Filipino bakery taste. Each bite delivers a fudgy interior with a slightly crispy exterior that melts in your mouth.",
     price: 3.50,
     category: "Crinkles",
     active: true
   },
   {
-    name: "Ube Crinkle",
-    description: "Our signature Filipino purple yam flavor, rich and naturally sweet.",
+    name: "Ube Crinkle", 
+    short_description: "Authentic Filipino purple yam flavor with natural sweetness",
+    description: "Our signature Filipino purple yam flavor, rich and naturally sweet. Made with real ube extract imported from the Philippines, these cookies showcase the beloved flavor that's close to every Filipino's heart. The beautiful purple hue and unique nutty-vanilla taste make this a truly special treat.",
     price: 3.50,
     category: "Crinkles",
     active: true
   },
   {
     name: "Espresso Crinkle",
-    description: "Rich coffee flavor with a perfect crinkle texture.",
+    short_description: "Bold coffee flavor for the perfect pick-me-up",
+    description: "Rich coffee flavor with a perfect crinkle texture. Made with premium espresso beans, these cookies deliver a bold coffee taste that's perfect for your morning treat or afternoon pick-me-up. The deep, roasted flavor pairs beautifully with the sweet powdered sugar coating.",
     price: 3.50,
     category: "Crinkles",
     active: true
   },
   {
     name: "Red Velvet Crinkle",
-    description: "A modern twist on the classic crinkle! Rich red velvet flavor with cream cheese undertones, topped with a generous dusting of powdered sugar.",
+    short_description: "Classic red velvet with cream cheese undertones",
+    description: "A modern twist on the classic crinkle! Rich red velvet flavor with cream cheese undertones, topped with a generous dusting of powdered sugar. This elegant cookie combines the beloved red velvet cake flavor with our signature crinkle texture for a truly indulgent experience.",
     price: 3.50,
     category: "Crinkles",
     active: true
   },
   {
     name: "Matcha Crinkle",
-    description: "Premium Japanese matcha powder gives this crinkle its vibrant green color and distinctive earthy flavor. Perfect for tea lovers!",
+    short_description: "Premium Japanese matcha with earthy, sophisticated flavor",
+    description: "Premium Japanese matcha powder gives this crinkle its vibrant green color and distinctive earthy flavor. Perfect for tea lovers! Each cookie delivers the authentic taste of ceremonial-grade matcha with a subtle sweetness that balances the natural bitterness of the green tea.",
     price: 3.50,
     category: "Crinkles",
     active: true
   },
   {
     name: "Chocolate Mint Crinkle",
-    description: "Minty and Chocolatey perfection! Rich chocolate flavor with a sweet hit of mint, creating a sophisticated taste that's hard to resist.",
+    short_description: "Refreshing mint meets rich chocolate in perfect harmony",
+    description: "Minty and chocolatey perfection! Rich chocolate flavor with a sweet hit of mint, creating a sophisticated taste that's hard to resist. Like a cookie version of your favorite chocolate mint candy, these crinkles offer the perfect balance of cool mint and warm chocolate flavors.",
     price: 3.50,
     category: "Crinkles",
     active: true
@@ -186,6 +192,7 @@ all_products = crinkle_products
 
 all_products.each do |product_attrs|
   product = Product.find_or_create_by(name: product_attrs[:name]) do |p|
+    p.short_description = product_attrs[:short_description]
     p.description = product_attrs[:description]
     p.price = product_attrs[:price]
     p.category = product_attrs[:category]
@@ -256,7 +263,7 @@ sample_customers = [
     email: "maria.santos@example.com",
     first_name: "Maria",
     last_name: "Santos",
-    phone: "555-0101",
+    phone: "5555550101",
     address: "123 Filipino Street, San Francisco, CA 94102",
     newsletter_subscribed: true
   },
@@ -264,7 +271,7 @@ sample_customers = [
     email: "juan.delacruz@example.com",
     first_name: "Juan",
     last_name: "Dela Cruz",
-    phone: "555-0102",
+    phone: "5555550102",
     address: "456 Bay Area Blvd, Oakland, CA 94601",
     newsletter_subscribed: false
   },
@@ -272,7 +279,7 @@ sample_customers = [
     email: "ana.garcia@example.com",
     first_name: "Ana",
     last_name: "Garcia",
-    phone: "555-0103",
+    phone: "5555550103",
     address: "789 Pacific Ave, San Jose, CA 95110",
     newsletter_subscribed: true
   }
@@ -309,9 +316,9 @@ if sample_products.any? && sample_packages.any? && sample_users.any?
   order1 = Order.create!(
     customer_name: "Maria Santos",
     email: "maria.santos@example.com",
-    phone: "555-0101",
+    phone: "5555550101",
     address: "123 Filipino Street, San Francisco, CA 94102",
-    status: "delivered",
+    status: "completed",
     total_price: 21.00,
     user: sample_users.first,
     order_source: "website",
@@ -337,9 +344,9 @@ if sample_products.any? && sample_packages.any? && sample_users.any?
   order2 = Order.create!(
     customer_name: "Juan Dela Cruz",
     email: "juan.delacruz@example.com",
-    phone: "555-0102",
+    phone: "5555550102",
     address: "456 Bay Area Blvd, Oakland, CA 94601",
-    status: "shipped",
+    status: "processing",
     total_price: 17.00,
     user: sample_users.last,
     order_source: "website",
@@ -370,7 +377,7 @@ if sample_products.any? && sample_packages.any? && sample_users.any?
   order3 = Order.create!(
     customer_name: "Ana Garcia",
     email: "ana.garcia@example.com",
-    phone: "555-0103",
+    phone: "5555550103",
     address: "789 Pacific Ave, San Jose, CA 95110",
     status: "pending",
     total_price: 31.00,

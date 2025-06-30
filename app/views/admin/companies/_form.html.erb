@@ -1,4 +1,4 @@
-<%= form_with(model: [:admin, company], class: "space-y-6") do |form| %>
+<%= form_with(model: [:admin, company], class: "space-y-8") do |form| %>
   <% if company.errors.any? %>
     <div class="rounded-md bg-red-50 p-4">
       <div class="flex">
@@ -23,93 +23,249 @@
     </div>
   <% end %>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <!-- Left Column -->
-    <div class="space-y-4">
-      <div class="form-group">
-        <%= form.label :name, class: "form-label" %>
-        <div class="mt-1">
-          <%= form.text_field :name, class: "form-input", placeholder: "Company name" %>
-        </div>
+  <!-- Basic Information Section -->
+  <div class="bg-white border border-orange-200 rounded-lg p-6">
+    <h3 class="text-lg font-semibold text-orange-950 mb-4 border-b border-orange-100 pb-2">
+      Basic Information
+    </h3>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="lg:col-span-2">
+        <%= form.label :name, "Company Name", class: "form-label" %>
+        <%= form.text_field :name, class: "form-input", placeholder: "Enter the company name" %>
       </div>
-
-      <div class="form-group">
-        <%= form.label :email, class: "form-label" %>
-        <div class="mt-1">
-          <%= form.email_field :email, class: "form-input", placeholder: "contact@company.com" %>
-        </div>
+      
+      <div>
+        <%= form.label :email, "Contact Email", class: "form-label" %>
+        <%= form.email_field :email, class: "form-input", placeholder: "contact@company.com" %>
       </div>
-
-      <div class="form-group">
-        <%= form.label :phone, class: "form-label" %>
-        <div class="mt-1">
-          <%= form.telephone_field :phone, class: "form-input", placeholder: "(555) 123-4567" %>
-        </div>
+      
+      <div>
+        <%= form.label :phone, "Phone Number", class: "form-label" %>
+        <%= form.telephone_field :phone, class: "form-input", placeholder: "(555) 123-4567" %>
       </div>
-
-      <div class="form-group">
-        <%= form.label :website, class: "form-label" %>
-        <div class="mt-1">
-          <%= form.url_field :website, class: "form-input", placeholder: "https://www.company.com" %>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <%= form.label :address, class: "form-label" %>
-        <div class="mt-1">
-          <%= form.text_area :address, class: "form-textarea", rows: 4, placeholder: "Street address, city, state, zip" %>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right Column -->
-    <div class="space-y-4">
-      <div class="form-group">
-        <%= form.label :logo, class: "form-label" %>
-        <div class="mt-1">
-          <% if company.has_logo? %>
-            <div class="mb-4">
-              <p class="text-sm text-orange-600 mb-2">Current logo:</p>
-              <%= image_tag company.logo, class: "h-32 w-32 object-cover rounded-lg" %>
-            </div>
-          <% end %>
-          <%= form.file_field :logo, class: "block w-full text-sm text-orange-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100", accept: "image/*" %>
-          <p class="mt-2 text-sm text-orange-600">PNG, JPG, GIF up to 10MB</p>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <%= form.label :business_hours, "Business Hours (JSON)", class: "form-label" %>
-        <div class="mt-1">
-          <%= form.text_area :business_hours, class: "form-textarea", rows: 6, 
-              placeholder: '{"monday": "9:00 AM - 5:00 PM", "tuesday": "9:00 AM - 5:00 PM", "wednesday": "9:00 AM - 5:00 PM", "thursday": "9:00 AM - 5:00 PM", "friday": "9:00 AM - 5:00 PM", "saturday": "Closed", "sunday": "Closed"}', 
-              value: company.business_hours.is_a?(Hash) ? company.business_hours.to_json : company.business_hours %>
-          <p class="mt-2 text-sm text-orange-600">Enter as JSON object or leave blank</p>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <%= form.label :description, class: "form-label" %>
-        <div class="mt-1">
-          <%= form.text_area :description, class: "form-textarea", rows: 4, placeholder: "Brief description of the company..." %>
-        </div>
-      </div>
-
-      <div class="relative flex items-start">
-        <div class="flex items-center h-5">
-          <%= form.check_box :active, class: "form-checkbox" %>
-        </div>
-        <div class="ml-3 text-sm">
-          <%= form.label :active, "Active Company", class: "font-medium text-orange-700" %>
-        </div>
+      
+      <div class="lg:col-span-2">
+        <%= form.label :website, "Website", class: "form-label" %>
+        <%= form.url_field :website, class: "form-input", placeholder: "https://www.company.com" %>
       </div>
     </div>
   </div>
 
-  <div class="flex justify-end space-x-3 pt-4">
+  <!-- Contact Information Section -->
+  <div class="bg-white border border-orange-200 rounded-lg p-6">
+    <h3 class="text-lg font-semibold text-orange-950 mb-4 border-b border-orange-100 pb-2">
+      Contact Information
+    </h3>
+    
+    <div class="space-y-4">
+      <div>
+        <%= form.label :address, "Address", class: "form-label" %>
+        <p class="text-xs text-orange-600 mb-2">Full business address including city, state, and zip code</p>
+        <%= form.text_area :address, rows: 3, class: "form-textarea", placeholder: "Street address, city, state, zip" %>
+      </div>
+      
+      <div>
+        <%= form.label :business_hours, "Business Hours", class: "form-label" %>
+        <p class="text-xs text-orange-600 mb-2">Enter as JSON object or leave blank for default hours</p>
+        <%= form.text_area :business_hours, rows: 4, class: "form-textarea", 
+            placeholder: '{"monday": "9:00 AM - 5:00 PM", "tuesday": "9:00 AM - 5:00 PM", "wednesday": "9:00 AM - 5:00 PM", "thursday": "9:00 AM - 5:00 PM", "friday": "9:00 AM - 5:00 PM", "saturday": "Closed", "sunday": "Closed"}', 
+            value: company.business_hours.is_a?(Hash) ? company.business_hours.to_json : company.business_hours %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logo Section -->
+  <div class="bg-white border border-orange-200 rounded-lg p-6">
+    <h3 class="text-lg font-semibold text-orange-950 mb-4 border-b border-orange-100 pb-2">
+      Company Logo
+    </h3>
+    
+    <div id="imageManagerContainer" 
+         data-existing-images='<%= raw(
+           if company.has_logo?
+             [{
+               image: {
+                 id: company.logo.id,
+                 blob_id: company.logo.blob.id,
+                 url: url_for(company.logo)
+               },
+               is_primary: true
+             }].to_json
+           else
+             "[]"
+           end
+         ) %>'
+         data-primary-image-id="<%= company.has_logo? ? company.logo.id : '' %>"
+         data-max-images="1">
+      <!-- Image manager will be rendered here by JavaScript -->
+    </div>
+    
+    <!-- Hidden file input for form submission -->
+    <%= form.file_field :logo, accept: "image/*", 
+        style: "display: none;", id: "hiddenImageInput" %>
+  </div>
+
+  <!-- Description Section -->
+  <div class="bg-white border border-orange-200 rounded-lg p-6">
+    <h3 class="text-lg font-semibold text-orange-950 mb-4 border-b border-orange-100 pb-2">
+      Company Description
+    </h3>
+    
+    <div>
+      <%= form.label :description, "About the Company", class: "form-label" %>
+      <p class="text-xs text-orange-600 mb-2">Brief description of the company and its services</p>
+      <%= form.text_area :description, rows: 4, class: "form-textarea", placeholder: "Tell customers about your company..." %>
+    </div>
+  </div>
+
+  <!-- Status Section -->
+  <div class="bg-white border border-orange-200 rounded-lg p-6">
+    <h3 class="text-lg font-semibold text-orange-950 mb-4 border-b border-orange-100 pb-2">
+      Company Status
+    </h3>
+    
+    <div class="admin-status-section">
+      <div class="admin-status-info">
+        <h4 class="admin-status-title">Company Visibility</h4>
+        <p class="admin-status-description">
+          Control whether this company information is publicly visible
+        </p>
+        <div class="mt-2 space-y-1">
+          <div class="flex items-center text-xs text-orange-600">
+            <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+            <span><strong>Active:</strong> Company information is publicly visible</span>
+          </div>
+          <div class="flex items-center text-xs text-orange-600">
+            <span class="inline-block w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+            <span><strong>Inactive:</strong> Company information is hidden from public view</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="admin-status-toggle">
+        <label class="admin-toggle-switch">
+          <%= form.check_box :active, class: "admin-toggle-input", checked: company.active? %>
+          <span class="admin-toggle-slider"></span>
+          <span class="admin-toggle-labels">
+            <span class="admin-toggle-active">Active</span>
+            <span class="admin-toggle-inactive">Inactive</span>
+          </span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="flex justify-end space-x-3 pt-6 border-t border-orange-200">
     <%= link_to "Cancel", company.persisted? ? admin_company_path(company) : admin_companies_path, 
         class: "admin-btn-secondary" %>
     <%= form.submit company.persisted? ? "Update Company" : "Create Company", 
         class: "admin-btn-primary" %>
   </div>
-<% end %> 
+<% end %>
+
+<script>
+function initializeImageManager() {
+  const container = document.getElementById('imageManagerContainer');
+  if (!container) return;
+  
+  const existingImagesData = container.dataset.existingImages;
+  const primaryImageId = container.dataset.primaryImageId;
+  const maxImages = parseInt(container.dataset.maxImages) || 1;
+  
+  console.log('Initializing company logo manager with data:', {
+    existingImagesData,
+    primaryImageId,
+    maxImages
+  });
+  
+  // Parse existing images data
+  let existingImages = [];
+  if (existingImagesData && existingImagesData !== 'null' && existingImagesData !== '[]') {
+    try {
+      const parsedData = JSON.parse(existingImagesData);
+      console.log('Parsed data:', parsedData);
+      
+      if (Array.isArray(parsedData)) {
+        existingImages = parsedData.map(img => {
+          console.log('Processing image:', img);
+          
+          // Handle both direct image objects and nested image objects
+          const imageData = img.image || img;
+          
+          return {
+            id: imageData.id,
+            url: imageData.url,
+            isNew: false
+          };
+        }).filter(img => img.id && img.url); // Filter out invalid entries
+      }
+    } catch (e) {
+      console.error('Error parsing existing images:', e);
+      console.error('Raw data:', existingImagesData);
+    }
+  }
+  
+  console.log('Final existing images:', existingImages);
+  
+  // Initialize the image manager
+  window.imageManager = new ImageManager(container, {
+    maxImages: maxImages,
+    allowPrimary: false, // No primary selection needed for single logo
+    fieldName: 'company[logo]',
+    primaryFieldName: null
+  });
+  
+  // Set existing images
+  window.imageManager.currentImages = existingImages;
+  
+  // Re-render with existing data
+  window.imageManager.renderImages();
+  window.imageManager.updateUploadVisibility();
+  
+  // Handle form submission
+  const form = container.closest('form');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      console.log('Form submission - Image manager state:', {
+        currentImages: window.imageManager.currentImages.length,
+        newFiles: window.imageManager.newFiles.length,
+        totalImages: window.imageManager.currentImages.length + window.imageManager.newFiles.length
+      });
+      
+      // Update hidden fields before submission
+      window.imageManager.updateHiddenFields();
+      
+      // Handle new file uploads
+      const hiddenInput = document.getElementById('hiddenImageInput');
+      if (hiddenInput && window.imageManager.newFiles.length > 0) {
+        console.log('Transferring logo file to hidden input:', window.imageManager.newFiles.length);
+        
+        const fileTransfer = new DataTransfer();
+        
+        // For single logo, just take the first file
+        if (window.imageManager.newFiles[0]) {
+          console.log('Adding logo file:', window.imageManager.newFiles[0].file.name);
+          fileTransfer.items.add(window.imageManager.newFiles[0].file);
+        }
+        
+        hiddenInput.files = fileTransfer.files;
+        console.log('Hidden input now has files:', hiddenInput.files.length);
+        
+        // Verify the file is there
+        if (hiddenInput.files.length > 0) {
+          console.log('Hidden input logo file:', hiddenInput.files[0].name);
+        }
+      } else {
+        console.log('No new logo file to transfer or hidden input not found');
+      }
+    });
+  }
+}
+
+// Initialize on page load and Turbo navigation
+document.addEventListener('DOMContentLoaded', initializeImageManager);
+document.addEventListener('turbo:load', initializeImageManager);
+document.addEventListener('turbo:render', initializeImageManager);
+</script> 

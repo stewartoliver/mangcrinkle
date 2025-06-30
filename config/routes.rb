@@ -32,7 +32,11 @@ Rails.application.routes.draw do
     post 'login', to: 'sessions#create'
     delete 'logout', to: 'sessions#destroy'
     
-    resources :products
+    resources :products do
+      member do
+        delete :remove_image
+      end
+    end
     resources :crinkle_packages
     
     resources :orders, only: [:index, :new, :create, :show, :edit, :update, :destroy] do

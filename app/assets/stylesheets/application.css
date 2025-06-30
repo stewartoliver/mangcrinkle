@@ -13,3 +13,222 @@
  *= require_tree .
  *= require_self
  */
+
+/* Admin Form Components */
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #c2410c;
+    margin-bottom: 0.5rem;
+}
+
+/* Admin Status Section */
+.admin-status-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background-color: #fff7ed;
+    border-radius: 0.5rem;
+    border: 1px solid #fed7aa;
+}
+
+.admin-status-info {
+    flex: 1;
+    padding-right: 1.5rem;
+}
+
+.admin-status-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #431407;
+    margin-bottom: 0.25rem;
+}
+
+.admin-status-description {
+    font-size: 0.75rem;
+    color: #ea580c;
+}
+
+.admin-status-toggle {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Admin Toggle Switch */
+.admin-toggle-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.admin-toggle-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.admin-toggle-slider {
+    width: 3.5rem;
+    height: 1.75rem;
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+    position: relative;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.admin-toggle-input:checked+.admin-toggle-slider {
+    background-color: #ea580c;
+}
+
+.admin-toggle-slider::before {
+    content: '';
+    position: absolute;
+    top: 0.125rem;
+    left: 0.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 9999px;
+    transition: transform 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.admin-toggle-input:checked+.admin-toggle-slider::before {
+    transform: translateX(1.75rem);
+    border-color: white;
+}
+
+.admin-toggle-labels {
+    margin-left: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #c2410c;
+}
+
+.admin-toggle-active {
+    display: none;
+}
+
+.admin-toggle-inactive {
+    display: inline;
+}
+
+.admin-toggle-input:checked~.admin-toggle-labels .admin-toggle-active {
+    display: inline;
+}
+
+.admin-toggle-input:checked~.admin-toggle-labels .admin-toggle-inactive {
+    display: none;
+}
+
+/* Primary Image Toggle - Orange Theme */
+.admin-primary-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    background-color: #fff7ed;
+    border-radius: 0.25rem;
+    border: 1px solid #fed7aa;
+    padding: 0.25rem 0.5rem;
+    width: 5rem;
+    /* matches h-20 w-20 (80px) image width */
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+.admin-primary-toggle:hover {
+    background-color: #ffedd5;
+    border-color: #fb923c;
+}
+
+.admin-primary-toggle:has(input:checked) {
+    background-color: #ea580c;
+    border-color: #ea580c;
+    color: white;
+}
+
+.admin-primary-radio {
+    appearance: none;
+    width: 0.75rem;
+    height: 0.75rem;
+    border: 2px solid #fed7aa;
+    border-radius: 50%;
+    margin-right: 0.375rem;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    position: relative;
+}
+
+.admin-primary-radio:hover {
+    border-color: #fb923c;
+}
+
+.admin-primary-radio:checked {
+    background-color: #c2410c;
+    border-color: #c2410c;
+}
+
+.admin-primary-toggle:has(input:checked) .admin-primary-radio {
+    background-color: #fed7aa;
+    border-color: #fed7aa;
+}
+
+.admin-primary-label {
+    color: #c2410c;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.15s ease-in-out;
+}
+
+.admin-primary-toggle:has(input:checked) .admin-primary-label {
+    color: white;
+}
+
+/* File Input Styling */
+.admin-file-input {
+    display: block;
+    width: 100%;
+    font-size: 0.875rem;
+    color: #ea580c;
+    border: 2px dashed #fed7aa;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    background-color: #fff7ed;
+    cursor: pointer;
+    transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+.admin-file-input:hover {
+    border-color: #fb923c;
+    background-color: #ffedd5;
+}
+
+.admin-file-input::file-selector-button {
+    margin-right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    border: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background-color: #ea580c;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.admin-file-input::file-selector-button:hover {
+    background-color: #dc2626;
+}

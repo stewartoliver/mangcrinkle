@@ -6,6 +6,7 @@
 //= link controllers/hello_controller.js
 //= link controllers/index.js
 //= link controllers/package_modal_controller.js
+//= link image_manager.js
 //= link favicon/site.webmanifest
 //= link favicon/favicon-96x96.png
 //= link favicon/favicon.svg

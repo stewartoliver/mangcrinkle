@@ -153,7 +153,7 @@
                   <button type="button" 
                           data-package-modal-package-id-param="<%= package.id %>"
                           data-package-modal-package-limit-param="<%= package.quantity %>"
-                          data-package-modal-products-param='<%= raw Product.active.map { |p| { id: p.id, name: p.name, image_url: p.image.attached? ? rails_blob_url(p.image) : nil } }.to_json %>'
+                          data-package-modal-products-param='<%= raw Product.active.map { |p| { id: p.id, name: p.name, image_url: p.image&.attached? ? rails_blob_url(p.image) : nil } }.to_json %>'
                           class="package-select-btn w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors">
                     Select Package
                   </button>
@@ -178,10 +178,10 @@
                 <div class="bg-white rounded-lg shadow-md overflow-hidden border border-orange-200 hover:border-orange-500 transition duration-150">
                   <div class="p-4 flex items-center space-x-4">
                     <div class="h-16 w-20 bg-orange-50 flex items-center justify-center overflow-hidden rounded-lg flex-shrink-0">
-                      <% if product.image.present? %>
+                      <% if product.has_image? %>
                         <%= image_tag product.image, class: "w-full h-full object-cover" %>
                       <% else %>
-                        <span class="text-orange-400 text-xs">No image</span>
+                        <%= image_tag product.fallback_image_path, class: "w-full h-full object-cover" %>
                       <% end %>
                     </div>
                     
@@ -215,10 +215,10 @@
                 <div class="bg-white rounded-lg shadow-md overflow-hidden border border-green-200 hover:border-green-500 transition duration-150">
                   <div class="p-4 flex items-center space-x-4">
                     <div class="h-16 w-20 bg-green-50 flex items-center justify-center overflow-hidden rounded-lg flex-shrink-0">
-                      <% if product.image.present? %>
+                      <% if product.has_image? %>
                         <%= image_tag product.image, class: "w-full h-full object-cover" %>
                       <% else %>
-                        <span class="text-green-400 text-xs">No image</span>
+                        <%= image_tag product.fallback_image_path, class: "w-full h-full object-cover" %>
                       <% end %>
                     </div>
                     
@@ -252,10 +252,10 @@
                 <div class="bg-white rounded-lg shadow-md overflow-hidden border border-blue-200 hover:border-blue-500 transition duration-150">
                   <div class="p-4 flex items-center space-x-4">
                     <div class="h-16 w-20 bg-blue-50 flex items-center justify-center overflow-hidden rounded-lg flex-shrink-0">
-                      <% if product.image.present? %>
+                      <% if product.has_image? %>
                         <%= image_tag product.image, class: "w-full h-full object-cover" %>
                       <% else %>
-                        <span class="text-blue-400 text-xs">No image</span>
+                        <%= image_tag product.fallback_image_path, class: "w-full h-full object-cover" %>
                       <% end %>
                     </div>
                     

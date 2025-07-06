@@ -79,8 +79,4 @@ test:
 #
 production:
   <<: *default
-  database: mangcrinkle_production
-  username: mangcrinkle
-  <% if ENV["MANGCRINKLE_DATABASE_PASSWORD"] %>
-  password: <%= ENV["MANGCRINKLE_DATABASE_PASSWORD"] %>
-  <% end %>
+  url: <%= ENV['DATABASE_URL'] %>

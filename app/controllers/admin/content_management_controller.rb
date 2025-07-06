@@ -2,7 +2,7 @@ class Admin::ContentManagementController < Admin::BaseController
   def index
     # Group content blocks by purpose for better organization
     @story_content = ContentBlock.where(key: [
-      'founder_story', 'founder_title', 'about_hero_title', 'about_hero_subtitle',
+      'founder_story', 'founder_image', 'founder_title', 'about_hero_title', 'about_hero_subtitle',
       'hero_title', 'hero_subtitle', 'cta_title', 'cta_subtitle', 'cta_button_text'
     ]).order(:title)
     

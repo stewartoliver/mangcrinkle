@@ -72,6 +72,7 @@
           <th scope="col" class="admin-table-header-cell">Content Block</th>
           <th scope="col" class="admin-table-header-cell-center">Type</th>
           <th scope="col" class="admin-table-header-cell-center">Used On</th>
+          <th scope="col" class="admin-table-header-cell-center">Purpose</th>
           <th scope="col" class="admin-table-header-cell-right">Actions</th>
         </tr>
       </thead>
@@ -83,13 +84,34 @@
                 <div class="product-avatar">
                   <div class="product-avatar-placeholder">
                     <span class="product-avatar-initial">
-                      <%= content_block.content_type == 'image' ? '🖼️' : '📝' %>
+                      <% if content_block.key == 'founder_story' %>
+                        👤
+                      <% elsif content_block.key == 'founder_image' %>
+                        📸
+                      <% elsif content_block.key == 'company_values' %>
+                        ⭐
+                      <% elsif content_block.key&.start_with?('about_') %>
+                        📝
+                      <% elsif content_block.content_type == 'image' %>
+                        🖼️
+                      <% else %>
+                        📄
+                      <% end %>
                     </span>
                   </div>
                 </div>
                 <div class="product-info">
                   <div class="product-name">
                     <%= content_block.title %>
+                    <% if content_block.key == 'founder_story' %>
+                      <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                        Featured Story
+                      </span>
+                    <% elsif content_block.key == 'founder_image' %>
+                      <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                        Story Image
+                      </span>
+                    <% end %>
                   </div>
                   <div class="product-description">
                     Key: <code class="text-xs bg-orange-100 px-1 py-0.5 rounded text-orange-800"><%= content_block.key %></code>
@@ -130,6 +152,28 @@
               <% else %>
                 <span class="text-sm text-orange-400">No pages specified</span>
               <% end %>
+            </td>
+            <td class="admin-table-cell-center">
+              <div class="text-xs text-gray-600 max-w-32">
+                <% case content_block.key
+                   when 'founder_story' %>
+                  Main founder story text with visual layout
+                <% when 'founder_image' %>
+                  Photo displayed left of founder story
+                <% when 'company_values' %>
+                  Values in 3-column grid (JSON format)
+                <% when /^about_/ %>
+                  About page hero section
+                <% when /^value_\d+/ %>
+                  Individual company value
+                <% when /^newsletter/ %>
+                  Newsletter signup section
+                <% when /^contact/ %>
+                  Contact information
+                <% else %>
+                  General content block
+                <% end %>
+              </div>
             </td>
             <td class="admin-table-cell-right">
               <div class="admin-action-btn-group">

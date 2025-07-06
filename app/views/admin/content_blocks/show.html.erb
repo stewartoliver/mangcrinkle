@@ -64,14 +64,86 @@
       
       <% case @content_block.content_type %>
       <% when 'text' %>
-        <% if @content_block.content.present? %>
-          <div class="prose prose-orange max-w-none bg-orange-50 rounded-md p-4 border border-orange-200">
-            <%= simple_format(@content_block.content) %>
+        <% if @content_block.key == 'founder_story' %>
+          <!-- Special Founder Story Preview -->
+          <div class="bg-orange-50 rounded-md p-6 border border-orange-200">
+            <div class="text-sm text-orange-600 mb-4">
+              <p class="font-medium">Live Site Preview - How it appears on the About page:</p>
+            </div>
+            
+            <!-- Visual Preview Layout (matching about page) -->
+            <div class="bg-white p-6 rounded-lg border border-orange-100 shadow-sm">
+              <div class="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
+                <div>
+                  <div class="h-80 bg-orange-100 rounded-lg border-2 border-orange-200 flex items-center justify-center">
+                    <% founder_image = ContentBlock.find_by(key: 'founder_image') %>
+                    <% if founder_image&.image&.attached? %>
+                      <%= image_tag founder_image.image, class: "w-full h-full object-cover rounded-lg" %>
+                    <% else %>
+                      <%= image_tag "founder_img.jpg", class: "w-full h-full object-cover rounded-lg" %>
+                    <% end %>
+                  </div>
+                </div>
+                <div class="mt-6 lg:mt-0">
+                  <h3 class="text-2xl font-bold text-orange-950 mb-4">Meet Our Founder</h3>
+                  <div class="text-orange-700 space-y-4 text-sm leading-relaxed">
+                    <%= simple_format(@content_block.content, {}, wrapper_tag: "div", class: "prose prose-sm max-w-none") %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Image Status Info -->
+            <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <div class="flex items-start">
+                <div class="flex-shrink-0">
+                  <svg class="h-4 w-4 text-blue-400 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="ml-3 flex-1">
+                  <% founder_image = ContentBlock.find_by(key: 'founder_image') %>
+                  <% if founder_image&.image&.attached? %>
+                    <p class="text-sm text-blue-800">
+                      <strong>Custom founder image:</strong> Currently using uploaded image. 
+                      <%= link_to "Edit founder image", edit_admin_content_block_path(founder_image), class: "underline" %>
+                    </p>
+                  <% elsif founder_image %>
+                    <p class="text-sm text-blue-800">
+                      <strong>Default founder image:</strong> Using default founder_img.jpg. 
+                      <%= link_to "Upload custom image", edit_admin_content_block_path(founder_image), class: "underline" %>
+                    </p>
+                  <% else %>
+                    <p class="text-sm text-blue-800">
+                      <strong>Default founder image:</strong> Using default founder_img.jpg. 
+                      Create a founder_image content block to upload a custom image.
+                    </p>
+                    <div class="mt-2">
+                      <%= link_to "Create Founder Image Block", new_admin_content_block_path(content_block: { 
+                          key: 'founder_image', 
+                          title: 'Founder Image', 
+                          content_type: 'image',
+                          page_locations: ['About Page', 'Homepage'],
+                          preview_url: '/about'
+                        }), 
+                          class: "inline-flex items-center px-3 py-1 border border-blue-300 text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
           </div>
         <% else %>
-          <div class="text-center py-8 text-orange-400 bg-orange-50 rounded-md border border-orange-200">
-            <p>No content available</p>
-          </div>
+          <!-- Standard Text Preview -->
+          <% if @content_block.content.present? %>
+            <div class="prose prose-orange max-w-none bg-orange-50 rounded-md p-4 border border-orange-200">
+              <%= simple_format(@content_block.content) %>
+            </div>
+          <% else %>
+            <div class="text-center py-8 text-orange-400 bg-orange-50 rounded-md border border-orange-200">
+              <p>No content available</p>
+            </div>
+          <% end %>
         <% end %>
       <% when 'icon' %>
         <% if @content_block.content.present? %>

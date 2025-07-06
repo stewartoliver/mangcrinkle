@@ -26,12 +26,29 @@ After years of perfecting his craft, he decided to share his love for Filipino-s
 
 Today, he continues to personally oversee every batch of cookies, ensuring that each one meets his high standards of quality and taste. His dedication to tradition, combined with a willingness to experiment with new flavors, has made our crinkle cookies a favorite among cookie enthusiasts.'
   cb.content_type = 'text'
+  cb.page_locations = ['About Page', 'Homepage']
+  cb.preview_url = '/about'
 end
 
 if founder_story.persisted?
   puts "✅ Created content block: Founder Story"
 else
   puts "❌ Failed to create founder story: #{founder_story.errors.full_messages.join(', ')}"
+end
+
+# Founder Image Content Block
+founder_image = ContentBlock.find_or_create_by(key: 'founder_image') do |cb|
+  cb.title = 'Founder Image'
+  cb.content = '' # No content needed for image type
+  cb.content_type = 'image'
+  cb.page_locations = ['About Page', 'Homepage']
+  cb.preview_url = '/about'
+end
+
+if founder_image.persisted?
+  puts "✅ Created content block: Founder Image"
+else
+  puts "❌ Failed to create founder image: #{founder_image.errors.full_messages.join(', ')}"
 end
 
 # Company Values Content Block
@@ -55,6 +72,8 @@ company_values = ContentBlock.find_or_create_by(key: 'company_values') do |cb|
     }
   ]'
   cb.content_type = 'json'
+  cb.page_locations = ['About Page']
+  cb.preview_url = '/about'
 end
 
 if company_values.persisted?
@@ -424,7 +443,7 @@ end
 puts "🌱 Database seeding completed!"
 puts ""
 puts "📊 Summary:"
-puts "   • #{ContentBlock.count} content blocks created (founder_story, company_values)"
+puts "   • #{ContentBlock.count} content blocks created (founder_story, founder_image, company_values)"
 puts "   • #{Company.count} company created"
 puts "   • #{Product.count} products created"
 puts "   • #{CrinklePackage.count} packages created"

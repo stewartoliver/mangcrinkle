@@ -16,6 +16,11 @@ class Admin::ContentBlocksController < Admin::BaseController
 
   def new
     @content_block = ContentBlock.new
+    
+    # Pre-fill attributes from params if provided
+    if params[:content_block].present?
+      @content_block.assign_attributes(content_block_params.except(:image, :images))
+    end
   end
 
   def create

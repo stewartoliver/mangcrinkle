@@ -17,22 +17,22 @@
       <div class="space-y-6">
         <div>
           <h3 class="text-lg font-semibold text-orange-950 mb-2">Email</h3>
-          <p class="text-orange-700"><%= content_block_with_default('contact_email', 'info@mangcrinkle.com') %></p>
+          <p class="text-orange-700"><%= company_email %></p>
         </div>
         <div>
           <h3 class="text-lg font-semibold text-orange-950 mb-2">Phone</h3>
-          <p class="text-orange-700"><%= content_block_with_default('contact_phone', '(555) 123-4567') %></p>
+          <p class="text-orange-700"><%= company_phone %></p>
         </div>
         <div>
           <h3 class="text-lg font-semibold text-orange-950 mb-2">Address</h3>
           <div class="text-orange-700">
-            <%= simple_format(content_block_with_default('contact_address', "123 Cookie Street\nSweet City, SC 12345")) %>
+            <%= simple_format(company_address) %>
           </div>
         </div>
         <div>
           <h3 class="text-lg font-semibold text-orange-950 mb-2">Business Hours</h3>
           <div class="text-orange-700">
-            <%= simple_format(content_block_with_default('business_hours', "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed")) %>
+            <%= simple_format(company_business_hours) %>
           </div>
         </div>
       </div>
@@ -42,52 +42,49 @@
     <div class="bg-white rounded-lg shadow-md p-6 border border-orange-200">
       <h2 class="text-2xl font-bold text-orange-950 mb-6">Send us a Message</h2>
       
-      <!-- Early Testing Notice -->
-      <div class="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-md">
-        <div class="text-center">
-          <div class="mb-2 text-lg text-orange-700 font-medium">
-            🚧 Early Testing Phase - Contact Form Currently Offline
-          </div>
-          <div class="text-sm text-orange-600 mb-4">
-            We're keeping contact forms offline for now during testing. Please contact us directly using the information on the left!
-          </div>
-        </div>
-      </div>
-      
-      <!-- Disabled Form -->
-      <div class="space-y-6 opacity-50">
+      <%= form_with model: ContactMessage.new, url: contact_messages_path, local: true, class: "space-y-6" do |form| %>
         <div>
-          <label class="form-label">Name</label>
+          <%= form.label :name, "Name", class: "form-label" %>
           <div class="mt-1">
-            <input type="text" disabled class="form-input bg-gray-100 cursor-not-allowed" placeholder="Contact form disabled">
+            <%= form.text_field :name, required: true, class: "form-input" %>
           </div>
         </div>
 
         <div>
-          <label class="form-label">Email</label>
+          <%= form.label :email, "Email", class: "form-label" %>
           <div class="mt-1">
-            <input type="email" disabled class="form-input bg-gray-100 cursor-not-allowed" placeholder="Contact form disabled">
+            <%= form.email_field :email, required: true, class: "form-input" %>
           </div>
         </div>
 
         <div>
-          <label class="form-label">Subject</label>
+          <%= form.label :subject, "Subject", class: "form-label" %>
           <div class="mt-1">
-            <input type="text" disabled class="form-input bg-gray-100 cursor-not-allowed" placeholder="Contact form disabled">
+            <%= form.text_field :subject, required: true, class: "form-input" %>
           </div>
         </div>
 
         <div>
-          <label class="form-label">Message</label>
+          <%= form.label :priority, "Priority", class: "form-label" %>
           <div class="mt-1">
-            <textarea rows="4" disabled class="form-textarea bg-gray-100 cursor-not-allowed" placeholder="Contact form disabled"></textarea>
+            <%= form.select :priority, 
+                [['Normal', 'normal'], ['High', 'high'], ['Urgent', 'urgent']], 
+                { selected: 'normal' }, 
+                { class: "form-select" } %>
           </div>
         </div>
 
-        <button disabled class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-gray-400 bg-gray-200 cursor-not-allowed opacity-50">
-          Send Message (Disabled)
-        </button>
-      </div>
+        <div>
+          <%= form.label :message, "Message", class: "form-label" %>
+          <div class="mt-1">
+            <%= form.text_area :message, rows: 4, required: true, class: "form-textarea" %>
+          </div>
+        </div>
+
+        <div>
+          <%= form.submit "Send Message", class: "w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-orange-200 bg-orange-950 hover:bg-orange-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-150" %>
+        </div>
+      <% end %>
     </div>
   </div>
 </div> 

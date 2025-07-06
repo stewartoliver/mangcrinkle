@@ -1,0 +1,111 @@
+<% content_for :title, "Contact Message: #{@contact_message.subject}" %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex justify-between items-center">
+      <div>
+        <h3 class="admin-container-title">Contact Message</h3>
+        <p class="admin-container-subtitle">View and respond to customer inquiry</p>
+      </div>
+      <div class="flex space-x-2">
+        <%= link_to "← Back to Messages", admin_contact_messages_path, class: "admin-btn-secondary" %>
+        <%= link_to "Edit Status", edit_admin_contact_message_path(@contact_message), class: "admin-btn-secondary" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-container-content p-6">
+    <!-- Message Details -->
+    <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h4 class="text-xl font-semibold text-orange-950"><%= @contact_message.subject %></h4>
+        <div class="flex space-x-2">
+          <span class="admin-status-badge bg-<%= @contact_message.status_color %>-100 text-<%= @contact_message.status_color %>-800">
+            <%= @contact_message.status.titleize %>
+          </span>
+          <span class="admin-status-badge bg-<%= @contact_message.priority_color %>-100 text-<%= @contact_message.priority_color %>-800">
+            <%= @contact_message.priority.titleize %>
+          </span>
+        </div>
+      </div>
+
+      <!-- Customer Information -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-orange-50 rounded-lg">
+        <div>
+          <h5 class="font-medium text-orange-950 mb-2">Customer Information</h5>
+          <p class="text-sm text-orange-700"><strong>Name:</strong> <%= @contact_message.user.display_name %></p>
+          <p class="text-sm text-orange-700"><strong>Email:</strong> <%= @contact_message.user.email %></p>
+          <% if @contact_message.user.phone.present? %>
+            <p class="text-sm text-orange-700"><strong>Phone:</strong> <%= @contact_message.user.phone %></p>
+          <% end %>
+          <p class="mt-3">
+            <%= link_to "View Customer Profile", admin_user_path(@contact_message.user), 
+                class: "inline-flex items-center px-3 py-1 border border-orange-300 text-sm font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100" %>
+          </p>
+        </div>
+        <div>
+          <h5 class="font-medium text-orange-950 mb-2">Message Details</h5>
+          <p class="text-sm text-orange-700"><strong>Submitted:</strong> <%= @contact_message.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+          <p class="text-sm text-orange-700"><strong>Priority:</strong> <%= @contact_message.priority.titleize %></p>
+          <p class="text-sm text-orange-700"><strong>Status:</strong> <%= @contact_message.status.titleize %></p>
+        </div>
+      </div>
+
+      <!-- Original Message -->
+      <div class="mb-6">
+        <h5 class="font-medium text-orange-950 mb-2">Customer Message</h5>
+        <div class="bg-gray-50 p-4 rounded-lg border">
+          <p class="text-gray-700 whitespace-pre-wrap"><%= @contact_message.message %></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Response History -->
+    <% if @contact_responses.any? %>
+      <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6 mb-6">
+        <h4 class="text-lg font-semibold text-orange-950 mb-4">Response History</h4>
+        <div class="space-y-4">
+          <% @contact_responses.each do |response| %>
+            <div class="border-l-4 border-orange-300 pl-4 py-2">
+              <div class="flex justify-between items-start mb-2">
+                <div class="text-sm text-orange-600">
+                  <strong>Response prepared by:</strong> <%= response.admin_name %>
+                </div>
+                <div class="text-xs text-orange-400">
+                  <%= response.sent_at.strftime("%B %d, %Y at %I:%M %p") %>
+                </div>
+              </div>
+              <div class="text-gray-700 whitespace-pre-wrap"><%= response.response %></div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Response Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6">
+      <h4 class="text-lg font-semibold text-orange-950 mb-4">Prepare Response</h4>
+      
+      <%= form_with model: [@contact_message, @new_response], url: respond_admin_contact_message_path(@contact_message), local: true, class: "space-y-4" do |form| %>
+        <div>
+          <%= form.label :response, "Your Response", class: "form-label" %>
+          <div class="mt-1">
+            <%= form.text_area :response, rows: 6, required: true, class: "form-textarea", placeholder: "Type your response to the customer here..." %>
+          </div>
+          <p class="mt-1 text-sm text-orange-600">This response will be saved in the system for your records. You can copy it to send manually.</p>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-orange-600">
+            <p>💾 Response will be logged in the conversation history</p>
+            <p>📧 Copy the response to send manually to: <strong><%= @contact_message.user.email %></strong></p>
+            <p class="text-xs text-orange-500 mt-1">Note: No automatic email will be sent to prevent spam</p>
+          </div>
+          <div class="flex space-x-2">
+            <%= form.submit "Save Response", class: "admin-btn-primary" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div> 

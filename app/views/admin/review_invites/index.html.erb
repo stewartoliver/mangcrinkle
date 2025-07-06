@@ -1,0 +1,270 @@
+<% content_for :title, "Review Invitations" %>
+
+<!-- Statistics Dashboard -->
+<div class="flex flex-wrap gap-4 mb-6">
+  <div class="admin-stats-card flex-1 min-w-0">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-orange">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 3.26a2 2 0 001.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Total Invites</h2>
+        <p class="admin-stats-value admin-stats-value-orange"><%= @stats[:total] %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card flex-1 min-w-0">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-green">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Active</h2>
+        <p class="admin-stats-value admin-stats-value-green"><%= @stats[:active] %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card flex-1 min-w-0">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-blue">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Used</h2>
+        <p class="admin-stats-value admin-stats-value-blue"><%= @stats[:used] %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card flex-1 min-w-0">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-red">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Expired</h2>
+        <p class="admin-stats-value admin-stats-value-red"><%= @stats[:expired] %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Review Invitations Management -->
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Review Invitations</h3>
+        <p class="admin-container-subtitle">Manage and send review invitations to customers.</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <% if @stats[:expired] > 0 %>
+          <%= link_to "Cleanup Expired", bulk_cleanup_admin_review_invites_path, 
+                      method: :delete, 
+                      class: "admin-btn-secondary",
+                      data: { confirm: "Delete #{@stats[:expired]} expired invitations?" } %>
+        <% end %>
+        <%= link_to "Manage Reviews", admin_reviews_path, class: "admin-btn-secondary" %>
+        <%= link_to "Send New Invitation", new_admin_review_invite_path, class: "admin-btn-primary" %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filters -->
+  <%= form_with url: admin_review_invites_path, method: :get, local: true, class: "px-6 py-4 border-b border-orange-200 bg-gray-50" do |form| %>
+    <div class="flex flex-wrap gap-4">
+      <div class="flex-1 min-w-0">
+        <%= form.label :search, "Search", class: "form-label" %>
+        <div class="mt-1">
+          <%= form.text_field :search, placeholder: "Search by email...", 
+                              value: params[:search], class: "form-input" %>
+        </div>
+      </div>
+      
+      <div class="flex-1 min-w-0">
+        <%= form.label :status, "Status", class: "form-label" %>
+        <div class="mt-1">
+          <%= form.select :status, 
+                          options_for_select([
+                            ['All Invitations', ''],
+                            ['Active', 'active'],
+                            ['Used', 'used'],
+                            ['Expired', 'expired']
+                          ], params[:status]), 
+                          {}, { class: "form-select" } %>
+        </div>
+      </div>
+      
+      <div class="flex-1 min-w-0">
+        <%= form.label :type, "Type", class: "form-label" %>
+        <div class="mt-1">
+          <%= form.select :type, 
+                          options_for_select([
+                            ['All Types', ''],
+                            ['Order-based', 'order'],
+                            ['Manual', 'manual']
+                          ], params[:type]), 
+                          {}, { class: "form-select" } %>
+        </div>
+      </div>
+      
+      <div class="flex items-end">
+        <%= form.submit "Filter", class: "admin-btn-primary" %>
+        <%= link_to "Clear", admin_review_invites_path, class: "ml-2 admin-btn-secondary" %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Invitations Table -->
+  <div class="admin-container-content">
+    <table class="admin-table">
+      <thead class="admin-table-header">
+        <tr>
+          <th scope="col" class="admin-table-header-cell">Recipient</th>
+          <th scope="col" class="admin-table-header-cell-center">Type</th>
+          <th scope="col" class="admin-table-header-cell-center">Status</th>
+          <th scope="col" class="admin-table-header-cell-center">Sent</th>
+          <th scope="col" class="admin-table-header-cell-center">Expires</th>
+          <th scope="col" class="admin-table-header-cell-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="admin-table-body">
+        <% @review_invites.each do |invite| %>
+          <tr class="admin-table-row">
+            <td class="admin-table-cell">
+              <div class="flex items-start">
+                <div class="product-avatar">
+                  <div class="product-avatar-placeholder">
+                    <span class="product-avatar-initial">
+                      <%= invite.name.first.upcase %>
+                    </span>
+                  </div>
+                </div>
+                <div class="product-info">
+                  <div class="product-name">
+                    <%= invite.name %>
+                  </div>
+                  <div class="product-description">
+                    <%= invite.email %>
+                  </div>
+                  <% if invite.order %>
+                    <div class="admin-list-item-meta">
+                      Order #<%= invite.order.id %> • $<%= number_with_precision(invite.order.total_price, precision: 2) %>
+                    </div>
+                  <% end %>
+                  <% if invite.admin_notes.present? %>
+                    <div class="mt-1 text-xs text-orange-500">
+                      <%= truncate(invite.admin_notes, length: 60) %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </td>
+            <td class="admin-table-cell-center">
+              <% if invite.invite_type == 'order' %>
+                <span class="admin-status-badge bg-blue-100 text-blue-800">Order</span>
+              <% else %>
+                <span class="admin-status-badge bg-purple-100 text-purple-800">Manual</span>
+              <% end %>
+            </td>
+            <td class="admin-table-cell-center">
+              <div class="flex flex-col items-center space-y-1">
+                <% if invite.used? %>
+                  <span class="admin-status-badge bg-green-100 text-green-800">Used</span>
+                  <span class="text-xs text-gray-500">
+                    <%= invite.used_at.strftime("%b %d") %>
+                  </span>
+                <% elsif invite.expired? %>
+                  <span class="admin-status-badge bg-red-100 text-red-800">Expired</span>
+                <% else %>
+                  <span class="admin-status-badge bg-green-100 text-green-800">Active</span>
+                <% end %>
+              </div>
+            </td>
+            <td class="admin-table-cell-center text-sm text-orange-600">
+              <% if invite.sent_at %>
+                <div class="flex flex-col items-center">
+                  <span><%= invite.sent_at.strftime("%b %d, %Y") %></span>
+                  <span class="text-xs text-gray-500"><%= invite.sent_at.strftime("%I:%M %p") %></span>
+                </div>
+              <% else %>
+                <span class="text-gray-400">Not sent</span>
+              <% end %>
+            </td>
+            <td class="admin-table-cell-center text-sm text-orange-600">
+              <div class="flex flex-col items-center">
+                <span><%= invite.expires_at.strftime("%b %d, %Y") %></span>
+                <% if invite.expired? %>
+                  <span class="text-xs text-red-500">Expired</span>
+                <% else %>
+                  <span class="text-xs text-gray-500"><%= time_ago_in_words(invite.expires_at) %> from now</span>
+                <% end %>
+              </div>
+            </td>
+            <td class="admin-table-cell-right">
+              <div class="admin-action-btn-group">
+                <%= link_to admin_review_invite_path(invite), class: "admin-action-btn", title: "View Details" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                <% end %>
+                
+                <% if invite.active? %>
+                  <%= link_to resend_admin_review_invite_path(invite), 
+                              method: :patch, 
+                              class: "admin-action-btn",
+                              title: "Resend Email",
+                              data: { confirm: "Resend this invitation?" } do %>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 3.26a2 2 0 001.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  <% end %>
+                <% end %>
+
+                <%= button_to admin_review_invite_path(invite), 
+                            method: :delete, 
+                            class: "admin-action-btn-danger",
+                            form: { data: { turbo_confirm: "Are you sure you want to delete this invitation?" } },
+                            title: "Delete" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    
+    <% if @review_invites.empty? %>
+      <div class="text-center py-12">
+        <div class="text-gray-400 mb-4">
+          <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 3.26a2 2 0 001.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">No invitations found</h3>
+        <p class="text-gray-500 mb-4">
+          <% if params[:search].present? || params[:status].present? || params[:type].present? %>
+            No invitations match your search criteria.
+          <% else %>
+            Review invitations will appear here once you start sending them.
+          <% end %>
+        </p>
+        <%= link_to "Send New Invitation", new_admin_review_invite_path, class: "admin-btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div> 

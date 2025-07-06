@@ -43,41 +43,29 @@ class Admin::ContentBlocksController < Admin::BaseController
   end
 
   def update
+    # Ensure we have the content block for updating
     unless @content_block
       redirect_to admin_content_blocks_path, alert: 'Content block not found.'
       return
     end
-
-    # Debug logging
-    Rails.logger.info "=== CONTENT BLOCK UPDATE DEBUG ==="
-    Rails.logger.info "Current content: #{@content_block.content.inspect}"
-    Rails.logger.info "New content: #{content_block_params[:content].inspect}"
-    Rails.logger.info "Content changed: #{@content_block.content != content_block_params[:content]}"
-    Rails.logger.info "Params: #{content_block_params.inspect}"
-
-    # Validate JSON content if content_type is json
-    if content_block_params[:content_type] == 'json' && content_block_params[:content].present?
-      begin
-        JSON.parse(content_block_params[:content])
-      rescue JSON::ParserError => e
-        @content_block.assign_attributes(content_block_params)
-        @content_block.errors.add(:content, "Invalid JSON format: #{e.message}")
-        flash.now[:alert] = 'There were errors updating the content block. Please check the form below.'
-        render :edit, status: :unprocessable_entity
-        return
-      end
+    
+    Rails.logger.debug "Updating content block #{@content_block.id} with params: #{content_block_params.inspect}"
+    
+    # Handle image removal if requested
+    if params[:remove_image] == '1'
+      @content_block.image.purge if @content_block.image.attached?
     end
     
-    # Assign attributes first to check for changes
-    @content_block.assign_attributes(content_block_params)
-    Rails.logger.info "After assign_attributes - changed?: #{@content_block.changed?}"
-    Rails.logger.info "Changes: #{@content_block.changes.inspect}"
-    
-    if @content_block.save
-      Rails.logger.info "Content block saved successfully"
+    # Handle images removal if requested
+    if params[:remove_images] == '1'
+      @content_block.images.purge if @content_block.images.attached?
+    end
+
+    if @content_block.update(content_block_params)
+      Rails.logger.debug "Content block updated successfully"
       redirect_to admin_content_blocks_path, notice: 'Content block was successfully updated.'
     else
-      Rails.logger.error "Content block save failed: #{@content_block.errors.full_messages}"
+      Rails.logger.debug "Content block update failed: #{@content_block.errors.full_messages}"
       flash.now[:alert] = 'There were errors updating the content block. Please check the form below.'
       render :edit, status: :unprocessable_entity
     end
@@ -88,7 +76,7 @@ class Admin::ContentBlocksController < Admin::BaseController
       redirect_to admin_content_blocks_path, alert: 'Content block not found.'
       return
     end
-
+    
     @content_block.destroy
     redirect_to admin_content_blocks_path, notice: 'Content block was successfully deleted.'
   end
@@ -100,20 +88,6 @@ class Admin::ContentBlocksController < Admin::BaseController
   end
 
   def content_block_params
-    permitted_params = params.require(:content_block).permit(:key, :title, :content, :content_type, :preview_url, :image, images: [], page_locations: [], metadata: {})
-    
-    # Filter out empty strings from page_locations array
-    if permitted_params[:page_locations].present?
-      permitted_params[:page_locations] = permitted_params[:page_locations].reject(&:blank?)
-    else
-      permitted_params[:page_locations] = []
-    end
-    
-    # Strip whitespace from content if present
-    if permitted_params[:content].present?
-      permitted_params[:content] = permitted_params[:content].strip
-    end
-    
-    permitted_params
+    params.require(:content_block).permit(:title, :key, :content, :content_type, :image, images: [], page_locations: [])
   end
 end 

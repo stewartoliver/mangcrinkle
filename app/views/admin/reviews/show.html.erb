@@ -1,0 +1,208 @@
+<% content_for :title, "Review Details" %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Review Details</h3>
+        <p class="admin-container-subtitle">Review submitted by <%= @review.customer_display_name %></p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <%= link_to "Edit Review", edit_admin_review_path(@review), class: "admin-btn-secondary" %>
+        <%= link_to "Back to Reviews", admin_reviews_path, class: "admin-btn-secondary" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-container-content">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Main Review Content -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-lg shadow-sm border border-orange-200">
+          <div class="p-6">
+            <!-- Rating -->
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center">
+                <div class="flex items-center">
+                  <% 5.times do |i| %>
+                    <svg class="h-6 w-6 <%= i < @review.rating ? 'text-yellow-400' : 'text-gray-300' %>" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                  <% end %>
+                  <span class="ml-2 text-xl font-semibold text-orange-600"><%= @review.rating %>/5</span>
+                </div>
+              </div>
+              <div class="flex items-center space-x-2">
+                <% if @review.approved? %>
+                  <span class="admin-status-badge bg-green-100 text-green-800">Approved</span>
+                <% else %>
+                  <span class="admin-status-badge bg-yellow-100 text-yellow-800">Pending</span>
+                <% end %>
+                <% if @review.featured? %>
+                  <span class="admin-status-badge bg-blue-100 text-blue-800">Featured</span>
+                <% end %>
+              </div>
+            </div>
+
+            <!-- Review Title -->
+            <% if @review.title.present? %>
+              <h4 class="text-xl font-semibold text-gray-900 mb-4"><%= @review.title %></h4>
+            <% end %>
+
+            <!-- Review Content -->
+            <div class="prose prose-orange max-w-none mb-6">
+              <p class="text-gray-700 text-lg leading-relaxed"><%= @review.content %></p>
+            </div>
+
+            <!-- Admin Notes -->
+            <% if @review.admin_notes.present? %>
+              <div class="mt-6 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <h5 class="font-semibold text-orange-900 mb-2">Admin Notes</h5>
+                <p class="text-orange-800"><%= @review.admin_notes %></p>
+              </div>
+            <% end %>
+
+            <!-- Action Buttons -->
+            <div class="mt-8 flex flex-wrap gap-3">
+              <% if @review.approved? %>
+                <%= link_to "Unapprove Review", unapprove_admin_review_path(@review), 
+                            method: :patch, class: "admin-btn-secondary",
+                            data: { confirm: "Are you sure you want to unapprove this review?" } %>
+              <% else %>
+                <%= link_to "Approve Review", approve_admin_review_path(@review), 
+                            method: :patch, class: "admin-btn-primary" %>
+              <% end %>
+
+              <%= link_to "#{@review.featured? ? 'Remove from Featured' : 'Add to Featured'}", 
+                          toggle_featured_admin_review_path(@review), 
+                          method: :patch, class: "admin-btn-secondary",
+                          data: { confirm: "Are you sure you want to #{@review.featured? ? 'unfeature' : 'feature'} this review?" } %>
+
+              <%= link_to "Edit Review", edit_admin_review_path(@review), class: "admin-btn-secondary" %>
+              
+              <%= button_to "Delete Review", admin_review_path(@review), 
+                          method: :delete, class: "admin-btn-danger",
+                          form: { data: { turbo_confirm: "Are you sure you want to delete this review? This action cannot be undone." } } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Information -->
+      <div class="lg:col-span-1">
+        <div class="space-y-6">
+          <!-- Customer Information -->
+          <div class="bg-white rounded-lg shadow-sm border border-orange-200">
+            <div class="p-6">
+              <h4 class="text-lg font-semibold text-gray-900 mb-4">Customer Information</h4>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Name</label>
+                  <p class="mt-1 text-sm text-gray-900"><%= @review.customer_display_name %></p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Email</label>
+                  <p class="mt-1 text-sm text-gray-900"><%= @review.email %></p>
+                </div>
+                <% if @review.user.present? %>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Customer Type</label>
+                    <p class="mt-1 text-sm text-gray-900">
+                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        Registered User
+                      </span>
+                    </p>
+                  </div>
+                <% else %>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Customer Type</label>
+                    <p class="mt-1 text-sm text-gray-900">
+                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        Guest
+                      </span>
+                    </p>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review Metadata -->
+          <div class="bg-white rounded-lg shadow-sm border border-orange-200">
+            <div class="p-6">
+              <h4 class="text-lg font-semibold text-gray-900 mb-4">Review Details</h4>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Submitted</label>
+                  <p class="mt-1 text-sm text-gray-900">
+                    <%= @review.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+                  </p>
+                </div>
+                <% if @review.approved? && @review.approved_at.present? %>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Approved</label>
+                    <p class="mt-1 text-sm text-gray-900">
+                      <%= @review.approved_at.strftime("%B %d, %Y at %I:%M %p") %>
+                    </p>
+                  </div>
+                <% end %>
+                <% if @review.approved_by.present? %>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Approved By</label>
+                    <p class="mt-1 text-sm text-gray-900"><%= "#{@review.approved_by.first_name} #{@review.approved_by.last_name}".strip %></p>
+                  </div>
+                <% end %>
+                <% if @review.verified_purchase? %>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Verified Purchase</label>
+                    <p class="mt-1 text-sm text-gray-900">
+                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Order #<%= @review.order.id %>
+                      </span>
+                    </p>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Information -->
+          <% if @review.order.present? %>
+            <div class="bg-white rounded-lg shadow-sm border border-orange-200">
+              <div class="p-6">
+                <h4 class="text-lg font-semibold text-gray-900 mb-4">Associated Order</h4>
+                <div class="space-y-3">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Order ID</label>
+                    <p class="mt-1 text-sm text-gray-900">
+                      <%= link_to "##{@review.order.id}", admin_order_path(@review.order), 
+                                  class: "text-orange-600 hover:text-orange-800" %>
+                    </p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Order Date</label>
+                    <p class="mt-1 text-sm text-gray-900">
+                      <%= @review.order.created_at.strftime("%B %d, %Y") %>
+                    </p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Order Status</label>
+                    <p class="mt-1 text-sm text-gray-900">
+                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        <%= @review.order.status.titleize %>
+                      </span>
+                    </p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Total</label>
+                    <p class="mt-1 text-sm text-gray-900">$<%= number_with_precision(@review.order.total_price, precision: 2) %></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

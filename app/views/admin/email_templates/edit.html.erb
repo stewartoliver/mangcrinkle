@@ -1,0 +1,20 @@
+<% content_for :title, "Edit Email Template - #{@email_template.name}" %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Edit Email Template</h3>
+        <p class="admin-container-subtitle">Update template settings and content</p>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to "Preview", preview_admin_email_template_path(@email_template), class: "admin-btn-secondary" %>
+        <%= link_to "Back to Template", admin_email_template_path(@email_template), class: "admin-btn-back" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-container-content p-6">
+    <%= render "form", email_template: @email_template %>
+  </div>
+</div> 

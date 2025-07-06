@@ -112,13 +112,6 @@
                 class: "form-select" %>
           </div>
         </div>
-        
-        <div class="flex-1 min-w-0">
-          <%= form.label :order_id, "Order ID", class: "form-label" %>
-          <div class="mt-1">
-            <%= form.number_field :order_id, value: params[:order_id], placeholder: "Search by ID", class: "form-input" %>
-          </div>
-        </div>
       </div>
       
       <!-- Second Row -->
@@ -131,16 +124,22 @@
         </div>
         
         <div class="flex-1 min-w-0">
-          <%= form.label :start_date, "Start Date", class: "form-label" %>
+          <%= form.label :email_search_type, "Email Search Type", class: "form-label" %>
           <div class="mt-1">
-            <%= form.date_field :start_date, value: params[:start_date], class: "form-date" %>
+            <%= form.select :email_search_type, 
+                options_for_select([
+                  ['Exact Match', 'exact'],
+                  ['Partial Match', 'partial']
+                ], params[:email_search_type] || 'exact'),
+                {},
+                class: "form-select" %>
           </div>
         </div>
         
         <div class="flex-1 min-w-0">
-          <%= form.label :end_date, "End Date", class: "form-label" %>
+          <%= form.label :start_date, "Start Date", class: "form-label" %>
           <div class="mt-1">
-            <%= form.date_field :end_date, value: params[:end_date], class: "form-date" %>
+            <%= form.date_field :start_date, value: params[:start_date], class: "form-date" %>
           </div>
         </div>
       </div>

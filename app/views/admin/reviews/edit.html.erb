@@ -1,0 +1,300 @@
+<% content_for :title, "Edit Review" %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Edit Review</h3>
+        <p class="admin-container-subtitle">Modify review details and add admin notes</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <%= link_to "View Review", admin_review_path(@review), class: "admin-btn-secondary" %>
+        <%= link_to "Back to Reviews", admin_reviews_path, class: "admin-btn-secondary" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-container-content">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Main Edit Form -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-lg shadow-sm border border-orange-200">
+          <div class="p-6">
+            <%= form_with model: [:admin, @review], local: true, class: "space-y-6" do |form| %>
+              <% if @review.errors.any? %>
+                <div class="rounded-md bg-red-50 p-4">
+                  <div class="flex">
+                    <div class="flex-shrink-0">
+                      <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                    <div class="ml-3">
+                      <h3 class="text-sm font-medium text-red-800">
+                        There were errors with your submission:
+                      </h3>
+                      <div class="mt-2 text-sm text-red-700">
+                        <ul class="list-disc list-inside space-y-1">
+                          <% @review.errors.full_messages.each do |message| %>
+                            <li><%= message %></li>
+                          <% end %>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+
+              <!-- Customer Information -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <%= form.label :customer_name, class: "block text-sm font-medium text-gray-700 mb-1" %>
+                  <%= form.text_field :customer_name, 
+                                      class: "form-input",
+                                      placeholder: "Customer's full name" %>
+                </div>
+                
+                <div>
+                  <%= form.label :email, class: "block text-sm font-medium text-gray-700 mb-1" %>
+                  <%= form.email_field :email, 
+                                       class: "form-input",
+                                       placeholder: "customer@email.com" %>
+                </div>
+              </div>
+
+              <!-- Review Title -->
+              <div>
+                <%= form.label :title, "Review Title (Optional)", class: "block text-sm font-medium text-gray-700 mb-1" %>
+                <%= form.text_field :title, 
+                                    class: "form-input",
+                                    placeholder: "Optional review title" %>
+              </div>
+
+              <!-- Rating -->
+              <div>
+                <%= form.label :rating, "Rating", class: "block text-sm font-medium text-gray-700 mb-2" %>
+                <div class="flex items-center space-x-1" id="star-rating">
+                  <% (1..5).each do |star| %>
+                    <button type="button" class="star-btn text-3xl <%= star <= @review.rating ? 'text-yellow-400' : 'text-gray-300' %> hover:text-yellow-400 transition-colors duration-150" data-rating="<%= star %>">
+                      ★
+                    </button>
+                  <% end %>
+                </div>
+                <%= form.hidden_field :rating, id: "rating-input" %>
+                <p class="mt-1 text-sm text-gray-500">Click the stars to change the rating</p>
+              </div>
+
+              <!-- Review Content -->
+              <div>
+                <%= form.label :content, "Review Content", class: "block text-sm font-medium text-gray-700 mb-1" %>
+                <%= form.text_area :content, 
+                                   rows: 6,
+                                   class: "form-input",
+                                   placeholder: "The customer's review content...",
+                                   maxlength: 500 %>
+                <div class="mt-1 flex justify-between text-sm text-gray-500">
+                  <span>The customer's review content</span>
+                  <span id="char-count"><%= @review.content.length %>/500</span>
+                </div>
+              </div>
+
+              <!-- Admin Notes -->
+              <div>
+                <%= form.label :admin_notes, "Admin Notes", class: "block text-sm font-medium text-gray-700 mb-1" %>
+                <%= form.text_area :admin_notes, 
+                                   rows: 4,
+                                   class: "form-input",
+                                   placeholder: "Internal notes about this review (not visible to customers)..." %>
+                <p class="mt-1 text-sm text-gray-500">These notes are only visible to admins</p>
+              </div>
+
+              <!-- Status Controls -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <%= form.label :approved, class: "block text-sm font-medium text-gray-700 mb-2" %>
+                  <div class="flex items-center">
+                    <%= form.check_box :approved, class: "form-checkbox h-4 w-4 text-orange-600" %>
+                    <%= form.label :approved, "Approved for public display", class: "ml-2 text-sm text-gray-700" %>
+                  </div>
+                </div>
+                
+                <div>
+                  <%= form.label :featured, class: "block text-sm font-medium text-gray-700 mb-2" %>
+                  <div class="flex items-center">
+                    <%= form.check_box :featured, class: "form-checkbox h-4 w-4 text-orange-600" %>
+                    <%= form.label :featured, "Featured review", class: "ml-2 text-sm text-gray-700" %>
+                  </div>
+                  <p class="mt-1 text-xs text-gray-500">Featured reviews appear prominently on the site</p>
+                </div>
+              </div>
+
+              <!-- Submit Buttons -->
+              <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                <%= link_to "Cancel", admin_review_path(@review), class: "admin-btn-secondary" %>
+                <%= form.submit "Update Review", class: "admin-btn-primary" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Information -->
+      <div class="lg:col-span-1">
+        <div class="space-y-6">
+          <!-- Review Preview -->
+          <div class="bg-white rounded-lg shadow-sm border border-orange-200">
+            <div class="p-6">
+              <h4 class="text-lg font-semibold text-gray-900 mb-4">Current Review</h4>
+              
+              <div class="space-y-3">
+                <div class="flex items-center">
+                  <div class="flex items-center">
+                    <% 5.times do |i| %>
+                      <svg class="h-4 w-4 <%= i < @review.rating ? 'text-yellow-400' : 'text-gray-300' %>" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                      </svg>
+                    <% end %>
+                    <span class="ml-1 text-sm text-orange-600">(<%= @review.rating %>)</span>
+                  </div>
+                </div>
+                
+                <% if @review.title.present? %>
+                  <h5 class="font-semibold text-gray-900"><%= @review.title %></h5>
+                <% end %>
+                
+                <p class="text-sm text-gray-700 leading-relaxed">
+                  <%= truncate(@review.content, length: 200) %>
+                </p>
+                
+                <div class="text-xs text-gray-500">
+                  By <%= @review.customer_display_name %> • <%= time_ago_in_words(@review.created_at) %> ago
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review Status -->
+          <div class="bg-white rounded-lg shadow-sm border border-orange-200">
+            <div class="p-6">
+              <h4 class="text-lg font-semibold text-gray-900 mb-4">Review Status</h4>
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-medium text-gray-700">Approval Status</span>
+                  <% if @review.approved? %>
+                    <span class="admin-status-badge bg-green-100 text-green-800">Approved</span>
+                  <% else %>
+                    <span class="admin-status-badge bg-yellow-100 text-yellow-800">Pending</span>
+                  <% end %>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-medium text-gray-700">Featured</span>
+                  <% if @review.featured? %>
+                    <span class="admin-status-badge bg-blue-100 text-blue-800">Featured</span>
+                  <% else %>
+                    <span class="admin-status-badge bg-gray-100 text-gray-800">Not Featured</span>
+                  <% end %>
+                </div>
+                
+                <% if @review.verified_purchase? %>
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-gray-700">Purchase</span>
+                    <span class="admin-status-badge bg-green-100 text-green-800">Verified</span>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="bg-white rounded-lg shadow-sm border border-orange-200">
+            <div class="p-6">
+              <h4 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h4>
+              <div class="space-y-3">
+                <% if @review.approved? %>
+                  <%= link_to "Unapprove Review", unapprove_admin_review_path(@review), 
+                              method: :patch, class: "admin-btn-secondary w-full text-center",
+                              data: { confirm: "Are you sure you want to unapprove this review?" } %>
+                <% else %>
+                  <%= link_to "Approve Review", approve_admin_review_path(@review), 
+                              method: :patch, class: "admin-btn-primary w-full text-center" %>
+                <% end %>
+
+                <%= link_to "#{@review.featured? ? 'Remove from Featured' : 'Add to Featured'}", 
+                            toggle_featured_admin_review_path(@review), 
+                            method: :patch, class: "admin-btn-secondary w-full text-center",
+                            data: { confirm: "Are you sure you want to #{@review.featured? ? 'unfeature' : 'feature'} this review?" } %>
+
+                <%= button_to "Delete Review", admin_review_path(@review), 
+                            method: :delete, class: "admin-btn-danger w-full",
+                            form: { data: { turbo_confirm: "Are you sure you want to delete this review? This action cannot be undone." } } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const starButtons = document.querySelectorAll('.star-btn');
+  const ratingInput = document.getElementById('rating-input');
+  const contentTextarea = document.querySelector('textarea[name="review[content]"]');
+  const charCount = document.getElementById('char-count');
+  
+  let selectedRating = parseInt(ratingInput.value) || 0;
+  
+  // Star rating functionality
+  starButtons.forEach((btn, index) => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      selectedRating = parseInt(this.dataset.rating);
+      ratingInput.value = selectedRating;
+      updateStars();
+    });
+    
+    btn.addEventListener('mouseenter', function() {
+      const hoverRating = parseInt(this.dataset.rating);
+      highlightStars(hoverRating);
+    });
+  });
+  
+  document.getElementById('star-rating').addEventListener('mouseleave', function() {
+    updateStars();
+  });
+  
+  function highlightStars(rating) {
+    starButtons.forEach((btn, index) => {
+      if (index < rating) {
+        btn.classList.remove('text-gray-300');
+        btn.classList.add('text-yellow-400');
+      } else {
+        btn.classList.remove('text-yellow-400');
+        btn.classList.add('text-gray-300');
+      }
+    });
+  }
+  
+  function updateStars() {
+    highlightStars(selectedRating);
+  }
+  
+  // Character count for content
+  if (contentTextarea && charCount) {
+    contentTextarea.addEventListener('input', function() {
+      const count = this.value.length;
+      charCount.textContent = `${count}/500`;
+      if (count > 450) {
+        charCount.classList.add('text-red-600');
+      } else {
+        charCount.classList.remove('text-red-600');
+      }
+    });
+  }
+  
+  // Initialize stars
+  updateStars();
+});
+</script> 

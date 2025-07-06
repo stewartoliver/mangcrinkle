@@ -1,0 +1,121 @@
+<%= form_with model: [:admin, email_template], local: true, class: "space-y-6" do |form| %>
+  <% if email_template.errors.any? %>
+    <div class="bg-red-50 border border-red-200 rounded-md p-4">
+      <div class="flex">
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">
+            There were <%= pluralize(email_template.errors.count, "error") %> with your submission:
+          </h3>
+          <div class="mt-2 text-sm text-red-700">
+            <ul class="list-disc pl-5 space-y-1">
+              <% email_template.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Basic Information -->
+    <div class="space-y-6">
+      <div class="bg-white border border-orange-200 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-orange-950 mb-4 border-b border-orange-100 pb-2">
+          Basic Information
+        </h3>
+        
+        <div class="space-y-4">
+          <div class="form-group">
+            <%= form.label :name, "Template Name", class: "form-label" %>
+            <div class="mt-1">
+              <%= form.text_field :name, class: "form-input", placeholder: "Enter template name" %>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= form.label :template_type, "Template Type", class: "form-label" %>
+            <div class="mt-1">
+              <%= form.select :template_type, 
+                              options_for_select([
+                                ['Welcome Email', 'welcome'],
+                                ['Order Confirmation', 'order_confirmation'],
+                                ['Contact Response', 'contact_response'],
+                                ['Newsletter', 'newsletter'],
+                                ['Sales Report', 'sales_report'],
+                                ['Manual/Custom', 'manual']
+                              ], email_template.template_type), 
+                              { prompt: 'Select template type' }, 
+                              { class: "form-select" } %>
+            </div>
+            <p class="mt-1 text-sm text-orange-600">Choose the type that determines when this template is used</p>
+          </div>
+
+          <div class="form-group">
+            <%= form.label :subject, "Subject Line", class: "form-label" %>
+            <div class="mt-1">
+              <%= form.text_field :subject, class: "form-input", placeholder: "Enter email subject line" %>
+            </div>
+            <p class="mt-1 text-sm text-orange-600">You can use variables like {{customer_name}} in the subject</p>
+          </div>
+
+          <div class="relative flex items-start">
+            <div class="flex items-center h-5">
+              <%= form.check_box :active, class: "form-checkbox" %>
+            </div>
+            <div class="ml-3 text-sm">
+              <%= form.label :active, "Active Template", class: "font-medium text-orange-700" %>
+              <p class="text-orange-600">Only active templates will be used for automated emails</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Content -->
+    <div class="space-y-6">
+      <div class="bg-white border border-orange-200 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-orange-950 mb-4 border-b border-orange-100 pb-2">
+          Email Content
+        </h3>
+        
+        <div class="space-y-4">
+          <div class="form-group">
+            <%= form.label :body, "Email Body", class: "form-label" %>
+            <div class="mt-1">
+              <%= form.text_area :body, rows: 12, class: "form-textarea font-mono", placeholder: "Enter the email body content..." %>
+            </div>
+            <p class="mt-1 text-sm text-orange-600">Use variables like {{customer_name}} to personalize emails</p>
+          </div>
+
+          <div class="form-group">
+            <%= form.label :variables, "Available Variables", class: "form-label" %>
+            <div class="mt-1">
+              <%= form.text_field :variables, class: "form-input", placeholder: "customer_name, customer_email, order_number" %>
+            </div>
+            <p class="mt-1 text-sm text-orange-600">Comma-separated list of variables that can be used in this template</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variable Examples -->
+      <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+        <h4 class="text-sm font-medium text-orange-800 mb-2">Common Variables by Type:</h4>
+        <div class="text-xs text-orange-700 space-y-1">
+          <p><strong>Welcome:</strong> customer_name, customer_email</p>
+          <p><strong>Order Confirmation:</strong> customer_name, order_number, order_total, order_items, customer_email</p>
+          <p><strong>Contact Response:</strong> customer_name, original_subject, admin_response, admin_name</p>
+          <p><strong>Newsletter:</strong> customer_name, unsubscribe_url</p>
+          <p><strong>Sales Report:</strong> admin_name, report_period, total_sales, order_count</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="flex justify-end space-x-3 pt-6 border-t border-orange-200">
+    <%= link_to "Cancel", admin_email_templates_path, class: "admin-btn-secondary" %>
+    <%= form.submit email_template.new_record? ? "Create Template" : "Update Template", class: "admin-btn-primary" %>
+  </div>
+<% end %> 

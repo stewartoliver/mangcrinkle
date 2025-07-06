@@ -1,0 +1,151 @@
+<% content_for :title, "Send Review Invitation" %>
+
+<div class="admin-container p-6">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Send Review Invitation</h3>
+        <p class="admin-container-subtitle">Invite customers to leave reviews for their experience.</p>
+      </div>
+      <div>
+        <%= link_to "Back to Invitations", admin_review_invites_path, class: "admin-btn-secondary" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-container-content">
+    <%= form_with model: [:admin, @review_invite], local: true, class: "space-y-6" do |form| %>
+      <% if @review_invite.errors.any? %>
+        <div class="bg-red-50 border border-red-200 rounded-md p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                Please fix the following errors:
+              </h3>
+              <div class="mt-2 text-sm text-red-700">
+                <ul class="list-disc list-inside">
+                  <% @review_invite.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <!-- Customer Information -->
+        <div class="lg:col-span-2">
+          <h4 class="text-lg font-medium text-gray-900 mb-4">Customer Information</h4>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <%= form.label :name, "Customer Name", class: "form-label" %>
+              <%= form.text_field :name, 
+                                  class: "form-input",
+                                  placeholder: "Enter customer's full name" %>
+            </div>
+            
+            <div>
+              <%= form.label :email, "Email Address", class: "form-label" %>
+              <%= form.email_field :email, 
+                                   class: "form-input",
+                                   placeholder: "customer@example.com" %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Association (Optional) -->
+        <div class="lg:col-span-2">
+          <h4 class="text-lg font-medium text-gray-900 mb-4">Order Association (Optional)</h4>
+          <div>
+            <%= form.label :order_id, "Link to Order", class: "form-label" %>
+            <%= form.select :order_id, 
+                            options_from_collection_for_select(@orders, :id, :display_name, @review_invite.order_id),
+                            { prompt: "Select an order (optional)" },
+                            { class: "form-select" } %>
+            <p class="mt-1 text-sm text-gray-500">
+              Linking to an order will mark the review as a "verified purchase" and include order details in the email.
+            </p>
+          </div>
+        </div>
+
+        <!-- Admin Notes -->
+        <div class="lg:col-span-2">
+          <h4 class="text-lg font-medium text-gray-900 mb-4">Admin Notes</h4>
+          <div>
+            <%= form.label :admin_notes, "Internal Notes", class: "form-label" %>
+            <%= form.text_area :admin_notes, 
+                               rows: 3,
+                               class: "form-input",
+                               placeholder: "Internal notes about this invitation (not visible to customer)" %>
+            <p class="mt-1 text-sm text-gray-500">
+              These notes are for internal use only and will not be visible to the customer.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview Section -->
+      <div class="bg-blue-50 border border-blue-200 rounded-md p-6">
+        <h4 class="text-lg font-medium text-blue-900 mb-3">What happens next?</h4>
+        <ul class="text-sm text-blue-800 space-y-2">
+          <li class="flex items-start">
+            <svg class="h-5 w-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            The customer will receive a personalized email with a secure review link
+          </li>
+          <li class="flex items-start">
+            <svg class="h-5 w-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            The link will be valid for 30 days from now
+          </li>
+          <li class="flex items-start">
+            <svg class="h-5 w-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            The customer's name and email will be pre-filled in the review form
+          </li>
+          <li class="flex items-start">
+            <svg class="h-5 w-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            If linked to an order, the review will be marked as a "verified purchase"
+          </li>
+        </ul>
+      </div>
+
+      <!-- Submit Buttons -->
+      <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-200">
+        <%= link_to "Cancel", admin_review_invites_path, class: "admin-btn-secondary" %>
+        <%= form.submit "Send Invitation", class: "admin-btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Auto-fill customer info when order is selected
+  const orderSelect = document.querySelector('select[name="review_invite[order_id]"]');
+  const nameInput = document.querySelector('input[name="review_invite[name]"]');
+  const emailInput = document.querySelector('input[name="review_invite[email]"]');
+  
+  if (orderSelect && nameInput && emailInput) {
+    orderSelect.addEventListener('change', function() {
+      const selectedOption = this.options[this.selectedIndex];
+      if (selectedOption.value && selectedOption.dataset.customerName && selectedOption.dataset.customerEmail) {
+        nameInput.value = selectedOption.dataset.customerName;
+        emailInput.value = selectedOption.dataset.customerEmail;
+      }
+    });
+  }
+});
+</script> 

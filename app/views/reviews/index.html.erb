@@ -1,150 +1,229 @@
 <% content_for :title, "Customer Reviews" %>
 
-<div class="min-h-screen bg-orange-50">
-  <!-- Hero Section -->
-  <div class="bg-gradient-to-r from-orange-600 to-orange-700 text-white py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <h1 class="text-4xl font-bold mb-4">What Our Customers Say</h1>
-        <p class="text-xl text-orange-100 mb-8">
-          Read reviews from our happy customers and share your own experience!
-        </p>
-        
-        <div class="flex justify-center items-center space-x-8 mb-8">
-          <div class="text-center">
-            <div class="text-3xl font-bold"><%= @average_rating %></div>
-            <div class="text-orange-200">Average Rating</div>
-            <div class="text-yellow-300 text-xl">
-              <%= '★' * @average_rating.to_i %>
-            </div>
-          </div>
-          <div class="text-center">
-            <div class="text-3xl font-bold"><%= @total_reviews %></div>
-            <div class="text-orange-200">Total Reviews</div>
+<!-- Reviews Header -->
+<div class="bg-orange-200 text-orange-950 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <h1 class="text-4xl font-extrabold tracking-tight">What Our Customers Say</h1>
+      <p class="mt-4 text-xl max-w-3xl mx-auto">
+        Read reviews from our happy customers and share your own experience!
+      </p>
+      
+      <div class="flex justify-center items-center space-x-8 mt-8">
+        <div class="text-center">
+          <div class="text-3xl font-bold"><%= @average_rating %></div>
+          <div class="text-orange-700">Average Rating</div>
+          <div class="text-yellow-400 text-xl">
+            <%= '★' * @average_rating.to_i %>
           </div>
         </div>
-        
+        <div class="text-center">
+          <div class="text-3xl font-bold"><%= @total_reviews %></div>
+          <div class="text-orange-700">Total Reviews</div>
+        </div>
+      </div>
+      
+      <div class="mt-8">
         <%= link_to "Write a Review", new_review_path, 
-                    class: "inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-orange-600 bg-white hover:bg-orange-50 transition-colors duration-200" %>
+                    class: "inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-950 hover:bg-orange-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-150" %>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <!-- Featured Reviews -->
-    <% if @featured_reviews.any? %>
-      <div class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured Reviews</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <% @featured_reviews.each do |review| %>
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-orange-500">
-              <div class="flex items-center mb-4">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <!-- Featured Reviews -->
+  <% if @featured_reviews.any? %>
+    <div class="mb-12">
+      <h2 class="text-2xl font-bold text-orange-950 mb-6">Featured Reviews</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <% @featured_reviews.each do |review| %>
+          <div class="bg-white rounded-lg shadow-md p-6 border border-orange-200">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center">
                 <div class="text-yellow-400 text-lg">
                   <%= review.star_display %>
                 </div>
-                <span class="ml-2 text-sm text-gray-600">
+                <span class="ml-2 text-sm text-orange-600">
                   <%= review.created_at.strftime("%B %Y") %>
                 </span>
               </div>
-              <p class="text-gray-700 mb-4 italic">"<%= review.content %>"</p>
-              <div class="text-sm font-medium text-gray-900">
-                - <%= review.customer_display_name %>
-              </div>
+              <% if review.verified_purchase? %>
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                  Verified
+                </span>
+              <% end %>
             </div>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
-
-    <!-- Filter Section -->
-    <div class="mb-8">
-      <div class="bg-white rounded-lg shadow-sm p-6">
-        <%= form_with url: reviews_path, method: :get, local: true, class: "flex flex-wrap items-center gap-4" do |form| %>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Filter by Rating</label>
-            <%= form.select :rating, 
-                            options_for_select([
-                              ['All Ratings', ''],
-                              ['5 Stars', '5'],
-                              ['4 Stars', '4'],
-                              ['3 Stars', '3'],
-                              ['2 Stars', '2'],
-                              ['1 Star', '1']
-                            ], params[:rating]), 
-                            {}, { class: "border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500" } %>
-          </div>
-          <div class="flex items-end">
-            <%= form.submit "Filter", class: "px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors duration-200" %>
-            <%= link_to "Clear", reviews_path, class: "ml-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors duration-200" %>
+            <% if review.title.present? %>
+              <h3 class="font-semibold text-orange-950 mb-2"><%= review.title %></h3>
+            <% end %>
+            <p class="text-orange-700 mb-4 italic">"<%= review.content %>"</p>
+            <div class="text-sm font-medium text-orange-950">
+              - <%= review.customer_display_name %>
+            </div>
           </div>
         <% end %>
       </div>
     </div>
+  <% end %>
 
-    <!-- Reviews List -->
-    <div class="space-y-6">
-      <% @reviews.each do |review| %>
-        <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-200">
-          <div class="flex items-start justify-between mb-4">
-            <div>
-              <div class="flex items-center mb-2">
-                <div class="text-yellow-400 text-lg">
-                  <%= review.star_display %>
-                </div>
-                <span class="ml-3 text-sm font-medium text-gray-900">
-                  <%= review.customer_display_name %>
-                </span>
-                <span class="ml-2 text-sm text-gray-500">
-                  • <%= time_ago_in_words(review.created_at) %> ago
-                </span>
-              </div>
-            </div>
-            <% if review.recent? %>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                Recent
-              </span>
-            <% end %>
-          </div>
-          
-          <p class="text-gray-700 leading-relaxed">
-            <%= review.content %>
-          </p>
-          
-          <% if review.order %>
-            <div class="mt-4 text-xs text-gray-500">
-              Verified purchase • Order #<%= review.order.id %>
-            </div>
-          <% end %>
+  <!-- Reviews Container -->
+  <div class="admin-container">
+    <div class="admin-container-header">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="admin-container-title">Customer Reviews</h3>
+          <p class="admin-container-subtitle">All reviews from our valued customers</p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <%= link_to "Write a Review", new_review_path, class: "admin-btn-primary" %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="px-6 py-4 border-b border-orange-200 bg-orange-50">
+      <%= form_with url: reviews_path, method: :get, local: true, class: "flex flex-wrap items-center gap-4" do |form| %>
+        <div>
+          <%= form.select :rating, 
+                          options_for_select([
+                            ['All Ratings', ''],
+                            ['5 Stars', '5'],
+                            ['4 Stars', '4'],
+                            ['3 Stars', '3'],
+                            ['2 Stars', '2'],
+                            ['1 Star', '1']
+                          ], params[:rating]), 
+                          {}, { class: "form-select" } %>
+        </div>
+        <div class="flex items-end">
+          <%= form.submit "Filter", class: "admin-btn-primary" %>
+          <%= link_to "Clear", reviews_path, class: "ml-2 admin-btn-secondary" %>
         </div>
       <% end %>
     </div>
 
-    <!-- Empty State -->
-    <% if @reviews.empty? %>
-      <div class="text-center py-12">
-        <div class="text-gray-400 mb-4">
-          <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-1l-4 4z" />
-          </svg>
+    <!-- Reviews Table -->
+    <div class="admin-container-content">
+      <% if @reviews.any? %>
+        <table class="admin-table">
+          <thead class="admin-table-header">
+            <tr>
+              <th scope="col" class="admin-table-header-cell">Customer</th>
+              <th scope="col" class="admin-table-header-cell">Review</th>
+              <th scope="col" class="admin-table-header-cell-center">Rating</th>
+              <th scope="col" class="admin-table-header-cell-center">Date</th>
+              <th scope="col" class="admin-table-header-cell-center">Status</th>
+            </tr>
+          </thead>
+          <tbody class="admin-table-body">
+            <% @reviews.each do |review| %>
+              <tr class="admin-table-row">
+                <td class="admin-table-cell">
+                  <div class="flex items-center">
+                    <div class="product-avatar">
+                      <div class="product-avatar-placeholder">
+                        <span class="product-avatar-initial">
+                          <%= review.customer_display_name.first.upcase %>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="product-info">
+                      <div class="product-name">
+                        <%= review.customer_display_name %>
+                      </div>
+                      <div class="product-description">
+                        <%= time_ago_in_words(review.created_at) %> ago
+                      </div>
+                      <% if review.verified_purchase? %>
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mt-1">
+                          <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                          </svg>
+                          Verified Purchase
+                        </span>
+                      <% end %>
+                    </div>
+                  </div>
+                </td>
+                <td class="admin-table-cell">
+                  <div class="max-w-sm">
+                    <% if review.title.present? %>
+                      <div class="text-sm font-medium text-orange-950 mb-1">
+                        <%= review.title %>
+                      </div>
+                    <% end %>
+                    <p class="text-sm text-orange-700 leading-relaxed">
+                      <%= truncate(review.content, length: 120) %>
+                    </p>
+                    <% if review.order %>
+                      <div class="mt-2 text-xs text-orange-500">
+                        Order #<%= review.order.id %> • <%= review.order.created_at.strftime("%B %d, %Y") %>
+                      </div>
+                    <% end %>
+                  </div>
+                </td>
+                <td class="admin-table-cell-center">
+                  <div class="text-yellow-400 text-lg">
+                    <%= review.star_display %>
+                  </div>
+                  <div class="text-xs text-orange-600 mt-1">
+                    <%= review.rating %>/5
+                  </div>
+                </td>
+                <td class="admin-table-cell-center">
+                  <div class="text-sm text-orange-950">
+                    <%= review.created_at.strftime("%b %d, %Y") %>
+                  </div>
+                  <div class="text-xs text-orange-600">
+                    <%= review.created_at.strftime("%I:%M %p") %>
+                  </div>
+                </td>
+                <td class="admin-table-cell-center">
+                  <% if review.recent? %>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      Recent
+                    </span>
+                  <% else %>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                      Published
+                    </span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <!-- Empty State -->
+        <div class="text-center py-12">
+          <div class="text-orange-400 mb-4">
+            <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-1l-4 4z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-orange-950 mb-2">No reviews found</h3>
+          <p class="text-orange-600 mb-4">
+            <% if params[:rating].present? %>
+              No reviews match your filter criteria.
+            <% else %>
+              Be the first to share your experience!
+            <% end %>
+          </p>
+          <%= link_to "Write a Review", new_review_path, 
+                      class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 transition-colors duration-200" %>
         </div>
-        <h3 class="text-lg font-medium text-gray-900 mb-2">No reviews found</h3>
-        <p class="text-gray-500 mb-4">
-          <% if params[:rating].present? %>
-            No reviews match your filter criteria.
-          <% else %>
-            Be the first to share your experience!
-          <% end %>
-        </p>
-        <%= link_to "Write a Review", new_review_path, 
-                    class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 transition-colors duration-200" %>
-      </div>
-    <% end %>
-
-    <!-- Pagination -->
-    <% if @reviews.respond_to?(:current_page) %>
-      <div class="mt-8">
-        <%= paginate @reviews, theme: 'twitter_bootstrap_4' %>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   </div>
+
+  <!-- Pagination -->
+  <% if @reviews.respond_to?(:current_page) %>
+    <div class="mt-8 flex justify-center">
+      <%= paginate @reviews %>
+    </div>
+  <% end %>
 </div> 

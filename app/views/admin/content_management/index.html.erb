@@ -91,42 +91,6 @@
     </div>
   </div>
 
-  <!-- Company Contact Information -->
-  <div class="admin-container">
-    <div class="admin-container-header">
-      <div class="flex items-center justify-between">
-        <div>
-          <h3 class="admin-container-title">Legacy Contact Content Blocks</h3>
-          <p class="admin-container-subtitle">Contact details from old content block system</p>
-        </div>
-        <div class="flex items-center space-x-2">
-          <%= link_to "Preview Contact Page", contact_path, target: "_blank", class: "admin-link" %>
-        </div>
-      </div>
-    </div>
-    <div class="admin-container-content">
-      <% if @contact_content.any? %>
-        <dl>
-          <% @contact_content.each_with_index do |content, index| %>
-            <div class="<%= index.even? ? 'bg-orange-50' : 'bg-white' %> px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
-              <dt class="text-sm font-medium text-orange-700"><%= content.title %></dt>
-              <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-1">
-                <%= simple_format(content.content, {}, wrapper_tag: "div", class: "text-sm") %>
-              </dd>
-              <dd class="mt-3 sm:mt-0 sm:col-span-1 text-right">
-                <%= link_to "Edit", edit_admin_content_block_path(content), class: "admin-btn-secondary text-sm" %>
-              </dd>
-            </div>
-          <% end %>
-        </dl>
-      <% else %>
-        <div class="text-center py-8">
-          <p class="text-orange-600">No legacy contact content blocks found.</p>
-        </div>
-      <% end %>
-    </div>
-  </div>
-
   <!-- Company Story & About Content -->
   <div class="admin-container">
     <div class="admin-container-header">

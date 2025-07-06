@@ -14,7 +14,10 @@ class Admin::UsersController < Admin::BaseController
       @user_orders = @user.orders.order(created_at: :desc)
       
       # Get orders by contact details (email, phone) that might not be directly associated
-      @orders_by_email = Order.where(email: @user.email).where.not(user: @user).order(created_at: :desc)
+      # Use exact email matching (case-insensitive) to ensure we only get orders for this specific email
+      @orders_by_email = Order.where("LOWER(email) = LOWER(?)", @user.email)
+                             .where.not(user: @user)
+                             .order(created_at: :desc)
       @orders_by_phone = Order.where(phone: @user.phone).where.not(user: @user).order(created_at: :desc)
       
       # Combine all orders for statistics
@@ -35,6 +38,11 @@ class Admin::UsersController < Admin::BaseController
         month_orders = @all_orders.select { |order| order.created_at.between?(month_start, month_end) }
         @monthly_spending[month_start.strftime("%B %Y")] = month_orders.sum(&:total_price)
       end
+      
+      # Get contact messages for this user
+      @contact_messages = @user.contact_messages.recent.limit(10)
+      @total_contact_messages = @user.contact_messages.count
+      @contact_messages_by_status = @user.contact_messages.group_by(&:status)
     end
   end
 

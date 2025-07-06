@@ -1,0 +1,154 @@
+<% content_for :title, "Email Template - #{@email_template.name}" %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Email Template Details</h3>
+        <p class="admin-container-subtitle">View and manage email template settings</p>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to "Preview", preview_admin_email_template_path(@email_template), class: "admin-btn-secondary" %>
+        <%= link_to "Edit", edit_admin_email_template_path(@email_template), class: "admin-btn-primary" %>
+        <%= link_to "Back to Templates", admin_email_templates_path, class: "admin-btn-back" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-container-content p-6">
+    <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6 mb-6">
+      <!-- Template Header -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h4 class="text-xl font-semibold text-orange-950"><%= @email_template.name %></h4>
+          <p class="text-sm text-orange-600 mt-1">
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+              <%= @email_template.template_type.titleize %>
+            </span>
+          </p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+            <%= @email_template.active? ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+            <%= @email_template.active? ? 'Active' : 'Inactive' %>
+          </span>
+        </div>
+      </div>
+
+      <!-- Template Details -->
+      <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+        <div>
+          <dt class="text-sm font-medium text-orange-700">Template Name</dt>
+          <dd class="mt-1 text-sm text-orange-950"><%= @email_template.name %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-orange-700">Template Type</dt>
+          <dd class="mt-1 text-sm text-orange-950"><%= @email_template.template_type.titleize %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-orange-700">Status</dt>
+          <dd class="mt-1 text-sm text-orange-950">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+              <%= @email_template.active? ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+              <%= @email_template.active? ? 'Active' : 'Inactive' %>
+            </span>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-orange-700">Created</dt>
+          <dd class="mt-1 text-sm text-orange-950"><%= @email_template.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+        </div>
+        <div class="sm:col-span-2">
+          <dt class="text-sm font-medium text-orange-700">Subject Line</dt>
+          <dd class="mt-1 text-sm text-orange-950 bg-gray-50 p-3 rounded-lg border">
+            <%= @email_template.subject %>
+          </dd>
+        </div>
+        <% if @email_template.variables.present? %>
+          <div class="sm:col-span-2">
+            <dt class="text-sm font-medium text-orange-700">Available Variables</dt>
+            <dd class="mt-1">
+              <div class="flex flex-wrap gap-2">
+                <% @email_template.variable_list.each do |var| %>
+                  <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
+                    {{<%= var %>}}
+                  </span>
+                <% end %>
+              </div>
+            </dd>
+          </div>
+        <% end %>
+      </dl>
+    </div>
+
+    <!-- Email Body Content -->
+    <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6 mb-6">
+      <h4 class="text-lg font-semibold text-orange-950 mb-4">Email Body Content</h4>
+      <div class="bg-gray-50 p-4 rounded-lg border">
+        <pre class="text-sm text-gray-700 whitespace-pre-wrap font-mono"><%= @email_template.body %></pre>
+      </div>
+    </div>
+
+    <!-- Template Usage Information -->
+    <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6">
+      <h4 class="text-lg font-semibold text-orange-950 mb-4">Template Usage</h4>
+      <div class="space-y-3">
+        <% case @email_template.template_type %>
+        <% when 'welcome' %>
+          <p class="text-sm text-orange-600">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            This template is automatically sent to new customers when they sign up or subscribe to the newsletter.
+          </p>
+        <% when 'order_confirmation' %>
+          <p class="text-sm text-orange-600">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            This template is automatically sent to customers when they place an order.
+          </p>
+        <% when 'contact_response' %>
+          <p class="text-sm text-orange-600">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            This template is used when responding to customer contact messages.
+          </p>
+        <% when 'newsletter' %>
+          <p class="text-sm text-orange-600">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            This template is used for newsletter emails sent to subscribers.
+          </p>
+        <% when 'sales_report' %>
+          <p class="text-sm text-orange-600">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            This template is used for automated sales reports sent to administrators.
+          </p>
+        <% when 'manual' %>
+          <p class="text-sm text-orange-600">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            This is a manual template that can be used for custom email campaigns.
+          </p>
+        <% end %>
+        
+        <% unless @email_template.active? %>
+          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+            <p class="text-sm text-yellow-700">
+              <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+              </svg>
+              This template is currently inactive and will not be used for automated emails.
+            </p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div> 

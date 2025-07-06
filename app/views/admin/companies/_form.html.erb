@@ -67,10 +67,104 @@
       
       <div>
         <%= form.label :business_hours, "Business Hours", class: "form-label" %>
-        <p class="text-xs text-orange-600 mb-2">Enter as JSON object or leave blank for default hours</p>
-        <%= form.text_area :business_hours, rows: 4, class: "form-textarea", 
-            placeholder: '{"monday": "9:00 AM - 5:00 PM", "tuesday": "9:00 AM - 5:00 PM", "wednesday": "9:00 AM - 5:00 PM", "thursday": "9:00 AM - 5:00 PM", "friday": "9:00 AM - 5:00 PM", "saturday": "Closed", "sunday": "Closed"}', 
-            value: company.business_hours.is_a?(Hash) ? company.business_hours.to_json : company.business_hours %>
+        <p class="text-xs text-orange-600 mb-3">Set your business hours for each day of the week</p>
+        
+        <div class="grid grid-cols-1 gap-3 bg-orange-50 p-4 rounded-lg border border-orange-200">
+          <% 
+            days = [
+              ['Monday', 'monday'],
+              ['Tuesday', 'tuesday'], 
+              ['Wednesday', 'wednesday'],
+              ['Thursday', 'thursday'],
+              ['Friday', 'friday'],
+              ['Saturday', 'saturday'],
+              ['Sunday', 'sunday']
+            ]
+            
+            current_hours = company.business_hours || {}
+            # Ensure current_hours is always a hash
+            unless current_hours.is_a?(Hash)
+              current_hours = {}
+            end
+          %>
+          
+          <% days.each do |day_name, day_key| %>
+            <div class="grid grid-cols-12 gap-3 items-center bg-white p-4 rounded border border-orange-100">
+              <!-- Day name - fixed width for alignment -->
+              <div class="col-span-2">
+                <span class="text-sm font-medium text-orange-950 block">
+                  <%= day_name %>
+                </span>
+              </div>
+              
+              <!-- Time inputs - wider and properly spaced -->
+              <div class="col-span-8 flex items-center space-x-3">
+                <div class="flex items-center space-x-2 flex-1">
+                  <% 
+                    # Safely get the open time
+                    day_data = current_hours[day_key]
+                    open_time = if day_data.is_a?(Hash)
+                      day_data['open']
+                    elsif day_data.is_a?(String) && day_data.include?(' - ')
+                      day_data.split(' - ').first
+                    else
+                      '9:00 AM'
+                    end
+                  %>
+                  <%= text_field_tag "company[business_hours][#{day_key}][open]", 
+                      open_time,
+                      class: "form-input text-sm w-24 text-center", 
+                      placeholder: "9:00 AM",
+                      id: "company_business_hours_#{day_key}_open" %>
+                  
+                  <span class="text-orange-600 text-sm font-medium px-1">to</span>
+                  
+                  <% 
+                    # Safely get the close time
+                    close_time = if day_data.is_a?(Hash)
+                      day_data['close']
+                    elsif day_data.is_a?(String) && day_data.include?(' - ')
+                      day_data.split(' - ').last
+                    else
+                      '5:00 PM'
+                    end
+                  %>
+                  <%= text_field_tag "company[business_hours][#{day_key}][close]", 
+                      close_time,
+                      class: "form-input text-sm w-24 text-center", 
+                      placeholder: "5:00 PM",
+                      id: "company_business_hours_#{day_key}_close" %>
+                </div>
+              </div>
+              
+              <!-- Closed checkbox - aligned to the right -->
+              <div class="col-span-2 flex items-center justify-end">
+                <% 
+                  # Safely check if the day is closed
+                  is_closed = if day_data.is_a?(Hash)
+                    day_data['closed'] == '1'
+                  elsif day_data.is_a?(String)
+                    day_data == 'Closed'
+                  else
+                    false
+                  end
+                %>
+                <%= check_box_tag "company[business_hours][#{day_key}][closed]", 
+                    '1', 
+                    is_closed,
+                    class: "rounded border-orange-300 text-orange-600 focus:ring-orange-500",
+                    id: "company_business_hours_#{day_key}_closed",
+                    onchange: "toggleBusinessHours('#{day_key}')" %>
+                <%= label_tag "company_business_hours_#{day_key}_closed", "Closed", 
+                    class: "ml-2 text-sm text-orange-700 whitespace-nowrap" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        
+        <p class="text-xs text-orange-600 mt-2">
+          <strong>Tip:</strong> Use format like "9:00 AM" or "5:30 PM". Check "Closed" to mark a day as closed.
+        </p>
       </div>
     </div>
   </div>
@@ -264,8 +358,36 @@ function initializeImageManager() {
   }
 }
 
-// Initialize on page load and Turbo navigation
-document.addEventListener('DOMContentLoaded', initializeImageManager);
-document.addEventListener('turbo:load', initializeImageManager);
-document.addEventListener('turbo:render', initializeImageManager);
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  initializeImageManager();
+});
+</script>
+
+<script>
+function toggleBusinessHours(day) {
+  const closedCheckbox = document.getElementById(`company_business_hours_${day}_closed`);
+  const openField = document.getElementById(`company_business_hours_${day}_open`);
+  const closeField = document.getElementById(`company_business_hours_${day}_close`);
+  
+  if (closedCheckbox.checked) {
+    openField.disabled = true;
+    closeField.disabled = true;
+    openField.style.opacity = '0.5';
+    closeField.style.opacity = '0.5';
+  } else {
+    openField.disabled = false;
+    closeField.disabled = false;
+    openField.style.opacity = '1';
+    closeField.style.opacity = '1';
+  }
+}
+
+// Initialize business hours toggles when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  days.forEach(day => {
+    toggleBusinessHours(day);
+  });
+});
 </script> 

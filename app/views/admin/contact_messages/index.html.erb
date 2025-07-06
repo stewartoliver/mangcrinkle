@@ -1,0 +1,353 @@
+<% content_for :title, "Contact Messages" %>
+
+<% if @filtered_user %>
+  <!-- Filtered by User Header -->
+  <div class="mb-6 bg-white rounded-lg shadow-sm border border-orange-200">
+    <div class="p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-lg font-medium text-orange-950">Contact Messages from <%= @filtered_user.display_name %></h2>
+          <p class="text-sm text-orange-600 mt-1">
+            <%= @filtered_user.email %>
+            <% if @filtered_user.phone.present? %>
+              • <%= @filtered_user.phone %>
+            <% end %>
+          </p>
+        </div>
+        <div class="flex space-x-3">
+          <%= link_to "View Customer Profile", admin_user_path(@filtered_user), class: "admin-btn-secondary" %>
+          <%= link_to "All Contact Messages", admin_contact_messages_path, class: "admin-btn-primary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<!-- Statistics Cards - Horizontal Flex Row -->
+<div class="flex flex-wrap gap-4 mb-6">
+  <div class="admin-stats-card flex-1 min-w-0">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-orange">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Total Messages</h2>
+        <p class="admin-stats-value admin-stats-value-orange"><%= @stats[:total] %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card flex-1 min-w-0">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-blue">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">New</h2>
+        <p class="admin-stats-value admin-stats-value-blue"><%= @stats[:new] %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card flex-1 min-w-0">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-yellow">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">In Progress</h2>
+        <p class="admin-stats-value admin-stats-value-yellow"><%= @stats[:in_progress] %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card flex-1 min-w-0">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-green">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Resolved</h2>
+        <p class="admin-stats-value admin-stats-value-green"><%= @stats[:resolved] %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card flex-1 min-w-0">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-orange">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Urgent</h2>
+        <p class="admin-stats-value admin-stats-value-orange"><%= @stats[:urgent] %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Contact Messages Table with Integrated Filters -->
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <h3 class="admin-container-title">Contact Messages</h3>
+      <div class="flex items-center space-x-3">
+        <p class="admin-container-subtitle">Manage customer inquiries and support requests</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Filters -->
+  <%= form_with url: admin_contact_messages_path, method: :get, local: true, class: "px-6 py-4 border-b border-orange-200 bg-gray-50", id: "search-form" do |form| %>
+    <div class="flex flex-wrap gap-4">
+      <div class="flex-1 min-w-0">
+        <%= form.label :status, "Status", class: "form-label" %>
+        <div class="mt-1">
+          <%= form.select :status, 
+              [['All Statuses', ''], ['New', 'new'], ['In Progress', 'in_progress'], ['Resolved', 'resolved'], ['Closed', 'closed']], 
+              { selected: params[:status] }, 
+              { class: "form-select" } %>
+        </div>
+      </div>
+      
+      <div class="flex-1 min-w-0">
+        <%= form.label :priority, "Priority", class: "form-label" %>
+        <div class="mt-1">
+          <%= form.select :priority, 
+              [['All Priorities', ''], ['Urgent', 'urgent'], ['High', 'high'], ['Normal', 'normal'], ['Low', 'low']], 
+              { selected: params[:priority] }, 
+              { class: "form-select" } %>
+        </div>
+      </div>
+      
+      <div class="flex items-end">
+        <%= form.submit "Filter", class: "admin-btn-primary" %>
+        <%= link_to "Clear", admin_contact_messages_path, class: "ml-2 admin-btn-secondary" %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Contact Messages Table -->
+  <div class="admin-container-content">
+    <% if @contact_messages.any? %>
+      <table class="admin-table">
+        <thead class="admin-table-header">
+          <tr>
+            <th scope="col" class="admin-table-header-cell">Customer</th>
+            <th scope="col" class="admin-table-header-cell">Subject</th>
+            <th scope="col" class="admin-table-header-cell-center">Date</th>
+            <th scope="col" class="admin-table-header-cell-center">Status</th>
+            <th scope="col" class="admin-table-header-cell-center">Priority</th>
+            <th scope="col" class="admin-table-header-cell-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="admin-table-body">
+          <% @contact_messages.each do |message| %>
+            <tr class="admin-table-row" data-message-id="<%= message.id %>">
+              <td class="admin-table-cell">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="text-sm font-medium text-orange-950"><%= message.user.display_name %></div>
+                    <div class="text-xs text-orange-600"><%= message.user.email %></div>
+                  </div>
+                  <%= link_to "View Customer", admin_user_path(message.user), 
+                      class: "inline-flex items-center px-2 py-1 border border-orange-300 text-xs font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100" %>
+                </div>
+              </td>
+              <td class="admin-table-cell">
+                <div class="text-sm font-medium text-orange-950"><%= message.subject %></div>
+                <div class="text-xs text-orange-600"><%= truncate(message.message, length: 50) %></div>
+              </td>
+              <td class="admin-table-cell-center">
+                <div class="text-sm font-medium text-orange-950">
+                  <%= message.created_at.strftime("%m/%d/%Y") %>
+                </div>
+                <div class="text-xs text-orange-600">
+                  <%= time_ago_in_words(message.created_at) %> ago
+                </div>
+              </td>
+              <td class="admin-table-cell-center text-sm">
+                <span class="admin-status-badge 
+                  <%= case message.status
+                      when 'new' then 'bg-blue-100 text-blue-800'
+                      when 'in_progress' then 'bg-yellow-100 text-yellow-800'
+                      when 'resolved' then 'bg-green-100 text-green-800'
+                      when 'closed' then 'bg-gray-100 text-gray-800'
+                      else 'bg-gray-100 text-gray-800'
+                      end %>">
+                  <%= message.status.titleize %>
+                </span>
+              </td>
+              <td class="admin-table-cell-center text-sm">
+                <span class="admin-status-badge 
+                  <%= case message.priority
+                      when 'urgent' then 'bg-orange-100 text-orange-800'
+                      when 'high' then 'bg-orange-100 text-orange-800'
+                      when 'normal' then 'bg-blue-100 text-blue-800'
+                      when 'low' then 'bg-gray-100 text-gray-800'
+                      else 'bg-gray-100 text-gray-800'
+                      end %>">
+                  <%= message.priority.titleize %>
+                </span>
+              </td>
+              <td class="admin-table-cell-right">
+                <div class="admin-action-btn-group">
+                  <!-- Message Details Toggle Button -->
+                  <button type="button" 
+                          class="message-details-toggle admin-action-btn" 
+                          data-message-id="<%= message.id %>"
+                          title="View Message Details">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                    </svg>
+                  </button>
+                  
+                  <%= link_to admin_contact_message_path(message), class: "admin-action-btn", title: "View" do %>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  <% end %>
+                  <%= link_to edit_admin_contact_message_path(message), class: "admin-action-btn", title: "Edit" do %>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+            
+            <!-- Expandable Message Details Row -->
+            <tr class="message-details-row hidden" data-message-id="<%= message.id %>">
+              <td colspan="6" class="px-6 py-4 bg-orange-50 border-t border-orange-200">
+                <div class="bg-white rounded-lg p-4 border border-orange-200">
+                  <h4 class="text-lg font-medium text-orange-950 mb-4 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                    </svg>
+                    Message Details
+                  </h4>
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h5 class="font-medium text-orange-950 mb-2">Customer Information</h5>
+                      <div class="text-sm text-orange-700 space-y-1">
+                        <p><strong>Name:</strong> <%= message.user.display_name %></p>
+                        <p><strong>Email:</strong> <%= message.user.email %></p>
+                        <% if message.user.phone.present? %>
+                          <p><strong>Phone:</strong> <%= message.user.phone %></p>
+                        <% end %>
+                        <p class="mt-2">
+                          <%= link_to "View Customer Profile", admin_user_path(message.user), 
+                              class: "inline-flex items-center px-3 py-1 border border-orange-300 text-sm font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100" %>
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <h5 class="font-medium text-orange-950 mb-2">Message Information</h5>
+                      <div class="text-sm text-orange-700 space-y-1">
+                        <p><strong>Subject:</strong> <%= message.subject %></p>
+                        <p><strong>Priority:</strong> <%= message.priority.titleize %></p>
+                        <p><strong>Status:</strong> <%= message.status.titleize %></p>
+                        <p><strong>Submitted:</strong> <%= message.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+                        <% if message.response_count > 0 %>
+                          <p><strong>Responses:</strong> <%= pluralize(message.response_count, 'response') %></p>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="mt-6">
+                    <h5 class="font-medium text-orange-950 mb-2">Customer Message</h5>
+                    <div class="bg-gray-50 p-4 rounded-lg border">
+                      <p class="text-gray-700 whitespace-pre-wrap"><%= message.message %></p>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div class="text-center py-8">
+        <svg class="mx-auto h-12 w-12 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-orange-900">No contact messages</h3>
+        <p class="mt-1 text-sm text-orange-500">No customer inquiries have been received yet.</p>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+// Message details toggle functionality
+function setupMessageDetailsToggle() {
+  console.log('Setting up message details toggle...');
+  
+  // Handle message details toggle
+  document.querySelectorAll('.message-details-toggle').forEach(button => {
+    console.log('Found message details toggle button:', button);
+    
+    // Remove existing event listeners to prevent duplicates
+    button.removeEventListener('click', handleMessageDetailsToggle);
+    
+    // Add new event listener
+    button.addEventListener('click', handleMessageDetailsToggle);
+  });
+}
+
+// Handler function for message details toggle
+function handleMessageDetailsToggle(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  
+  const messageId = this.dataset.messageId;
+  console.log('Toggling message details for message ID:', messageId);
+  
+  const detailsRow = document.querySelector(`.message-details-row[data-message-id="${messageId}"]`);
+  console.log('Found details element:', detailsRow);
+  
+  if (detailsRow) {
+    detailsRow.classList.toggle('hidden');
+    
+    // Update button icon rotation
+    const svg = this.querySelector('svg');
+    if (detailsRow.classList.contains('hidden')) {
+      svg.style.transform = 'rotate(0deg)';
+      console.log('Message details hidden');
+    } else {
+      svg.style.transform = 'rotate(180deg)';
+      console.log('Message details shown');
+    }
+  } else {
+    console.error('Could not find message details element for message ID:', messageId);
+  }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  setupMessageDetailsToggle();
+});
+
+// Also handle Turbo navigation
+document.addEventListener('turbo:load', function() {
+  setupMessageDetailsToggle();
+});
+
+// Also handle Turbo frame loads
+document.addEventListener('turbo:frame-load', function() {
+  setupMessageDetailsToggle();
+});
+</script> 

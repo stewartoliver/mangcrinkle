@@ -1,0 +1,89 @@
+<% content_for :title, "Edit Contact Message" %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex justify-between items-center">
+      <div>
+        <h3 class="admin-container-title">Edit Contact Message</h3>
+        <p class="admin-container-subtitle">Update status and priority</p>
+      </div>
+      <div class="flex space-x-2">
+        <%= link_to "← Back to Messages", admin_contact_messages_path, class: "admin-btn-secondary" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-container-content p-6">
+    <!-- Current Message Info -->
+    <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6 mb-6">
+      <h4 class="text-lg font-semibold text-orange-950 mb-4">Message: <%= @contact_message.subject %></h4>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-orange-700">
+        <div>
+          <p><strong>From:</strong> <%= @contact_message.user.display_name %></p>
+          <p><strong>Email:</strong> <%= @contact_message.user.email %></p>
+        </div>
+        <div>
+          <p><strong>Submitted:</strong> <%= @contact_message.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+          <p><strong>Responses:</strong> <%= pluralize(@contact_message.response_count, 'response') %></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6">
+      <h4 class="text-lg font-semibold text-orange-950 mb-4">Update Message Status</h4>
+      
+      <%= form_with model: [:admin, @contact_message], local: true, class: "space-y-6" do |form| %>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <%= form.label :status, "Status", class: "form-label" %>
+            <div class="mt-1">
+              <%= form.select :status, 
+                  [['New', 'new'], ['In Progress', 'in_progress'], ['Resolved', 'resolved'], ['Closed', 'closed']], 
+                  { selected: @contact_message.status }, 
+                  { class: "form-select" } %>
+            </div>
+            <p class="mt-1 text-sm text-orange-600">Update the current status of this inquiry</p>
+          </div>
+
+          <div>
+            <%= form.label :priority, "Priority", class: "form-label" %>
+            <div class="mt-1">
+              <%= form.select :priority, 
+                  [['Low', 'low'], ['Normal', 'normal'], ['High', 'high'], ['Urgent', 'urgent']], 
+                  { selected: @contact_message.priority }, 
+                  { class: "form-select" } %>
+            </div>
+            <p class="mt-1 text-sm text-orange-600">Set the priority level for this inquiry</p>
+          </div>
+        </div>
+
+        <!-- Status Descriptions -->
+        <div class="bg-orange-50 p-4 rounded-lg">
+          <h5 class="font-medium text-orange-950 mb-2">Status Descriptions</h5>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-orange-700">
+            <div>
+              <p><strong>New:</strong> Unread message requiring attention</p>
+              <p><strong>In Progress:</strong> Currently being handled</p>
+            </div>
+            <div>
+              <p><strong>Resolved:</strong> Issue has been addressed</p>
+              <p><strong>Closed:</strong> No further action needed</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-orange-600">
+            <p>Tip: Use "In Progress" when you start working on a message</p>
+            <p>Use "Resolved" when the customer's issue is addressed</p>
+          </div>
+          <div class="flex space-x-2">
+            <%= link_to "Cancel", admin_contact_message_path(@contact_message), class: "admin-btn-secondary" %>
+            <%= form.submit "Update Message", class: "admin-btn-primary" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div> 

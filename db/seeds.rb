@@ -440,6 +440,128 @@ else
   puts "⚠️  Skipping sample orders - not enough products, packages, or users created"
 end
 
+# Create default admin user
+admin = User.find_or_create_by!(email: 'admin@mangcrinkle.com') do |user|
+  user.password = 'password123'
+  user.password_confirmation = 'password123'
+  user.user_type = 'admin'
+  user.first_name = 'Admin'
+  user.last_name = 'User'
+end
+
+puts "Created admin user: #{admin.email}"
+
+# Create default email templates
+EmailTemplate.default_templates.each do |template_type, template_data|
+  template = EmailTemplate.find_or_create_by!(template_type: template_type) do |t|
+    t.name = template_data[:name]
+    t.subject = template_data[:subject]
+    t.body = template_data[:body]
+    t.variables = template_data[:variables]
+    t.active = true
+  end
+  
+  puts "Created email template: #{template.name}"
+end
+
+# Create admin notification preferences for the admin user
+AdminNotificationPreference.find_or_create_by!(user: admin) do |pref|
+  pref.new_order_notifications = true
+  pref.weekly_sales_report = true
+  pref.monthly_sales_report = true
+  pref.contact_form_notifications = true
+end
+
+puts "Created admin notification preferences for: #{admin.email}"
+
+# Create some sample products if they don't exist
+if Product.count == 0
+  products = [
+    {
+      name: 'Ube Crinkle Cookies',
+      description: 'Traditional Filipino purple yam cookies with that perfect crinkle texture',
+      price: 12.99,
+      active: true
+    },
+    {
+      name: 'Matcha Crinkle Cookies',
+      description: 'Premium Japanese matcha green tea cookies with a delicate earthy flavor',
+      price: 14.99,
+      active: true
+    },
+    {
+      name: 'Chocolate Crinkle Cookies',
+      description: 'Classic rich chocolate cookies with powdered sugar coating',
+      price: 11.99,
+      active: true
+    },
+    {
+      name: 'Red Velvet Crinkle Cookies',
+      description: 'Velvety smooth red velvet cookies with cream cheese notes',
+      price: 13.99,
+      active: true
+    },
+    {
+      name: 'Espresso Crinkle Cookies',
+      description: 'Bold coffee-flavored cookies perfect for coffee lovers',
+      price: 13.99,
+      active: true
+    },
+    {
+      name: 'Chocolate Mint Crinkle Cookies',
+      description: 'Refreshing mint chocolate cookies with a cool finish',
+      price: 13.99,
+      active: true
+    }
+  ]
+
+  products.each do |product_data|
+    Product.create!(product_data)
+  end
+
+  puts "Created #{products.count} sample products"
+end
+
+# Create sample packages if they don't exist
+if CrinklePackage.count == 0
+  packages = [
+    {
+      name: 'Mini Box',
+      description: '6 cookies - Perfect for trying new flavors',
+      quantity: 6,
+      price: 8.99,
+      active: true
+    },
+    {
+      name: 'Classic Box',
+      description: '12 cookies - Great for sharing',
+      quantity: 12,
+      price: 15.99,
+      active: true
+    },
+    {
+      name: 'Family Box',
+      description: '24 cookies - Perfect for families',
+      quantity: 24,
+      price: 28.99,
+      active: true
+    },
+    {
+      name: 'Party Box',
+      description: '48 cookies - Great for parties and events',
+      quantity: 48,
+      price: 52.99,
+      active: true
+    }
+  ]
+
+  packages.each do |package_data|
+    CrinklePackage.create!(package_data)
+  end
+
+  puts "Created #{packages.count} sample packages"
+end
+
 puts "🌱 Database seeding completed!"
 puts ""
 puts "📊 Summary:"

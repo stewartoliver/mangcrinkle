@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= @subject %></title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      background-color: #8B4513;
+      color: #FFF8DC;
+      padding: 20px;
+      text-align: center;
+      border-radius: 8px 8px 0 0;
+    }
+    .content {
+      background-color: #FFF8DC;
+      padding: 30px;
+      border-radius: 0 0 8px 8px;
+    }
+    .order-details {
+      background-color: #F5F5DC;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      border: 1px solid #D2B48C;
+    }
+    .footer {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #F5F5DC;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      border-radius: 8px;
+    }
+    .emoji {
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1><span class="emoji">🍪</span> Mang Crinkle Cookies</h1>
+    <p>Order Confirmation</p>
+  </div>
+  
+  <div class="content">
+    <%= simple_format(@body) %>
+    
+    <% if @order %>
+    <div class="order-details">
+      <h3>Order Summary</h3>
+      <p><strong>Order Number:</strong> #<%= @order.id %></p>
+      <p><strong>Order Date:</strong> <%= @order.created_at.strftime('%B %d, %Y at %I:%M %p') %></p>
+      <p><strong>Total:</strong> $<%= number_with_precision(@order.total_price, precision: 2) %></p>
+      <p><strong>Status:</strong> <%= @order.status.titleize %></p>
+      
+      <h4>Items Ordered:</h4>
+      <ul>
+        <% @order.line_items.each do |item| %>
+          <li><%= item.quantity %>x <%= item.purchasable.name %> - $<%= number_with_precision(item.price, precision: 2) %></li>
+        <% end %>
+      </ul>
+      
+      <h4>Delivery Address:</h4>
+      <p><%= simple_format(@order.address) %></p>
+    </div>
+    <% end %>
+  </div>
+  
+  <div class="footer">
+    <p>Thank you for choosing Mang Crinkle Cookies!</p>
+    <p>If you have any questions about your order, please don't hesitate to contact us.</p>
+    <p>&copy; <%= Date.current.year %> Mang Crinkle Cookies. All rights reserved.</p>
+  </div>
+</body>
+</html> 

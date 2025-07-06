@@ -6,10 +6,6 @@ class Admin::ContentManagementController < Admin::BaseController
       'hero_title', 'hero_subtitle', 'cta_title', 'cta_subtitle', 'cta_button_text'
     ]).order(:title)
     
-    @contact_content = ContentBlock.where(key: [
-      'contact_email', 'contact_phone', 'contact_address', 'business_hours'
-    ]).order(:title)
-    
     @company_values = ContentBlock.where(key: 'company_values').first
     
     @newsletter_content = ContentBlock.where(key: [

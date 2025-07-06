@@ -2,6 +2,7 @@ class Order < ApplicationRecord
   belongs_to :user, optional: true
   has_many :line_items, dependent: :destroy
   has_many :order_notes, dependent: :destroy
+  has_many :review_invites, dependent: :destroy
 
   validates :status, presence: true, inclusion: { in: %w[pending processing completed cancelled] }
   validates :total_price, presence: true, numericality: { greater_than_or_equal_to: 0 }
@@ -17,6 +18,7 @@ class Order < ApplicationRecord
   before_validation :set_default_status, on: :create
   before_validation :set_default_total_price, on: :create
   before_save :sync_customer_details
+  after_update :send_review_invite, if: :saved_change_to_status?
 
   # Scopes for filtering
   scope :recent, -> { order(created_at: :desc) }
@@ -25,7 +27,18 @@ class Order < ApplicationRecord
   scope :with_customers, -> { includes(:user) }
   scope :by_date_range, ->(start_date, end_date) { where(created_at: start_date.beginning_of_day..end_date.end_of_day) }
   scope :by_customer, ->(customer_name) { where("customer_name ILIKE ?", "%#{customer_name}%") }
-  scope :by_email, ->(email) { where("email ILIKE ?", "%#{email}%") }
+  scope :by_email, ->(email) { 
+    left_joins(:user).where(
+      "LOWER(orders.email) = LOWER(?) OR LOWER(users.email) = LOWER(?)", 
+      email.strip, email.strip
+    )
+  }
+  scope :by_email_partial, ->(email) { 
+    left_joins(:user).where(
+      "orders.email ILIKE ? OR users.email ILIKE ?", 
+      "%#{email}%", "%#{email}%"
+    )
+  }
   scope :by_order_id, ->(order_id) { where(id: order_id) }
   scope :by_min_total, ->(amount) { where("total_price >= ?", amount) }
   scope :by_max_total, ->(amount) { where("total_price <= ?", amount) }
@@ -48,6 +61,10 @@ class Order < ApplicationRecord
 
   def address
     user&.address || super
+  end
+
+  def display_name
+    "##{id} - #{customer_name} (#{email}) - $#{sprintf('%.2f', total_price)} - #{created_at.strftime('%b %d, %Y')}"
   end
 
   def status_color
@@ -96,6 +113,26 @@ class Order < ApplicationRecord
     end
   end
 
+  def create_review_invite!
+    return if review_invites.exists? # Don't create duplicate invites
+    
+    review_invite = review_invites.build(
+      email: email,
+      name: customer_name,
+      invite_type: 'order',
+      admin_notes: "Auto-generated after order completion"
+    )
+    
+    if review_invite.save
+      # Send the invitation email with a slight delay to ensure order completion processes finish
+      ReviewMailer.review_invite(review_invite).deliver_later(wait: 5.minutes)
+      review_invite.update!(sent_at: Time.current)
+      Rails.logger.info "Review invite created and sent for Order ##{id}"
+    else
+      Rails.logger.error "Failed to create review invite for Order ##{id}: #{review_invite.errors.full_messages.join(', ')}"
+    end
+  end
+
   private
 
   def set_default_status
@@ -124,6 +161,13 @@ class Order < ApplicationRecord
       self.email ||= user.email
       self.phone ||= user.phone
       self.address ||= user.address
+    end
+  end
+
+  def send_review_invite
+    if status == 'completed' && saved_change_to_status.first != 'completed'
+      # Only send if we just changed TO completed status
+      create_review_invite!
     end
   end
 end

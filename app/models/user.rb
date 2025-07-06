@@ -6,6 +6,8 @@ class User < ApplicationRecord
 
   # Associations
   has_many :orders, dependent: :nullify
+  has_many :contact_messages, dependent: :destroy
+  has_one :admin_notification_preference, dependent: :destroy
 
   # Validations
   validates :email, presence: true, uniqueness: true
@@ -40,6 +42,11 @@ class User < ApplicationRecord
 
   def display_name
     full_name.present? ? full_name : email
+  end
+
+  def notification_preferences
+    return nil unless admin?
+    admin_notification_preference || create_admin_notification_preference
   end
 
   # Override Devise's password requirement for customers

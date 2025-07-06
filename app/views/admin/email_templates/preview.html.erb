@@ -1,0 +1,145 @@
+<% content_for :title, "Preview Email Template - #{@email_template.name}" %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Preview Email Template</h3>
+        <p class="admin-container-subtitle">Preview how the template will look with sample data</p>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to "Edit Template", edit_admin_email_template_path(@email_template), class: "admin-btn-primary" %>
+        <%= link_to "Back to Template", admin_email_template_path(@email_template), class: "admin-btn-back" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-container-content p-6">
+    <!-- Template Info -->
+    <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h4 class="text-lg font-semibold text-orange-950"><%= @email_template.name %></h4>
+          <p class="text-sm text-orange-600">
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+              <%= @email_template.template_type.titleize %>
+            </span>
+          </p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+            <%= @email_template.active? ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+            <%= @email_template.active? ? 'Active' : 'Inactive' %>
+          </span>
+        </div>
+      </div>
+      
+      <div class="text-sm text-orange-700">
+        <p><strong>Subject:</strong> <%= @email_template.subject %></p>
+        <% if @email_template.variables.present? %>
+          <p class="mt-2"><strong>Variables:</strong> 
+            <% @email_template.variable_list.each do |var| %>
+              <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800 mr-1">
+                {{<%= var %>}}
+              </span>
+            <% end %>
+          </p>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Variable Input Form -->
+    <% if @email_template.variables.present? %>
+      <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6 mb-6">
+        <h4 class="text-lg font-semibold text-orange-950 mb-4">Customize Preview Variables</h4>
+        <%= form_with url: preview_admin_email_template_path(@email_template), method: :get, local: true, class: "space-y-4" do |form| %>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <% @sample_variables.each do |var, sample_value| %>
+              <div class="form-group">
+                <%= label_tag "variables[#{var}]", var.humanize, class: "form-label" %>
+                <div class="mt-1">
+                  <%= text_field_tag "variables[#{var}]", 
+                      params.dig(:variables, var) || sample_value, 
+                      class: "form-input", 
+                      placeholder: "Enter #{var.humanize.downcase}" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          
+          <div class="flex justify-end">
+            <%= form.submit "Update Preview", class: "admin-btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <!-- Email Preview -->
+    <div class="bg-white rounded-lg shadow-sm border border-orange-200 mb-6">
+      <div class="px-6 py-4 border-b border-orange-200 bg-gray-50">
+        <h4 class="text-lg font-semibold text-orange-950">Email Preview</h4>
+      </div>
+      
+      <!-- Email Header -->
+      <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+        <div class="space-y-2 text-sm">
+          <div class="flex">
+            <span class="font-medium text-gray-700 w-16">From:</span>
+            <span class="text-gray-600">Mang Crinkle &lt;hello@mangcrinkle.com&gt;</span>
+          </div>
+          <div class="flex">
+            <span class="font-medium text-gray-700 w-16">To:</span>
+            <span class="text-gray-600">Customer &lt;customer@example.com&gt;</span>
+          </div>
+          <div class="flex">
+            <span class="font-medium text-gray-700 w-16">Subject:</span>
+            <span class="text-gray-800 font-medium">
+              <% if @rendered %>
+                <%= @rendered[:subject] %>
+              <% else %>
+                <%= @email_template.subject %>
+              <% end %>
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Email Body -->
+      <div class="px-6 py-6">
+        <div class="prose max-w-none">
+          <% if @rendered %>
+            <pre class="whitespace-pre-wrap text-sm text-gray-700 font-sans leading-relaxed"><%= @rendered[:body] %></pre>
+          <% else %>
+            <pre class="whitespace-pre-wrap text-sm text-gray-700 font-sans leading-relaxed"><%= @email_template.body %></pre>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Send Test Email -->
+    <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6">
+      <h4 class="text-lg font-semibold text-orange-950 mb-4">Send Test Email</h4>
+      <p class="text-sm text-orange-600 mb-4">Send a test email to yourself to see how it looks in an actual email client.</p>
+      
+      <%= form_with url: preview_admin_email_template_path(@email_template), method: :post, local: true, class: "flex items-end space-x-3" do |form| %>
+        <% if @email_template.variables.present? %>
+          <% @sample_variables.each do |var, sample_value| %>
+            <%= hidden_field_tag "variables[#{var}]", params.dig(:variables, var) || sample_value %>
+          <% end %>
+        <% end %>
+        
+        <div class="flex-1">
+          <%= form.label :test_email, "Send to Email", class: "form-label" %>
+          <div class="mt-1">
+            <%= form.email_field :test_email, 
+                value: current_user&.email, 
+                class: "form-input", 
+                placeholder: "Enter email address" %>
+          </div>
+        </div>
+        
+        <%= form.submit "Send Test Email", class: "admin-btn-primary" %>
+      <% end %>
+    </div>
+  </div>
+</div> 

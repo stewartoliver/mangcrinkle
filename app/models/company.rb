@@ -18,9 +18,31 @@ class Company < ApplicationRecord
     return "Not specified" if business_hours.blank?
     
     if business_hours.is_a?(Hash)
-      business_hours.map do |day, hours|
-        "#{day.titleize}: #{hours}"
-      end.join(", ")
+      days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+      formatted_hours = days.map do |day|
+        day_data = business_hours[day]
+        day_name = day.titleize
+        
+        if day_data.is_a?(Hash)
+          if day_data['closed'] == '1'
+            "#{day_name}: Closed"
+          else
+            open_time = day_data['open'].presence || '9:00 AM'
+            close_time = day_data['close'].presence || '5:00 PM'
+            "#{day_name}: #{open_time} - #{close_time}"
+          end
+        elsif day_data.is_a?(String)
+          if day_data.downcase == 'closed'
+            "#{day_name}: Closed"
+          else
+            "#{day_name}: #{day_data}"
+          end
+        else
+          "#{day_name}: Closed"
+        end
+      end
+      
+      formatted_hours.join("\n")
     else
       business_hours.to_s
     end

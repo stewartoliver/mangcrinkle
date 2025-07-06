@@ -1,0 +1,29 @@
+Hi <%= @customer_name %>!
+
+Thank you for choosing Mang Crinkle! We hope you absolutely loved your delicious crinkle cookies.
+
+<% if @order %>
+Your Order Details:
+- Order #: <%= @order.id %>
+- Date: <%= @order.created_at.strftime("%B %d, %Y") %>
+- Total: $<%= number_with_precision(@order.total_price, precision: 2) %>
+
+<% end %>
+Your experience matters to us! Would you take a moment to share your thoughts? Your review helps other cookie lovers discover our treats and helps us continue improving.
+
+Write Your Review: <%= @review_url %>
+
+Why your review matters:
+- Help other customers discover amazing cookies
+- Support our small family business
+- Help us improve and grow
+- Share the joy of Filipino treats
+
+It only takes a minute, and your honest feedback is incredibly valuable to us.
+
+Salamat (thank you)!
+The Mang Crinkle Team
+
+---
+This review invitation expires in 30 days.
+If you have any questions, please contact us at info@mangcrinkle.com 

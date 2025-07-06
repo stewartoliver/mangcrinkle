@@ -84,48 +84,148 @@
         <p class="admin-container-subtitle">Latest orders for this customer.</p>
       </div>
       <div class="admin-show-content">
-        <ul class="divide-y divide-orange-200">
-          <% @recent_orders.each do |order| %>
-            <li>
-              <div class="px-4 py-4 sm:px-6">
-                <div class="flex items-center justify-between">
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center space-x-3">
-                      <p class="text-sm font-medium text-orange-950">
-                        Order #<%= order.id %>
-                      </p>
-                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                        <%= case order.status
-                            when 'pending' then 'bg-yellow-100 text-yellow-800'
-                            when 'processing' then 'bg-blue-100 text-blue-800'
-                            when 'completed' then 'bg-green-100 text-green-800'
-                            when 'cancelled' then 'bg-red-100 text-red-800'
-                            end %>">
-                        <%= order.status.titleize %>
-                      </span>
+        <table class="admin-table">
+          <thead class="admin-table-header">
+            <tr>
+              <th scope="col" class="admin-table-header-cell">Order ID</th>
+              <th scope="col" class="admin-table-header-cell-center">Date</th>
+              <th scope="col" class="admin-table-header-cell-center">Total</th>
+              <th scope="col" class="admin-table-header-cell-center">Status</th>
+              <th scope="col" class="admin-table-header-cell-center">Items</th>
+              <th scope="col" class="admin-table-header-cell-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="admin-table-body">
+            <% @recent_orders.each do |order| %>
+              <tr class="admin-table-row" data-order-id="<%= order.id %>">
+                <td class="admin-table-cell">
+                  <div class="text-sm font-medium text-orange-950">Order #<%= order.id %></div>
+                </td>
+                <td class="admin-table-cell-center">
+                  <div class="text-sm font-medium text-orange-950">
+                    <%= order.created_at.strftime("%m/%d/%Y") %>
+                  </div>
+                  <div class="text-xs text-orange-600">
+                    <%= time_ago_in_words(order.created_at) %> ago
+                  </div>
+                </td>
+                <td class="admin-table-cell-center text-sm font-semibold text-green-600">
+                  <%= number_to_currency(order.total_price) %>
+                </td>
+                <td class="admin-table-cell-center text-sm">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                    <%= case order.status
+                        when 'pending' then 'bg-yellow-100 text-yellow-800'
+                        when 'processing' then 'bg-blue-100 text-blue-800'
+                        when 'completed' then 'bg-green-100 text-green-800'
+                        when 'cancelled' then 'bg-red-100 text-red-800'
+                        end %>">
+                    <%= order.status.titleize %>
+                  </span>
+                </td>
+                <td class="admin-table-cell-center text-sm text-orange-600">
+                  <% if order.line_items.any? %>
+                    <%= pluralize(order.line_items.sum(&:quantity), 'item') %>
+                  <% else %>
+                    0 items
+                  <% end %>
+                </td>
+                <td class="admin-table-cell-right">
+                  <div class="admin-action-btn-group">
+                    <!-- Order Contents Toggle Button -->
+                    <button type="button" 
+                            class="order-contents-toggle admin-action-btn" 
+                            data-order-id="<%= order.id %>"
+                            title="View Order Contents">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                    </button>
+                    
+                    <%= link_to admin_order_path(order), class: "admin-action-btn", title: "View Order" do %>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+              
+              <!-- Expandable Order Details Row -->
+              <tr class="order-contents-details hidden" data-order-id="<%= order.id %>">
+                <td colspan="6" class="px-6 py-4 bg-orange-50 border-t border-orange-200">
+                  <div class="bg-white rounded-lg p-4 border border-orange-200">
+                    <h4 class="text-sm font-medium text-orange-950 mb-3 flex items-center">
+                      <svg class="w-4 h-4 mr-2 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                      Order Items
+                    </h4>
+                    
+                    <div class="overflow-x-auto">
+                      <table class="admin-table">
+                        <thead class="admin-table-header">
+                          <tr>
+                            <th scope="col" class="admin-table-header-cell">Item</th>
+                            <th scope="col" class="admin-table-header-cell-center">Quantity</th>
+                            <th scope="col" class="admin-table-header-cell-center">Price</th>
+                            <th scope="col" class="admin-table-header-cell-center">Subtotal</th>
+                          </tr>
+                        </thead>
+                        <tbody class="admin-table-body">
+                          <% order.line_items.each do |item| %>
+                            <tr>
+                              <td class="admin-table-cell">
+                                <div class="text-sm font-medium text-orange-950"><%= item.name %></div>
+                                <% if item.description.present? %>
+                                  <div class="text-sm text-orange-600"><%= item.description %></div>
+                                <% end %>
+                                <% if item.purchasable.is_a?(CrinklePackage) && item.selected_products.any? %>
+                                  <div class="mt-2 text-xs text-orange-500">
+                                    <div class="font-medium mb-1">Selected items:</div>
+                                    <% item.selected_products.each do |selected| %>
+                                      <div class="ml-2">• <%= selected[:quantity] %>x <%= selected[:product].name %></div>
+                                    <% end %>
+                                  </div>
+                                <% end %>
+                              </td>
+                              <td class="admin-table-cell-center text-sm text-orange-600">
+                                <%= item.quantity %>
+                              </td>
+                              <td class="admin-table-cell-center text-sm text-orange-600">
+                                <%= number_to_currency(item.price) %>
+                              </td>
+                              <td class="admin-table-cell-center text-sm font-semibold text-green-600">
+                                <%= number_to_currency(item.subtotal) %>
+                              </td>
+                            </tr>
+                          <% end %>
+                        </tbody>
+                        <tfoot class="bg-orange-50">
+                          <tr>
+                            <td colspan="3" class="px-6 py-4 text-right text-sm font-medium text-orange-950">Total:</td>
+                            <td class="px-6 py-4 text-center text-sm font-bold text-green-700">
+                              <%= number_to_currency(order.total_price) %>
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
                     </div>
-                    <p class="text-sm text-orange-600 mt-1">
-                      <%= order.created_at.strftime("%B %d, %Y at %I:%M %p") %>
-                    </p>
-                    <p class="text-sm text-orange-600">
-                      <%= number_to_currency(order.total_price) %>
-                      <% if order.line_items.any? %>
-                        • <%= pluralize(order.line_items.sum(&:quantity), 'item') %>
-                      <% end %>
-                    </p>
                   </div>
-                  <div class="ml-2 flex-shrink-0 flex items-center space-x-2">
-                    <%= link_to "View Order", admin_order_path(order), class: "admin-link" %>
-                  </div>
-                </div>
-              </div>
-            </li>
-          <% end %>
-        </ul>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
         <% if @all_orders.count > 5 %>
           <div class="px-4 py-3 bg-orange-50 border-t border-orange-200">
             <div class="text-center">
-              <%= link_to "View All #{@total_orders} Orders", admin_orders_path(email: @user.email), class: "admin-link-primary" %>
+              <% email_orders_count = (@user_orders.count + @orders_by_email.count) %>
+              <%= link_to "View All #{email_orders_count} Email Orders", admin_orders_path(email: @user.email), class: "admin-link-primary" %>
+              <div class="text-xs text-orange-600 mt-1">
+                Showing orders associated with <%= @user.email %>
+              </div>
             </div>
           </div>
         <% end %>
@@ -256,6 +356,153 @@
           </div>
           <h3 class="text-lg font-medium text-orange-950 mb-2">No Orders Yet</h3>
           <p class="text-orange-600">This customer hasn't placed any orders yet.</p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Contact Messages Section -->
+  <% if @contact_messages&.any? %>
+    <div class="mt-8 admin-show-container">
+      <div class="admin-show-header">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="admin-container-title">Contact Messages</h3>
+            <p class="admin-container-subtitle">Recent messages from this customer.</p>
+          </div>
+          <div class="flex items-center space-x-3">
+            <%= link_to "View All #{@total_contact_messages} Messages", admin_contact_messages_path(user_id: @user.id), class: "admin-btn-primary" %>
+          </div>
+        </div>
+      </div>
+      <div class="admin-show-content">
+        <ul class="divide-y divide-orange-200">
+          <% @contact_messages.each do |message| %>
+            <li>
+              <div class="px-4 py-4 sm:px-6">
+                <div class="flex items-center justify-between">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center space-x-3">
+                      <p class="text-sm font-medium text-orange-950">
+                        <%= message.subject %>
+                      </p>
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        <%= case message.status
+                            when 'new' then 'bg-blue-100 text-blue-800'
+                            when 'in_progress' then 'bg-yellow-100 text-yellow-800'
+                            when 'resolved' then 'bg-green-100 text-green-800'
+                            when 'closed' then 'bg-gray-100 text-gray-800'
+                            end %>">
+                        <%= message.status.titleize %>
+                      </span>
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        <%= case message.priority
+                            when 'urgent' then 'bg-orange-100 text-orange-800'
+                            when 'high' then 'bg-orange-100 text-orange-800'
+                            when 'normal' then 'bg-blue-100 text-blue-800'
+                            when 'low' then 'bg-gray-100 text-gray-800'
+                            end %>">
+                        <%= message.priority.titleize %>
+                      </span>
+                    </div>
+                    <p class="text-sm text-orange-600 mt-1">
+                      <%= message.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+                    </p>
+                    <p class="text-sm text-orange-600">
+                      <%= truncate(message.message, length: 100) %>
+                      <% if message.response_count > 0 %>
+                        • <%= pluralize(message.response_count, 'response') %>
+                      <% end %>
+                    </p>
+                  </div>
+                  <div class="ml-2 flex-shrink-0 flex items-center space-x-2">
+                    <%= link_to "View Message", admin_contact_message_path(message), class: "admin-link" %>
+                  </div>
+                </div>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Contact Messages Statistics -->
+    <% if @contact_messages_by_status.any? %>
+      <div class="mt-8 admin-show-container">
+        <div class="admin-show-header">
+          <h3 class="admin-container-title">Contact Messages by Status</h3>
+          <p class="admin-container-subtitle">Messages grouped by status.</p>
+        </div>
+        <div class="admin-show-content">
+          <ul class="divide-y divide-orange-200">
+            <% %w[new in_progress resolved closed].each do |status| %>
+              <% count = @contact_messages_by_status[status]&.count || 0 %>
+              <% next if count == 0 %>
+              <li>
+                <div class="px-4 py-4 sm:px-6">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        <%= case status
+                            when 'new' then 'bg-blue-100 text-blue-800'
+                            when 'in_progress' then 'bg-yellow-100 text-yellow-800'
+                            when 'resolved' then 'bg-green-100 text-green-800'
+                            when 'closed' then 'bg-gray-100 text-gray-800'
+                            end %>">
+                        <%= status.titleize %>
+                      </span>
+                    </div>
+                    <div class="text-sm text-orange-950 font-medium"><%= count %> messages</div>
+                  </div>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+  <% elsif @total_contact_messages && @total_contact_messages > 0 %>
+    <!-- Has messages but none recent -->
+    <div class="mt-8 admin-show-container">
+      <div class="admin-show-header">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="admin-container-title">Contact Messages</h3>
+            <p class="admin-container-subtitle">This customer has sent messages in the past.</p>
+          </div>
+          <div class="flex items-center space-x-3">
+            <%= link_to "View All #{@total_contact_messages} Messages", admin_contact_messages_path(user_id: @user.id), class: "admin-btn-primary" %>
+          </div>
+        </div>
+      </div>
+      <div class="admin-show-content">
+        <div class="text-center py-8">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-orange-950 mb-2">No Recent Messages</h3>
+          <p class="text-orange-600">This customer has <%= @total_contact_messages %> older messages.</p>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <!-- No Contact Messages -->
+    <div class="mt-8 admin-show-container">
+      <div class="admin-show-header">
+        <h3 class="admin-container-title">Contact Messages</h3>
+        <p class="admin-container-subtitle">This customer hasn't sent any messages yet.</p>
+      </div>
+      <div class="admin-show-content">
+        <div class="text-center py-8">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-medium text-orange-950 mb-2">No Messages Yet</h3>
+          <p class="text-orange-600">This customer hasn't sent any contact messages yet.</p>
         </div>
       </div>
     </div>

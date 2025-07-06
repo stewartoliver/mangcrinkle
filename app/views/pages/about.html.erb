@@ -173,12 +173,12 @@
 </div>
 
 <!-- Admin Edit Links (only visible to admins) -->
-<% if current_user&.admin? %>
+<% if user_signed_in? && current_user.admin? %>
   <div class="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 border border-gray-200">
     <h4 class="text-sm font-semibold text-gray-900 mb-2">Quick Edit</h4>
     <div class="space-y-1 text-xs">
-      <%= link_to "Edit About Content", admin_content_blocks_path, 
-                  class: "block text-blue-600 hover:text-blue-800", target: "_blank" %>
+      <%= link_to "Edit About Content", admin_content_blocks_path,
+        class: "inline-flex items-center px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-lg hover:bg-orange-700 transition-colors duration-200" %>
       <%= link_to "Manage Reviews", admin_reviews_path, 
                   class: "block text-blue-600 hover:text-blue-800", target: "_blank" %>
     </div>

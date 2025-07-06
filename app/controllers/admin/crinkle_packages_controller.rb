@@ -2,7 +2,7 @@ class Admin::CrinklePackagesController < Admin::BaseController
   before_action :set_crinkle_package, only: [:show, :edit, :update, :destroy]
 
   def index
-    @crinkle_packages = CrinklePackage.all.ordered_by_quantity
+    @crinkle_packages = CrinklePackage.all.order(created_at: :desc)
   end
 
   def show
@@ -45,6 +45,6 @@ class Admin::CrinklePackagesController < Admin::BaseController
   end
 
   def crinkle_package_params
-    params.require(:crinkle_package).permit(:name, :price, :quantity, :image, :active, :description)
+    params.require(:crinkle_package).permit(:name, :description, :price, :quantity, :active)
   end
 end 

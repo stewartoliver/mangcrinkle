@@ -1,0 +1,17 @@
+<% content_for :title, "New Email Template" %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">New Email Template</h3>
+        <p class="admin-container-subtitle">Create a new email template for automated or manual use</p>
+      </div>
+      <%= link_to "Back to Templates", admin_email_templates_path, class: "admin-btn-back" %>
+    </div>
+  </div>
+
+  <div class="admin-container-content p-6">
+    <%= render "form", email_template: @email_template %>
+  </div>
+</div> 

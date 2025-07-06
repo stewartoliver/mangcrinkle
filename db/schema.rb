@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_14_000009) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_06_091330) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_14_000009) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "admin_notification_preferences", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.boolean "new_order_notifications"
+    t.boolean "weekly_sales_report"
+    t.boolean "monthly_sales_report"
+    t.boolean "contact_form_notifications"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_admin_notification_preferences_on_user_id"
   end
 
   create_table "cart_items", force: :cascade do |t|
@@ -76,6 +87,29 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_14_000009) do
     t.index ["name"], name: "index_companies_on_name"
   end
 
+  create_table "contact_messages", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "subject"
+    t.text "message"
+    t.string "status"
+    t.string "priority"
+    t.datetime "responded_at"
+    t.string "admin_user"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_contact_messages_on_user_id"
+  end
+
+  create_table "contact_responses", force: :cascade do |t|
+    t.bigint "contact_message_id", null: false
+    t.string "admin_user"
+    t.text "response"
+    t.datetime "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contact_message_id"], name: "index_contact_responses_on_contact_message_id"
+  end
+
   create_table "content_blocks", force: :cascade do |t|
     t.string "key", null: false
     t.string "title", null: false
@@ -97,6 +131,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_14_000009) do
     t.decimal "price"
     t.integer "quantity"
     t.boolean "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "email_templates", force: :cascade do |t|
+    t.string "name"
+    t.string "subject"
+    t.text "body"
+    t.string "template_type"
+    t.boolean "active"
+    t.text "variables"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -163,6 +208,38 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_14_000009) do
     t.index ["primary_image_id"], name: "index_products_on_primary_image_id"
   end
 
+  create_table "review_invites", force: :cascade do |t|
+    t.bigint "order_id"
+    t.string "email", null: false
+    t.string "name", null: false
+    t.string "token", null: false
+    t.datetime "expires_at"
+    t.datetime "used_at"
+    t.datetime "sent_at"
+    t.text "admin_notes"
+    t.string "invite_type", default: "order", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_review_invites_on_email"
+    t.index ["expires_at"], name: "index_review_invites_on_expires_at"
+    t.index ["invite_type"], name: "index_review_invites_on_invite_type"
+    t.index ["order_id"], name: "index_review_invites_on_order_id"
+    t.index ["token"], name: "index_review_invites_on_token", unique: true
+    t.index ["used_at"], name: "index_review_invites_on_used_at"
+  end
+
+  create_table "review_spam_trackers", force: :cascade do |t|
+    t.string "ip_address", null: false
+    t.string "email", null: false
+    t.text "user_agent"
+    t.integer "attempt_count", default: 1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_review_spam_trackers_on_created_at"
+    t.index ["email"], name: "index_review_spam_trackers_on_email"
+    t.index ["ip_address"], name: "index_review_spam_trackers_on_ip_address"
+  end
+
   create_table "reviews", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "order_id"
@@ -177,6 +254,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_14_000009) do
     t.bigint "approved_by_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title", limit: 100
     t.index ["approved"], name: "index_reviews_on_approved"
     t.index ["approved_by_id"], name: "index_reviews_on_approved_by_id"
     t.index ["created_at"], name: "index_reviews_on_created_at"
@@ -184,6 +262,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_14_000009) do
     t.index ["featured"], name: "index_reviews_on_featured"
     t.index ["order_id"], name: "index_reviews_on_order_id"
     t.index ["rating"], name: "index_reviews_on_rating"
+    t.index ["title"], name: "index_reviews_on_title"
     t.index ["user_id"], name: "index_reviews_on_user_id"
   end
 
@@ -209,12 +288,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_14_000009) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "admin_notification_preferences", "users"
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "crinkle_packages"
   add_foreign_key "cart_items", "products"
+  add_foreign_key "contact_messages", "users"
+  add_foreign_key "contact_responses", "contact_messages"
   add_foreign_key "line_items", "orders"
   add_foreign_key "order_notes", "orders"
   add_foreign_key "orders", "users"
+  add_foreign_key "review_invites", "orders"
   add_foreign_key "reviews", "orders"
   add_foreign_key "reviews", "users"
   add_foreign_key "reviews", "users", column: "approved_by_id"

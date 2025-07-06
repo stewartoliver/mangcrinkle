@@ -1,0 +1,209 @@
+<% content_for :title, "Review Invitation Details" %>
+
+<div class="admin-show-container">
+  <div class="admin-show-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Review Invitation Details</h3>
+        <p class="admin-container-subtitle">Invitation sent to <%= @review_invite.name %> (<%= @review_invite.email %>)</p>
+      </div>
+      <div class="flex space-x-3">
+        <% if @review_invite.active? %>
+          <%= link_to "Resend Invitation", resend_admin_review_invite_path(@review_invite), 
+                      method: :patch, 
+                      class: "admin-btn-secondary",
+                      data: { confirm: "Resend this invitation?" } %>
+        <% end %>
+        <%= link_to "Back to Invitations", admin_review_invites_path, class: "admin-btn-back" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-show-content">
+    <dl>
+      <!-- Status Information -->
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Status</dt>
+        <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+          <% if @review_invite.used? %>
+            <span class="admin-status-badge bg-green-100 text-green-800">
+              <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              Used
+            </span>
+          <% elsif @review_invite.expired? %>
+            <span class="admin-status-badge bg-red-100 text-red-800">
+              <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+              Expired
+            </span>
+          <% else %>
+            <span class="admin-status-badge bg-green-100 text-green-800">
+              <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              Active
+            </span>
+          <% end %>
+        </dd>
+      </div>
+
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Invitation Type</dt>
+        <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+          <% if @review_invite.invite_type == 'order' %>
+            <span class="admin-status-badge bg-blue-100 text-blue-800">Order-based</span>
+          <% else %>
+            <span class="admin-status-badge bg-purple-100 text-purple-800">Manual</span>
+          <% end %>
+        </dd>
+      </div>
+
+      <!-- Customer Information -->
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Customer Name</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @review_invite.name %></dd>
+      </div>
+
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Email Address</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @review_invite.email %></dd>
+      </div>
+
+      <!-- Order Information -->
+      <% if @review_invite.order %>
+        <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-orange-700">Associated Order</dt>
+          <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+            <div class="flex items-center justify-between">
+              <span>Order #<%= @review_invite.order.id %> - $<%= number_with_precision(@review_invite.order.total_price, precision: 2) %></span>
+              <%= link_to "View Order", admin_order_path(@review_invite.order), 
+                          class: "inline-flex items-center px-3 py-1 border border-orange-300 text-sm font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100" %>
+            </div>
+          </dd>
+        </div>
+
+        <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-orange-700">Order Date</dt>
+          <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @review_invite.order.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+        </div>
+      <% end %>
+
+      <!-- Timeline Information -->
+      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Created</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @review_invite.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+      </div>
+
+      <% if @review_invite.sent_at %>
+        <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-orange-700">Email Sent</dt>
+          <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @review_invite.sent_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+        </div>
+      <% end %>
+
+      <% if @review_invite.used_at %>
+        <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-orange-700">Review Submitted</dt>
+          <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @review_invite.used_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+        </div>
+      <% end %>
+
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Expires</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <span class="<%= @review_invite.expired? ? 'text-red-600' : 'text-orange-950' %>">
+            <%= @review_invite.expires_at.strftime("%B %d, %Y at %I:%M %p") %>
+            <% if @review_invite.expired? %>
+              <span class="text-red-500 font-medium">(Expired)</span>
+            <% else %>
+              <span class="text-orange-600">(<%= time_ago_in_words(@review_invite.expires_at) %> from now)</span>
+            <% end %>
+          </span>
+        </dd>
+      </div>
+
+      <!-- Admin Notes -->
+      <% if @review_invite.admin_notes.present? %>
+        <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-orange-700">Admin Notes</dt>
+          <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2 whitespace-pre-wrap"><%= @review_invite.admin_notes %></dd>
+        </div>
+      <% end %>
+    </dl>
+
+    <!-- Review Link Section -->
+    <div class="px-4 py-6 border-t border-orange-200 sm:px-6">
+      <h4 class="text-lg font-medium text-orange-950 mb-4">Review Link</h4>
+      <div class="bg-orange-50 rounded-lg p-4">
+        <div class="flex items-center space-x-2">
+          <input type="text" 
+                 value="<%= new_review_url(token: @review_invite.token) %>" 
+                 readonly 
+                 class="flex-1 form-input bg-white text-sm"
+                 id="review-link-input">
+          <button onclick="copyToClipboard()" 
+                  class="admin-btn-secondary">
+            Copy Link
+          </button>
+        </div>
+        <p class="mt-2 text-xs text-orange-600">
+          This is the direct link that was sent to the customer. It can only be used once and expires in 30 days.
+        </p>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="px-4 py-6 border-t border-orange-200 sm:px-6">
+      <h4 class="text-lg font-medium text-orange-950 mb-4">Quick Stats</h4>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-orange-50 rounded-lg p-4">
+          <div class="text-sm font-medium text-orange-700">Days Since Created</div>
+          <div class="text-lg font-semibold text-orange-950"><%= (Date.current - @review_invite.created_at.to_date).to_i %></div>
+        </div>
+        <div class="bg-orange-50 rounded-lg p-4">
+          <div class="text-sm font-medium text-orange-700">Days Until Expiry</div>
+          <div class="text-lg font-semibold text-orange-950">
+            <% days_until_expiry = (@review_invite.expires_at.to_date - Date.current).to_i %>
+            <%= days_until_expiry < 0 ? 'Expired' : days_until_expiry %>
+          </div>
+        </div>
+        <% if @review_invite.used_at %>
+          <div class="bg-orange-50 rounded-lg p-4">
+            <div class="text-sm font-medium text-orange-700">Response Time</div>
+            <div class="text-lg font-semibold text-orange-950">
+              <%= pluralize((@review_invite.used_at.to_date - @review_invite.created_at.to_date).to_i, 'day') %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function copyToClipboard() {
+  const input = document.getElementById('review-link-input');
+  input.select();
+  input.setSelectionRange(0, 99999);
+  
+  try {
+    document.execCommand('copy');
+    
+    // Show success feedback
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = 'Copied!';
+    button.classList.add('bg-green-100', 'text-green-800');
+    
+    setTimeout(() => {
+      button.textContent = originalText;
+      button.classList.remove('bg-green-100', 'text-green-800');
+    }, 2000);
+  } catch (err) {
+    console.error('Failed to copy text: ', err);
+  }
+}
+</script>

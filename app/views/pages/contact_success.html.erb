@@ -1,0 +1,82 @@
+<!-- Contact Success Header -->
+<div class="bg-green-100 text-green-950 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <div class="mx-auto h-12 w-12 text-green-600 mb-4">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+      </div>
+      <h1 class="text-4xl font-extrabold tracking-tight">Message Sent Successfully!</h1>
+      <p class="mt-4 text-xl max-w-3xl mx-auto">
+        Thank you for reaching out to us. We've received your message and will get back to you soon.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Success Content -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="max-w-3xl mx-auto text-center">
+    <div class="bg-white rounded-lg shadow-md p-8 border border-green-200">
+      <div class="mx-auto h-16 w-16 text-green-600 mb-6">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 3.26a2 2 0 001.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        </svg>
+      </div>
+      
+      <h2 class="text-2xl font-bold text-orange-950 mb-4">What happens next?</h2>
+      
+      <div class="space-y-4 text-left">
+        <div class="flex items-start space-x-3">
+          <div class="flex-shrink-0 w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center">
+            <span class="text-orange-600 font-semibold text-sm">1</span>
+          </div>
+          <div>
+            <h3 class="font-semibold text-orange-950">Message Received</h3>
+            <p class="text-orange-700 text-sm">Your message has been safely delivered to our team.</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start space-x-3">
+          <div class="flex-shrink-0 w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center">
+            <span class="text-orange-600 font-semibold text-sm">2</span>
+          </div>
+          <div>
+            <h3 class="font-semibold text-orange-950">We'll Review Your Message</h3>
+            <p class="text-orange-700 text-sm">Our team will carefully read your inquiry and prepare a response.</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start space-x-3">
+          <div class="flex-shrink-0 w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center">
+            <span class="text-orange-600 font-semibold text-sm">3</span>
+          </div>
+          <div>
+            <h3 class="font-semibold text-orange-950">We'll Get Back To You</h3>
+            <p class="text-orange-700 text-sm">Expect a response within 24-48 hours during business days.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-8 p-4 bg-orange-50 rounded-lg">
+        <% company = Company.main %>
+        <p class="text-sm text-orange-700">
+          <strong>Need immediate assistance?</strong> You can reach us at 
+          <a href="mailto:<%= company_email %>" class="text-orange-900 underline">
+            <%= company_email %>
+          </a> 
+          or call us at 
+          <a href="tel:<%= company_phone %>" class="text-orange-900 underline">
+            <%= company_phone %>
+          </a>.
+        </p>
+      </div>
+      
+      <div class="mt-8 flex justify-center space-x-4">
+        <%= link_to "Back to Home", root_path, class: "inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-orange-200 bg-orange-950 hover:bg-orange-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-150" %>
+        <%= link_to "Browse Our Crinkles", products_path, class: "inline-flex items-center px-6 py-3 border border-orange-300 text-base font-medium rounded-md text-orange-950 bg-white hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-150" %>
+      </div>
+    </div>
+  </div>
+</div> 

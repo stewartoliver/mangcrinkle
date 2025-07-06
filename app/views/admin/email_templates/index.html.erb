@@ -1,0 +1,209 @@
+<% content_for :title, "Email Templates" %>
+
+<!-- Statistics Cards -->
+<div class="admin-grid-stats mb-8">
+  <div class="admin-stats-card">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-orange">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Total Templates</h2>
+        <p class="admin-stats-value admin-stats-value-orange"><%= @email_templates.count %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-green">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Active Templates</h2>
+        <p class="admin-stats-value admin-stats-value-green"><%= @email_templates.select(&:active?).count %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-blue">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Template Types</h2>
+        <p class="admin-stats-value admin-stats-value-blue"><%= @template_types.count %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-purple">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Automated</h2>
+        <p class="admin-stats-value admin-stats-value-purple"><%= @email_templates.reject { |t| t.template_type == 'manual' }.count %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Email Templates</h3>
+        <p class="admin-container-subtitle">Manage automated email templates</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <% if @email_templates.empty? %>
+          <%= link_to "Create Default Templates", seed_defaults_admin_email_templates_path, method: :post, class: "admin-btn admin-btn-secondary", data: { confirm: "This will create default email templates. Continue?" } %>
+        <% end %>
+        <%= link_to "New Template", new_admin_email_template_path, class: "admin-btn admin-btn-primary" %>
+      </div>
+    </div>
+  </div>
+
+  <% if @email_templates.any? %>
+    <!-- Filters -->
+    <%= form_with url: admin_email_templates_path, method: :get, local: true, class: "px-6 py-4 border-b border-orange-200 bg-gray-50" do |form| %>
+      <div class="flex flex-wrap gap-4">
+        <div class="flex-1 min-w-0">
+          <%= form.label :template_type, "Template Type", class: "form-label" %>
+          <div class="mt-1">
+            <%= form.select :template_type, 
+                            options_for_select([
+                              ['All Types', ''],
+                              ['Welcome', 'welcome'],
+                              ['Order Confirmation', 'order_confirmation'],
+                              ['Contact Response', 'contact_response'],
+                              ['Newsletter', 'newsletter'],
+                              ['Sales Report', 'sales_report'],
+                              ['Manual', 'manual']
+                            ], params[:template_type]), 
+                            {}, { class: "form-select" } %>
+          </div>
+        </div>
+        
+        <div class="flex-1 min-w-0">
+          <%= form.label :status, "Status", class: "form-label" %>
+          <div class="mt-1">
+            <%= form.select :status, 
+                            options_for_select([
+                              ['All Templates', ''],
+                              ['Active', 'active'],
+                              ['Inactive', 'inactive']
+                            ], params[:status]), 
+                            {}, { class: "form-select" } %>
+          </div>
+        </div>
+        
+        <div class="flex items-end">
+          <%= form.submit "Filter", class: "admin-btn-primary" %>
+          <%= link_to "Clear", admin_email_templates_path, class: "ml-2 admin-btn-secondary" %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+  <div class="admin-container-content">
+    <% if @email_templates.any? %>
+      <!-- Templates List -->
+      <div class="space-y-4 p-6">
+        <% @email_templates.group_by(&:template_type).each do |template_type, templates| %>
+          <div class="bg-white rounded-lg shadow-sm border border-orange-200">
+            <div class="px-6 py-4 border-b border-orange-200">
+              <h4 class="text-lg font-medium text-orange-950 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <%= template_type.titleize %> Templates
+                <span class="ml-2 text-sm text-orange-600">(<%= templates.count %>)</span>
+              </h4>
+            </div>
+            
+            <div class="divide-y divide-orange-200">
+              <% templates.each do |template| %>
+                <div class="px-6 py-4 hover:bg-orange-50 transition-colors duration-200">
+                  <div class="flex items-center justify-between">
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center space-x-3">
+                        <h5 class="text-sm font-medium text-orange-950 truncate">
+                          <%= link_to template.name, admin_email_template_path(template), class: "hover:text-orange-700" %>
+                        </h5>
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                          <%= template.active? ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                          <%= template.active? ? 'Active' : 'Inactive' %>
+                        </span>
+                      </div>
+                      <p class="text-sm text-orange-600 mt-1 truncate">
+                        Subject: <%= template.subject %>
+                      </p>
+                      <% if template.variables.present? %>
+                        <div class="mt-2 flex flex-wrap gap-1">
+                          <span class="text-xs text-orange-500">Variables:</span>
+                          <% template.variable_list.each do |var| %>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">
+                              {{<%= var %>}}
+                            </span>
+                          <% end %>
+                        </div>
+                      <% end %>
+                    </div>
+                    
+                    <div class="flex items-center space-x-2 ml-4">
+                      <div class="admin-action-btn-group">
+                        <%= link_to admin_email_template_path(template), class: "admin-action-btn", title: "View Details" do %>
+                          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        <% end %>
+                        
+                        <%= link_to preview_admin_email_template_path(template), class: "admin-action-btn", title: "Preview Template" do %>
+                          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                        <% end %>
+                        
+                        <%= link_to edit_admin_email_template_path(template), class: "admin-action-btn", title: "Edit Template" do %>
+                          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <!-- Empty State -->
+      <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-orange-900">No email templates</h3>
+        <p class="mt-1 text-sm text-orange-500">Get started by creating your first email template or seeding default templates.</p>
+        <div class="mt-6 flex justify-center space-x-3">
+          <%= link_to "Create Default Templates", seed_defaults_admin_email_templates_path, method: :post, class: "admin-btn admin-btn-secondary", data: { confirm: "This will create default email templates. Continue?" } %>
+          <%= link_to "Create New Template", new_admin_email_template_path, class: "admin-btn admin-btn-primary" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div> 

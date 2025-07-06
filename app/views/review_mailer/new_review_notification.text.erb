@@ -1,0 +1,31 @@
+NEW REVIEW SUBMITTED - Mang Crinkle
+
+A customer has left a review for your cookies!
+
+REVIEW DETAILS:
+Customer: <%= @review.customer_display_name %>
+Email: <%= @review.email %>
+Rating: <%= @review.rating %>/5 stars (<%= '★' * @review.rating %><%= '☆' * (5 - @review.rating) %>)
+<% if @review.title.present? %>
+Title: <%= @review.title %>
+<% end %>
+<% if @review.verified_purchase? %>
+Verified Purchase: Order #<%= @review.order.id %>
+<% end %>
+Submitted: <%= @review.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+
+REVIEW CONTENT:
+<%= @review.content %>
+
+ADMIN ACTIONS:
+- View in Admin Panel: <%= admin_review_url(@review) %>
+- Quick Approve: <%= approve_admin_review_url(@review) %>
+
+NEXT STEPS:
+- Review the content for appropriateness
+- Approve or reject the review
+- Consider featuring high-quality reviews
+- Respond to any concerns if needed
+
+---
+This is an automated notification from your Mang Crinkle review system. 

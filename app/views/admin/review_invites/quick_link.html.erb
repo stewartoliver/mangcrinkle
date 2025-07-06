@@ -1,0 +1,64 @@
+<% content_for :title, "Generate Quick Review Link" %>
+
+<div class="admin-container p-6">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Generate Quick Review Link</h3>
+        <p class="admin-container-subtitle">Create a shareable link for customers to submit reviews.</p>
+      </div>
+      <div>
+        <%= link_to "Back to Reviews", admin_reviews_path, class: "admin-btn-secondary" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-container-content">
+    <div class="bg-blue-50 border border-blue-200 rounded-md p-6">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3 flex-1">
+          <h3 class="text-sm font-medium text-blue-800">
+            About Quick Review Links
+          </h3>
+          <div class="mt-2 text-sm text-blue-700">
+            <p>Generate a one-time use review link that you can share with customers via social media, email, or other channels.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 bg-white border border-gray-200 rounded-md p-6">
+      <h4 class="text-lg font-medium text-gray-900 mb-4">Generate Review Link</h4>
+      
+      <%= form_with url: create_quick_link_admin_review_invites_path, method: :post, local: true, class: "space-y-4" do |form| %>
+        <div class="bg-gray-50 rounded-md p-4">
+          <h5 class="text-sm font-medium text-gray-700 mb-2">Link Properties:</h5>
+          <ul class="text-sm text-gray-600 space-y-1">
+            <li>• Valid for 30 days from creation</li>
+            <li>• One-time use only</li>
+            <li>• Customer will fill in their own name and email</li>
+            <li>• Review will be pending approval</li>
+            <li>• No order association required</li>
+          </ul>
+        </div>
+        
+        <div class="flex justify-center">
+          <%= form.submit "Generate Quick Review Link", class: "admin-btn-primary", data: { disable_with: "Generating..." } %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mt-6 bg-yellow-50 border border-yellow-200 rounded-md p-4">
+      <h4 class="text-sm font-medium text-yellow-900 mb-2">Alternative Options:</h4>
+      <div class="flex space-x-4">
+        <%= link_to "Send Personalized Invitation", new_admin_review_invite_path, class: "admin-btn-secondary" %>
+        <%= link_to "Manage Existing Invitations", admin_review_invites_path, class: "admin-btn-secondary" %>
+      </div>
+    </div>
+  </div>
+</div> 

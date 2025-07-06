@@ -281,8 +281,15 @@ class Admin::OrdersController < Admin::BaseController
     # Customer name search
     orders = orders.by_customer(params[:customer_name]) if params[:customer_name].present?
     
-    # Email search
-    orders = orders.by_email(params[:email]) if params[:email].present?
+    # Email search - exact match by default, partial if specified
+    if params[:email].present?
+      if params[:email_search_type] == 'partial'
+        orders = orders.by_email_partial(params[:email])
+      else
+        # Default to exact match
+        orders = orders.by_email(params[:email])
+      end
+    end
     
     # Order ID search
     orders = orders.by_order_id(params[:order_id]) if params[:order_id].present?

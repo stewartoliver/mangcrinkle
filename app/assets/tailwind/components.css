@@ -65,7 +65,7 @@
 
     /* Admin Table Components */
     .admin-table {
-        @apply min-w-full divide-y divide-orange-200;
+        @apply min-w-full divide-y divide-gray-200;
     }
 
     .admin-table-header {
@@ -85,7 +85,7 @@
     }
 
     .admin-table-body {
-        @apply bg-white divide-y divide-orange-200;
+        @apply bg-white divide-y divide-gray-200;
     }
 
     .admin-table-row {
@@ -455,7 +455,7 @@
     }
 
     .admin-list-items {
-        @apply -my-5 divide-y divide-orange-200;
+        @apply -my-5 divide-y divide-gray-200;
     }
 
     .admin-list-item {

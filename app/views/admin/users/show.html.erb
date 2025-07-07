@@ -17,11 +17,11 @@
   <div class="admin-show-content">
     <dl>
       <!-- Account Information -->
-      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+      <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
         <dt class="text-sm font-medium text-orange-700">Email</dt>
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user.email %></dd>
       </div>
-      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+      <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
         <dt class="text-sm font-medium text-orange-700">User Type</dt>
         <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @user.admin? ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
@@ -31,22 +31,22 @@
       </div>
 
       <!-- Contact Details -->
-      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+      <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
         <dt class="text-sm font-medium text-orange-700">Full Name</dt>
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user.full_name.present? ? @user.full_name : "Not provided" %></dd>
       </div>
-      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+      <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
         <dt class="text-sm font-medium text-orange-700">Phone Number</dt>
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user.phone.present? ? @user.phone : "Not provided" %></dd>
       </div>
-      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+      <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
         <dt class="text-sm font-medium text-orange-700">Address</dt>
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user.address.present? ? @user.address : "Not provided" %></dd>
       </div>
 
       <!-- Account Status & Preferences -->
       <% if @user.customer? %>
-        <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dt class="text-sm font-medium text-orange-700">Newsletter Subscription</dt>
           <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
             <% if @user.newsletter_subscribed? %>
@@ -63,11 +63,11 @@
       <% end %>
 
       <!-- Account Timeline -->
-      <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+      <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
         <dt class="text-sm font-medium text-orange-700">Member Since</dt>
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
       </div>
-      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+      <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
         <dt class="text-sm font-medium text-orange-700">Last Updated</dt>
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user.updated_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
       </div>
@@ -242,15 +242,15 @@
       </div>
       <div class="admin-show-content">
         <dl>
-          <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-orange-700">Total Orders</dt>
             <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @total_orders %></dd>
           </div>
-          <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-orange-700">Total Spent</dt>
             <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= number_to_currency(@total_spent) %></dd>
           </div>
-          <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-orange-700">Average Order Value</dt>
             <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= number_to_currency(@average_order_value) %></dd>
           </div>
@@ -300,15 +300,15 @@
       </div>
       <div class="admin-show-content">
         <dl>
-          <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-orange-700">Direct User Orders</dt>
             <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user_orders&.count || 0 %></dd>
           </div>
-          <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-orange-700">Orders by Email</dt>
             <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @orders_by_email&.count || 0 %></dd>
           </div>
-          <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-orange-700">Orders by Phone</dt>
             <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @orders_by_phone&.count || 0 %></dd>
           </div>

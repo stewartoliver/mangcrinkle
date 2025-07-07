@@ -1,5 +1,14 @@
 <% content_for :title, "Edit Review" %>
 
+<style>
+  .admin-edit-dl > div:nth-child(odd) {
+    background-color: rgb(255 247 237); /* bg-orange-50 */
+  }
+  .admin-edit-dl > div:nth-child(even) {
+    background-color: rgb(255 255 255); /* bg-white */
+  }
+</style>
+
 <div class="admin-container">
   <div class="admin-container-header">
     <div class="flex items-center justify-between">
@@ -9,231 +18,276 @@
       </div>
       <div class="flex items-center space-x-3">
         <%= link_to "View Review", admin_review_path(@review), class: "admin-btn-secondary" %>
-        <%= link_to "Back to Reviews", admin_reviews_path, class: "admin-btn-secondary" %>
+        <%= link_to "Back to Reviews", admin_reviews_path, class: "admin-btn-back" %>
       </div>
     </div>
   </div>
 
-  <div class="admin-container-content">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Main Edit Form -->
-      <div class="lg:col-span-2">
-        <div class="bg-white rounded-lg shadow-sm border border-orange-200">
-          <div class="p-6">
-            <%= form_with model: [:admin, @review], local: true, class: "space-y-6" do |form| %>
-              <% if @review.errors.any? %>
-                <div class="rounded-md bg-red-50 p-4">
-                  <div class="flex">
-                    <div class="flex-shrink-0">
-                      <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                      </svg>
-                    </div>
-                    <div class="ml-3">
-                      <h3 class="text-sm font-medium text-red-800">
-                        There were errors with your submission:
-                      </h3>
-                      <div class="mt-2 text-sm text-red-700">
-                        <ul class="list-disc list-inside space-y-1">
-                          <% @review.errors.full_messages.each do |message| %>
-                            <li><%= message %></li>
-                          <% end %>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
+  <div class="border-t border-orange-200">
+    <%= form_with model: [:admin, @review], local: true do |form| %>
+      <% if @review.errors.any? %>
+        <div class="px-6 py-4 bg-red-50 border-b border-red-200">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                There were errors with your submission:
+              </h3>
+              <div class="mt-2 text-sm text-red-700">
+                <ul class="list-disc list-inside space-y-1">
+                  <% @review.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <dl class="admin-edit-dl">
+        <!-- Customer Information -->
+        <div class="px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-orange-700">Customer Name</dt>
+          <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+            <%= form.text_field :customer_name, 
+                                class: "form-input w-full",
+                                placeholder: "Customer's full name" %>
+          </dd>
+        </div>
+
+        <div class="px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-orange-700">Customer Email</dt>
+          <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+            <%= form.email_field :email, 
+                                 class: "form-input w-full",
+                                 placeholder: "customer@email.com" %>
+          </dd>
+        </div>
+
+        <!-- Rating -->
+        <div class="px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-orange-700">Rating</dt>
+          <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+            <div class="flex items-center space-x-2">
+              <div class="flex items-center space-x-1" id="star-rating">
+                <% (1..5).each do |star| %>
+                  <button type="button" class="star-btn text-2xl <%= star <= @review.rating ? 'text-yellow-400' : 'text-gray-300' %> hover:text-yellow-400 transition-colors duration-150" data-rating="<%= star %>">
+                    ★
+                  </button>
+                <% end %>
+              </div>
+              <span class="text-sm text-orange-600 font-medium">(<span id="rating-display"><%= @review.rating %></span>/5)</span>
+            </div>
+            <%= form.hidden_field :rating, id: "rating-input" %>
+            <p class="mt-1 text-xs text-orange-500">Click the stars to change the rating</p>
+          </dd>
+        </div>
+
+        <!-- Review Title -->
+        <div class="px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-orange-700">Review Title</dt>
+          <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+            <%= form.text_field :title, 
+                                class: "form-input w-full",
+                                placeholder: "Optional review title" %>
+            <p class="mt-1 text-xs text-orange-500">Optional - appears as headline for the review</p>
+          </dd>
+        </div>
+
+        <!-- Review Content -->
+        <div class="px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-orange-700">Review Content</dt>
+          <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+            <%= form.text_area :content, 
+                               rows: 4,
+                               class: "form-input w-full",
+                               placeholder: "The customer's review content...",
+                               maxlength: 500 %>
+            <div class="mt-1 flex justify-between text-xs text-orange-500">
+              <span>The customer's review content</span>
+              <span id="char-count"><%= @review.content.length %>/500</span>
+            </div>
+          </dd>
+        </div>
+
+        <!-- Status Controls -->
+        <div class="px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-orange-700">Approval Status</dt>
+          <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+            <div class="flex items-center space-x-2">
+              <%= form.check_box :approved, class: "form-checkbox h-4 w-4 text-orange-600" %>
+              <%= form.label :approved, "Approved for public display", class: "text-sm text-orange-950" %>
+            </div>
+            <p class="mt-1 text-xs text-orange-500">Approved reviews are visible to customers</p>
+          </dd>
+        </div>
+
+        <div class="px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-orange-700">Featured Status</dt>
+          <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+            <div class="flex items-center space-x-2">
+              <%= form.check_box :featured, class: "form-checkbox h-4 w-4 text-orange-600" %>
+              <%= form.label :featured, "Featured review", class: "text-sm text-orange-950" %>
+            </div>
+            <p class="mt-1 text-xs text-orange-500">Featured reviews appear prominently on the homepage</p>
+          </dd>
+        </div>
+
+        <!-- Customer Type (Read-only info) -->
+        <div class="px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-orange-700">Customer Type</dt>
+          <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <% if @review.user.present? %>
+                  <span class="admin-status-badge bg-blue-100 text-blue-800">Registered User</span>
+                <% else %>
+                  <span class="admin-status-badge bg-gray-100 text-gray-800">Guest</span>
+                <% end %>
+              </div>
+              <% if @review.user.present? %>
+                <div class="flex-shrink-0">
+                  <%= link_to "View Customer", admin_user_path(@review.user), 
+                              class: "inline-flex items-center px-3 py-1 border border-orange-300 text-sm font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100" %>
                 </div>
               <% end %>
-
-              <!-- Customer Information -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <%= form.label :customer_name, class: "block text-sm font-medium text-gray-700 mb-1" %>
-                  <%= form.text_field :customer_name, 
-                                      class: "form-input",
-                                      placeholder: "Customer's full name" %>
-                </div>
-                
-                <div>
-                  <%= form.label :email, class: "block text-sm font-medium text-gray-700 mb-1" %>
-                  <%= form.email_field :email, 
-                                       class: "form-input",
-                                       placeholder: "customer@email.com" %>
-                </div>
-              </div>
-
-              <!-- Review Title -->
-              <div>
-                <%= form.label :title, "Review Title (Optional)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-                <%= form.text_field :title, 
-                                    class: "form-input",
-                                    placeholder: "Optional review title" %>
-              </div>
-
-              <!-- Rating -->
-              <div>
-                <%= form.label :rating, "Rating", class: "block text-sm font-medium text-gray-700 mb-2" %>
-                <div class="flex items-center space-x-1" id="star-rating">
-                  <% (1..5).each do |star| %>
-                    <button type="button" class="star-btn text-3xl <%= star <= @review.rating ? 'text-yellow-400' : 'text-gray-300' %> hover:text-yellow-400 transition-colors duration-150" data-rating="<%= star %>">
-                      ★
-                    </button>
-                  <% end %>
-                </div>
-                <%= form.hidden_field :rating, id: "rating-input" %>
-                <p class="mt-1 text-sm text-gray-500">Click the stars to change the rating</p>
-              </div>
-
-              <!-- Review Content -->
-              <div>
-                <%= form.label :content, "Review Content", class: "block text-sm font-medium text-gray-700 mb-1" %>
-                <%= form.text_area :content, 
-                                   rows: 6,
-                                   class: "form-input",
-                                   placeholder: "The customer's review content...",
-                                   maxlength: 500 %>
-                <div class="mt-1 flex justify-between text-sm text-gray-500">
-                  <span>The customer's review content</span>
-                  <span id="char-count"><%= @review.content.length %>/500</span>
-                </div>
-              </div>
-
-              <!-- Admin Notes -->
-              <div>
-                <%= form.label :admin_notes, "Admin Notes", class: "block text-sm font-medium text-gray-700 mb-1" %>
-                <%= form.text_area :admin_notes, 
-                                   rows: 4,
-                                   class: "form-input",
-                                   placeholder: "Internal notes about this review (not visible to customers)..." %>
-                <p class="mt-1 text-sm text-gray-500">These notes are only visible to admins</p>
-              </div>
-
-              <!-- Status Controls -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <%= form.label :approved, class: "block text-sm font-medium text-gray-700 mb-2" %>
-                  <div class="flex items-center">
-                    <%= form.check_box :approved, class: "form-checkbox h-4 w-4 text-orange-600" %>
-                    <%= form.label :approved, "Approved for public display", class: "ml-2 text-sm text-gray-700" %>
-                  </div>
-                </div>
-                
-                <div>
-                  <%= form.label :featured, class: "block text-sm font-medium text-gray-700 mb-2" %>
-                  <div class="flex items-center">
-                    <%= form.check_box :featured, class: "form-checkbox h-4 w-4 text-orange-600" %>
-                    <%= form.label :featured, "Featured review", class: "ml-2 text-sm text-gray-700" %>
-                  </div>
-                  <p class="mt-1 text-xs text-gray-500">Featured reviews appear prominently on the site</p>
-                </div>
-              </div>
-
-              <!-- Submit Buttons -->
-              <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
-                <%= link_to "Cancel", admin_review_path(@review), class: "admin-btn-secondary" %>
-                <%= form.submit "Update Review", class: "admin-btn-primary" %>
-              </div>
-            <% end %>
-          </div>
+            </div>
+          </dd>
         </div>
-      </div>
 
-      <!-- Sidebar Information -->
-      <div class="lg:col-span-1">
-        <div class="space-y-6">
-          <!-- Review Preview -->
-          <div class="bg-white rounded-lg shadow-sm border border-orange-200">
-            <div class="p-6">
-              <h4 class="text-lg font-semibold text-gray-900 mb-4">Current Review</h4>
-              
-              <div class="space-y-3">
-                <div class="flex items-center">
-                  <div class="flex items-center">
-                    <% 5.times do |i| %>
-                      <svg class="h-4 w-4 <%= i < @review.rating ? 'text-yellow-400' : 'text-gray-300' %>" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                      </svg>
-                    <% end %>
-                    <span class="ml-1 text-sm text-orange-600">(<%= @review.rating %>)</span>
-                  </div>
+        <!-- Order Information (Read-only) -->
+        <% if @review.order.present? %>
+          <div class="px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-orange-700">Associated Order</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+              <div class="flex items-center justify-between">
+                <span>Order #<%= @review.order.id %> - $<%= number_with_precision(@review.order.total_price, precision: 2) %></span>
+                <%= link_to "View Order", admin_order_path(@review.order), 
+                            class: "inline-flex items-center px-3 py-1 border border-orange-300 text-sm font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100" %>
+              </div>
+            </dd>
+          </div>
+
+          <div class="px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-orange-700">Verified Purchase</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+              <% if @review.verified_purchase? %>
+                <span class="admin-status-badge bg-green-100 text-green-800">
+                  <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                  Yes
+                </span>
+              <% else %>
+                <span class="admin-status-badge bg-gray-100 text-gray-800">No</span>
+              <% end %>
+            </dd>
+          </div>
+        <% end %>
+
+        <!-- Admin Notes -->
+        <div class="px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-orange-700">Admin Notes</dt>
+          <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+            <%= form.text_area :admin_notes, 
+                               rows: 3,
+                               class: "form-input w-full",
+                               placeholder: "Internal notes about this review (not visible to customers)..." %>
+            <p class="mt-1 text-xs text-orange-500">These notes are only visible to admins</p>
+          </dd>
+        </div>
+
+        <!-- Timeline Information (Read-only) -->
+        <div class="px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-orange-700">Submitted</dt>
+          <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @review.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+        </div>
+
+        <% if @review.approved? && @review.approved_at.present? %>
+          <div class="px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-orange-700">Approved</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @review.approved_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+          </div>
+        <% end %>
+
+        <% if @review.approved_by.present? %>
+          <div class="px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-orange-700">Approved By</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= "#{@review.approved_by.first_name} #{@review.approved_by.last_name}".strip %></dd>
+          </div>
+        <% end %>
+      </dl>
+
+      <!-- Homepage Preview -->
+      <div class="px-6 py-6 border-t border-orange-200">
+        <h4 class="text-lg font-medium text-orange-950 mb-4">Homepage Preview</h4>
+        
+        <div class="bg-orange-50 rounded-md p-6 border border-orange-200">
+          <div class="text-sm text-orange-600 mb-4">
+            <p class="font-medium">Live Site Preview - How it would appear on the homepage:</p>
+          </div>
+          
+          <!-- Homepage-style testimonial preview -->
+          <div class="max-w-sm mx-auto">
+            <div class="bg-white p-6 rounded-lg border-2 border-orange-200 shadow-sm" id="preview-card">
+              <div class="flex items-center mb-4">
+                <div class="text-2xl text-orange-600" id="preview-stars">
+                  <% @review.rating.times do %>★<% end %>
+                  <% (5 - @review.rating).times do %>☆<% end %>
                 </div>
-                
+              </div>
+              <div id="preview-title">
                 <% if @review.title.present? %>
-                  <h5 class="font-semibold text-gray-900"><%= @review.title %></h5>
-                <% end %>
-                
-                <p class="text-sm text-gray-700 leading-relaxed">
-                  <%= truncate(@review.content, length: 200) %>
-                </p>
-                
-                <div class="text-xs text-gray-500">
-                  By <%= @review.customer_display_name %> • <%= time_ago_in_words(@review.created_at) %> ago
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Review Status -->
-          <div class="bg-white rounded-lg shadow-sm border border-orange-200">
-            <div class="p-6">
-              <h4 class="text-lg font-semibold text-gray-900 mb-4">Review Status</h4>
-              <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                  <span class="text-sm font-medium text-gray-700">Approval Status</span>
-                  <% if @review.approved? %>
-                    <span class="admin-status-badge bg-green-100 text-green-800">Approved</span>
-                  <% else %>
-                    <span class="admin-status-badge bg-yellow-100 text-yellow-800">Pending</span>
-                  <% end %>
-                </div>
-                
-                <div class="flex items-center justify-between">
-                  <span class="text-sm font-medium text-gray-700">Featured</span>
-                  <% if @review.featured? %>
-                    <span class="admin-status-badge bg-blue-100 text-blue-800">Featured</span>
-                  <% else %>
-                    <span class="admin-status-badge bg-gray-100 text-gray-800">Not Featured</span>
-                  <% end %>
-                </div>
-                
-                <% if @review.verified_purchase? %>
-                  <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium text-gray-700">Purchase</span>
-                    <span class="admin-status-badge bg-green-100 text-green-800">Verified</span>
-                  </div>
+                  <h5 class="font-semibold text-orange-950 mb-2">"<%= @review.title %>"</h5>
                 <% end %>
               </div>
+              <p class="text-orange-700 mb-4" id="preview-content">"<%= @review.content %>"</p>
+              <p class="font-semibold text-orange-950" id="preview-customer">- <%= @review.customer_display_name %></p>
+              <% if @review.verified_purchase? %>
+                <p class="text-xs text-orange-600 mt-2" id="preview-verified">✓ Verified Purchase</p>
+              <% end %>
             </div>
           </div>
-
-          <!-- Quick Actions -->
-          <div class="bg-white rounded-lg shadow-sm border border-orange-200">
-            <div class="p-6">
-              <h4 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h4>
-              <div class="space-y-3">
-                <% if @review.approved? %>
-                  <%= link_to "Unapprove Review", unapprove_admin_review_path(@review), 
-                              method: :patch, class: "admin-btn-secondary w-full text-center",
-                              data: { confirm: "Are you sure you want to unapprove this review?" } %>
-                <% else %>
-                  <%= link_to "Approve Review", approve_admin_review_path(@review), 
-                              method: :patch, class: "admin-btn-primary w-full text-center" %>
-                <% end %>
-
-                <%= link_to "#{@review.featured? ? 'Remove from Featured' : 'Add to Featured'}", 
-                            toggle_featured_admin_review_path(@review), 
-                            method: :patch, class: "admin-btn-secondary w-full text-center",
-                            data: { confirm: "Are you sure you want to #{@review.featured? ? 'unfeature' : 'feature'} this review?" } %>
-
-                <%= button_to "Delete Review", admin_review_path(@review), 
-                            method: :delete, class: "admin-btn-danger w-full",
-                            form: { data: { turbo_confirm: "Are you sure you want to delete this review? This action cannot be undone." } } %>
+          
+          <!-- Status indicators -->
+          <div class="mt-6 pt-6 border-t border-orange-200">
+            <div class="flex items-center justify-center space-x-4">
+              <div class="flex items-center space-x-2">
+                <span class="text-sm font-medium text-orange-700">Visibility Status:</span>
+                <span id="preview-status">
+                  <% if @review.approved? && @review.featured? %>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      ✓ Would appear on homepage
+                    </span>
+                  <% elsif @review.approved? %>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      ✓ Approved but not featured
+                    </span>
+                  <% else %>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                      ⚠ Pending approval
+                    </span>
+                  <% end %>
+                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <!-- Form Actions -->
+      <div class="px-6 py-6 border-t border-orange-200">
+        <div class="flex justify-end items-center gap-3">
+          <%= link_to "Cancel", admin_review_path(@review), class: "admin-btn-secondary" %>
+          <%= form.submit "Update Review", class: "admin-btn-primary" %>
+        </div>
+      </div>
+    <% end %>
   </div>
 </div>
 
@@ -241,8 +295,21 @@
 document.addEventListener('DOMContentLoaded', function() {
   const starButtons = document.querySelectorAll('.star-btn');
   const ratingInput = document.getElementById('rating-input');
+  const ratingDisplay = document.getElementById('rating-display');
   const contentTextarea = document.querySelector('textarea[name="review[content]"]');
+  const titleInput = document.querySelector('input[name="review[title]"]');
+  const customerNameInput = document.querySelector('input[name="review[customer_name]"]');
+  const approvedCheckbox = document.querySelector('input[name="review[approved]"]');
+  const featuredCheckbox = document.querySelector('input[name="review[featured]"]');
   const charCount = document.getElementById('char-count');
+  
+  // Preview elements
+  const previewStars = document.getElementById('preview-stars');
+  const previewTitle = document.getElementById('preview-title');
+  const previewContent = document.getElementById('preview-content');
+  const previewCustomer = document.getElementById('preview-customer');
+  const previewStatus = document.getElementById('preview-status');
+  const previewCard = document.getElementById('preview-card');
   
   let selectedRating = parseInt(ratingInput.value) || 0;
   
@@ -252,7 +319,9 @@ document.addEventListener('DOMContentLoaded', function() {
       e.preventDefault();
       selectedRating = parseInt(this.dataset.rating);
       ratingInput.value = selectedRating;
+      if (ratingDisplay) ratingDisplay.textContent = selectedRating;
       updateStars();
+      updatePreview();
     });
     
     btn.addEventListener('mouseenter', function() {
@@ -261,9 +330,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  document.getElementById('star-rating').addEventListener('mouseleave', function() {
-    updateStars();
-  });
+  const starRatingContainer = document.getElementById('star-rating');
+  if (starRatingContainer) {
+    starRatingContainer.addEventListener('mouseleave', function() {
+      updateStars();
+    });
+  }
   
   function highlightStars(rating) {
     starButtons.forEach((btn, index) => {
@@ -291,10 +363,91 @@ document.addEventListener('DOMContentLoaded', function() {
       } else {
         charCount.classList.remove('text-red-600');
       }
+      updatePreview();
     });
   }
   
-  // Initialize stars
+  // Update preview when inputs change
+  if (titleInput) {
+    titleInput.addEventListener('input', updatePreview);
+  }
+  if (customerNameInput) {
+    customerNameInput.addEventListener('input', updatePreview);
+  }
+  if (approvedCheckbox) {
+    approvedCheckbox.addEventListener('change', updatePreview);
+  }
+  if (featuredCheckbox) {
+    featuredCheckbox.addEventListener('change', updatePreview);
+  }
+  
+  function updatePreview() {
+    // Update stars
+    if (previewStars) {
+      const rating = selectedRating;
+      let starsHtml = '';
+      for (let i = 0; i < rating; i++) {
+        starsHtml += '★';
+      }
+      for (let i = rating; i < 5; i++) {
+        starsHtml += '☆';
+      }
+      previewStars.innerHTML = starsHtml;
+    }
+    
+    // Update title
+    if (previewTitle && titleInput) {
+      const title = titleInput.value.trim();
+      if (title) {
+        previewTitle.innerHTML = `<h5 class="font-semibold text-orange-950 mb-2">"${escapeHtml(title)}"</h5>`;
+      } else {
+        previewTitle.innerHTML = '';
+      }
+    }
+    
+    // Update content
+    if (previewContent && contentTextarea) {
+      const content = contentTextarea.value.trim();
+      previewContent.textContent = `"${content}"`;
+    }
+    
+    // Update customer name
+    if (previewCustomer && customerNameInput) {
+      const customerName = customerNameInput.value.trim();
+      previewCustomer.textContent = `- ${customerName}`;
+    }
+    
+    // Update status
+    if (previewStatus && previewCard) {
+      const isApproved = approvedCheckbox ? approvedCheckbox.checked : false;
+      const isFeatured = featuredCheckbox ? featuredCheckbox.checked : false;
+      
+      let statusHtml = '';
+      let borderClass = 'border-orange-200';
+      
+      if (isApproved && isFeatured) {
+        statusHtml = '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">✓ Would appear on homepage</span>';
+        borderClass = 'border-green-300';
+      } else if (isApproved) {
+        statusHtml = '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">✓ Approved but not featured</span>';
+      } else {
+        statusHtml = '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">⚠ Pending approval</span>';
+      }
+      
+      previewStatus.innerHTML = statusHtml;
+      previewCard.className = `bg-white p-6 rounded-lg border-2 ${borderClass} shadow-sm`;
+    }
+  }
+  
+  // Helper function to escape HTML
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+  
+  // Initialize
   updateStars();
+  updatePreview();
 });
 </script> 

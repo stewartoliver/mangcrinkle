@@ -335,7 +335,7 @@
             <%= pluralize(@new_contact_messages, 'new message') %>
           </span>
         <% end %>
-        <%= link_to "View All", admin_contact_messages_path, class: "admin-btn admin-btn-primary" %>
+        <%= link_to "View All", admin_contact_messages_path, class: "admin-btn-primary" %>
       </div>
     </div>
   </div>
@@ -348,26 +348,46 @@
             <th scope="col" class="admin-table-header-cell">Subject</th>
             <th scope="col" class="admin-table-header-cell-center">Date</th>
             <th scope="col" class="admin-table-header-cell-center">Status</th>
-            <th scope="col" class="admin-table-header-cell-center">Priority</th>
             <th scope="col" class="admin-table-header-cell-right">Actions</th>
           </tr>
         </thead>
         <tbody class="admin-table-body">
           <% @recent_contact_messages.each do |message| %>
-            <tr class="admin-table-row" data-message-id="<%= message.id %>">
+            <tr class="admin-table-row 
+                <%= 'opacity-60' if %w[resolved closed].include?(message.status) %>
+                <%= 'border-l-4' if message.priority == 'urgent' %>
+                <%= 'border-l-4' if message.priority == 'high' %>" 
+                style="<%= 'border-left-color: rgb(249 115 22);' if message.priority == 'urgent' %><%= 'border-left-color: rgb(248 113 113);' if message.priority == 'high' %>"
+                data-message-id="<%= message.id %>">
               <td class="admin-table-cell">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center">
                   <div>
-                    <div class="text-sm font-medium text-orange-950"><%= message.user.display_name %></div>
+                    <div class="text-sm font-medium text-orange-950 flex items-center">
+                      <%= message.user.display_name %>
+                      <% unless %w[resolved closed].include?(message.status) %>
+                        <% if message.priority == 'urgent' %>
+                          <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                            Urgent
+                          </span>
+                        <% elsif message.priority == 'high' %>
+                          <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                            High
+                          </span>
+                        <% end %>
+                      <% end %>
+                    </div>
                     <div class="text-xs text-orange-600"><%= message.user.email %></div>
                   </div>
-                  <%= link_to "View Customer", admin_user_path(message.user), 
-                      class: "inline-flex items-center px-2 py-1 border border-orange-300 text-xs font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100" %>
                 </div>
               </td>
               <td class="admin-table-cell">
                 <div class="text-sm font-medium text-orange-950"><%= message.subject %></div>
-                <div class="text-xs text-orange-600"><%= truncate(message.message, length: 50) %></div>
               </td>
               <td class="admin-table-cell-center">
                 <div class="text-sm font-medium text-orange-950">
@@ -387,18 +407,6 @@
                       else 'bg-gray-100 text-gray-800'
                       end %>">
                   <%= message.status.titleize %>
-                </span>
-              </td>
-              <td class="admin-table-cell-center text-sm">
-                <span class="admin-status-badge 
-                  <%= case message.priority
-                      when 'urgent' then 'bg-orange-100 text-orange-800'
-                      when 'high' then 'bg-orange-100 text-orange-800'
-                      when 'normal' then 'bg-blue-100 text-blue-800'
-                      when 'low' then 'bg-gray-100 text-gray-800'
-                      else 'bg-gray-100 text-gray-800'
-                      end %>">
-                  <%= message.priority.titleize %>
                 </span>
               </td>
               <td class="admin-table-cell-right">
@@ -430,7 +438,7 @@
             
             <!-- Expandable Message Details Row -->
             <tr class="message-details-row hidden" data-message-id="<%= message.id %>">
-              <td colspan="6" class="px-6 py-4 bg-orange-50 border-t border-orange-200">
+              <td colspan="5" class="px-6 py-4 bg-orange-50 border-t border-orange-200">
                 <div class="bg-white rounded-lg p-4 border border-orange-200">
                   <h4 class="text-lg font-medium text-orange-950 mb-4 flex items-center">
                     <svg class="w-5 h-5 mr-2 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

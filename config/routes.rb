@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users, skip: [:registrations, :sessions], controllers: {
-    passwords: 'devise/passwords'
+    passwords: 'passwords'
   }
 
   # Public routes
@@ -59,6 +59,9 @@ Rails.application.routes.draw do
       collection do
         get :search
       end
+      member do
+        post :activate
+      end
     end
     
     # Contact Messages Management
@@ -79,6 +82,8 @@ Rails.application.routes.draw do
       end
       collection do
         post :seed_defaults
+        get 'hardcoded/:template_path', to: 'email_templates#show_hardcoded', as: 'show_hardcoded', constraints: { template_path: /.*/ }
+        post 'hardcoded/:template_path/test', to: 'email_templates#send_test_email', as: 'send_test_hardcoded', constraints: { template_path: /.*/ }
       end
     end
     

@@ -53,8 +53,20 @@ class Admin::UsersController < Admin::BaseController
   def create
     @user = User.new(user_params)
     
+    # For admin users created without passwords, skip password validation
+    if @user.admin? && user_params[:password].blank?
+      @user.skip_password_validation = true
+    elsif @user.admin? && user_params[:password].present?
+      # If admin is created with a password, mark as activated
+      @user.activated_at = Time.current
+    end
+    
     if @user.save
-      redirect_to admin_user_path(@user), notice: 'User created successfully.'
+      if @user.admin? && @user.pending_activation?
+        redirect_to admin_user_path(@user), notice: 'Admin user created successfully. Use the "Send Activation Email" button to allow them to set up their password.'
+      else
+        redirect_to admin_user_path(@user), notice: 'User created successfully.'
+      end
     else
       render :new, status: :unprocessable_entity
     end
@@ -93,13 +105,41 @@ class Admin::UsersController < Admin::BaseController
     end
   end
 
+  def activate
+    @user = User.find(params[:id])
+    
+    unless @user.admin?
+      redirect_to admin_user_path(@user), alert: 'Only admin users can be activated.'
+      return
+    end
+
+    if @user.activated?
+      redirect_to admin_user_path(@user), alert: 'Admin user is already activated.'
+      return
+    end
+
+    # Send activation email (token generation handled in mailer)
+    AdminMailer.admin_activation(@user).deliver_later
+    
+    redirect_to admin_user_path(@user), notice: 'Activation email sent successfully! The admin will receive an email with instructions to set up their password.'
+  end
+
   private
 
   def user_params
-    # Only allow contact details and user type changes, not password changes
-    params.require(:user).permit(
-      :email, :user_type, :first_name, :last_name,
-      :phone, :address, :newsletter_subscribed
-    )
+    # Allow password parameters for user creation, but not for updates
+    if action_name == 'create'
+      params.require(:user).permit(
+        :email, :user_type, :first_name, :last_name,
+        :phone, :address, :newsletter_subscribed,
+        :password, :password_confirmation
+      )
+    else
+      # Only allow contact details and user type changes for updates, not password changes
+      params.require(:user).permit(
+        :email, :user_type, :first_name, :last_name,
+        :phone, :address, :newsletter_subscribed
+      )
+    end
   end
 end 

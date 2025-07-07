@@ -1,112 +1,345 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Review Submitted - Mang Crinkle</title>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       line-height: 1.6;
-      color: #333;
+      color: #292524;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9fafb;
+    }
+    .email-wrapper {
       max-width: 600px;
       margin: 0 auto;
-      padding: 20px;
+      background-color: #f9fafb;
     }
-    .header {
-      text-align: center;
-      background: linear-gradient(135deg, #fb923c, #f97316);
-      color: white;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-    .content {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .review-info {
-      background: #f0f9ff;
-      padding: 15px;
+    
+    /* Admin Container - matching admin design system */
+    .admin-container {
+      background-color: white;
       border-radius: 8px;
-      margin: 15px 0;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      border: 1px solid #fed7aa;
+      overflow: hidden;
     }
-    .rating-stars {
-      color: #fbbf24;
+    
+    .admin-container-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #fed7aa;
+      background-color: #fff7ed;
+    }
+    
+    .admin-container-title {
       font-size: 20px;
-      margin: 10px 0;
+      font-weight: 600;
+      color: #9a3412;
+      margin: 0 0 4px 0;
+      line-height: 1.4;
     }
-    .action-button {
-      display: inline-block;
-      background: #fb923c;
-      color: white;
-      padding: 12px 24px;
-      text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;
-      margin: 10px 5px;
+    
+    .admin-container-subtitle {
+      font-size: 14px;
+      color: #ea580c;
+      margin: 0;
+      font-weight: 400;
     }
-    .footer {
+    
+    .admin-container-content {
+      padding: 24px;
+    }
+    
+    .brand-logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ea580c;
+      margin-bottom: 8px;
       text-align: center;
-      margin-top: 20px;
-      color: #666;
+    }
+    
+    .content-section {
+      margin-bottom: 24px;
+    }
+    
+    .content-section p {
+      margin: 0 0 16px 0;
+      color: #374151;
+      line-height: 1.6;
+    }
+    
+    .content-section ul {
+      margin: 16px 0;
+      padding-left: 20px;
+      color: #374151;
+    }
+    
+    .content-section li {
+      margin-bottom: 8px;
+    }
+    
+    /* Review Details Card */
+    .review-details {
+      background-color: #fef3c7;
+      border: 1px solid #f59e0b;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .review-details h3 {
+      color: #92400e;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+    }
+    
+    .review-details p {
+      margin: 8px 0;
+      color: #b45309;
+    }
+    
+    .review-details strong {
+      color: #92400e;
+    }
+    
+    .review-content {
+      background-color: #fffbeb;
+      border: 1px solid #fbbf24;
+      padding: 16px;
+      border-radius: 6px;
+      margin: 16px 0;
+      font-style: italic;
+    }
+    
+    .review-content p {
+      margin: 0;
+      color: #b45309;
+    }
+    
+    .rating-display {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px 0;
+    }
+    
+    .stars {
+      color: #fbbf24;
+      font-size: 18px;
+    }
+    
+    .rating-text {
+      color: #b45309;
+      font-weight: 600;
+    }
+    
+    /* Admin Action Buttons */
+    .admin-actions {
+      background-color: #f0f9ff;
+      border: 1px solid #60a5fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .admin-actions h3 {
+      color: #1e40af;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+    }
+    
+    .admin-btn-primary {
+      display: inline-block;
+      background-color: #ea580c;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      text-align: center;
+      transition: background-color 0.15s ease-in-out;
+      border: 1px solid transparent;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .admin-btn-primary:hover {
+      background-color: #dc2626;
+    }
+    
+    .admin-btn-secondary {
+      display: inline-block;
+      background-color: #6b7280;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      text-align: center;
+      transition: background-color 0.15s ease-in-out;
+      border: 1px solid transparent;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .admin-btn-secondary:hover {
+      background-color: #374151;
+    }
+    
+    .next-steps {
+      background-color: #f0fdf4;
+      border: 1px solid #22c55e;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .next-steps h3 {
+      color: #15803d;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+    }
+    
+    .next-steps ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    
+    .next-steps li {
+      margin-bottom: 8px;
+      color: #166534;
+    }
+    
+    .footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 14px;
+      color: #6b7280;
+    }
+    
+    .signature {
+      margin-top: 24px;
+      font-weight: 500;
+      color: #374151;
+    }
+    
+    .signature-name {
+      color: #ea580c;
+      font-weight: 600;
+    }
+    
+    .verified-badge {
+      background-color: #d1fae5;
+      color: #065f46;
+      padding: 2px 6px;
+      border-radius: 4px;
       font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .unverified-badge {
+      background-color: #fee2e2;
+      color: #dc2626;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>🍪 New Review Submitted</h1>
-    <p>A customer has left a review for Mang Crinkle</p>
-  </div>
+  <div class="email-wrapper">
+    <div class="admin-container">
+      <div class="admin-container-header">
+        <div class="brand-logo">🍪 Mang Crinkle</div>
+        <h1 class="admin-container-title">New Review Submitted</h1>
+        <p class="admin-container-subtitle">A customer has shared their experience with your cookies</p>
+      </div>
 
-  <div class="content">
-    <h2>Review Details</h2>
-    
-    <div class="review-info">
-      <p><strong>Customer:</strong> <%= @review.customer_display_name %></p>
-      <p><strong>Email:</strong> <%= @review.email %></p>
-      <p><strong>Rating:</strong> 
-        <span class="rating-stars">
-          <%= '★' * @review.rating %>
-          <%= '☆' * (5 - @review.rating) %>
-        </span>
-        (<%= @review.rating %>/5 stars)
-      </p>
-      <% if @review.title.present? %>
-        <p><strong>Title:</strong> <%= @review.title %></p>
-      <% end %>
-      <% if @review.verified_purchase? %>
-        <p><strong>Verified Purchase:</strong> ✅ Order #<%= @review.order.id %></p>
-      <% end %>
-      <p><strong>Submitted:</strong> <%= @review.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+      <div class="admin-container-content">
+        <div class="content-section">
+          <p>Hello Admin,</p>
+          
+          <p>Great news! A customer has just submitted a review for Mang Crinkle cookies. Here are the details:</p>
+          
+          <div class="review-details">
+            <h3>📝 Review Details</h3>
+            <p><strong>Customer:</strong> <%= @review.customer_display_name %></p>
+            <p><strong>Email:</strong> <%= @review.email %></p>
+            <div class="rating-display">
+              <strong>Rating:</strong>
+              <span class="stars"><%= '★' * @review.rating %><%= '☆' * (5 - @review.rating) %></span>
+              <span class="rating-text"><%= @review.rating %>/5 stars</span>
+            </div>
+            <% if @review.title.present? %>
+              <p><strong>Title:</strong> "<%= @review.title %>"</p>
+            <% end %>
+            <% if @review.verified_purchase? %>
+              <p><strong>Purchase Status:</strong> 
+                <span class="verified-badge">Verified Purchase</span>
+                (Order #<%= @review.order.id %>)
+              </p>
+            <% else %>
+              <p><strong>Purchase Status:</strong> 
+                <span class="unverified-badge">Unverified</span>
+              </p>
+            <% end %>
+            <p><strong>Submitted:</strong> <%= @review.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+            
+            <% if @review.content.present? %>
+              <div class="review-content">
+                <p>"<%= @review.content %>"</p>
+              </div>
+            <% end %>
+          </div>
+          
+          <div class="admin-actions">
+            <h3>🛠️ Quick Actions</h3>
+            <a href="<%= admin_review_url(@review) %>" class="admin-btn-primary">View in Admin Panel</a>
+            <a href="<%= approve_admin_review_url(@review) %>" class="admin-btn-primary">Quick Approve</a>
+            <a href="<%= admin_reviews_url %>" class="admin-btn-secondary">All Reviews</a>
+          </div>
+          
+          <div class="next-steps">
+            <h3>📋 Recommended Next Steps</h3>
+            <ul>
+              <li>Review the content for appropriateness and authenticity</li>
+              <li>Approve the review to make it visible to customers</li>
+              <li>Consider featuring high-quality reviews on your homepage</li>
+              <li>Respond to any concerns or questions if needed</li>
+              <li>Thank the customer for their feedback</li>
+            </ul>
+          </div>
+          
+          <p>Customer reviews are valuable social proof that help build trust with potential customers. Take action on this review to maintain your excellent reputation!</p>
+          
+          <div class="signature">
+            <p>Happy reviewing!</p>
+            <p class="signature-name">Your Mang Crinkle Review System</p>
+          </div>
+        </div>
+
+        <div class="footer">
+          <p>This is an automated notification from your Mang Crinkle review system.</p>
+          <p style="margin-top: 20px;">
+            &copy; <%= Date.current.year %> Mang Crinkle. All rights reserved.
+          </p>
+        </div>
+      </div>
     </div>
-
-    <h3>Review Content:</h3>
-    <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 4px solid #fb923c;">
-      <%= simple_format(@review.content) %>
-    </div>
-
-    <div style="text-align: center; margin: 30px 0;">
-      <a href="<%= admin_review_url(@review) %>" class="action-button">
-        View in Admin Panel
-      </a>
-      <a href="<%= approve_admin_review_url(@review) %>" class="action-button" style="background: #10b981;">
-        Quick Approve
-      </a>
-    </div>
-
-    <p><strong>Next Steps:</strong></p>
-    <ul>
-      <li>Review the content for appropriateness</li>
-      <li>Approve or reject the review</li>
-      <li>Consider featuring high-quality reviews</li>
-      <li>Respond to any concerns if needed</li>
-    </ul>
-  </div>
-
-  <div class="footer">
-    <p>This is an automated notification from your Mang Crinkle review system.</p>
   </div>
 </body>
 </html> 

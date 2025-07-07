@@ -1,0 +1,47 @@
+<h2 class="text-2xl font-bold text-orange-950 mb-6">Set Your Password</h2>
+
+<%= form_with model: resource, as: resource_name, url: password_path(resource_name), method: :patch, local: true, class: "space-y-6" do |f| %>
+  <%= render "devise/shared/error_messages", resource: resource %>
+
+  <% if resource.admin? %>
+    <div class="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
+      <div class="flex items-start">
+        <div class="flex-shrink-0 pt-1">
+          <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-blue-800">Admin Account Setup</h3>
+          <p class="text-sm text-blue-700 mt-1">
+            Welcome to Mang Crinkle! Please set your password to activate your admin account.
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <%= f.hidden_field :reset_password_token %>
+
+  <div>
+    <%= f.label :password, "New Password", class: "form-label" %>
+    <div class="mt-1">
+      <%= f.password_field :password, autofocus: true, autocomplete: "new-password", class: "form-input" %>
+    </div>
+  </div>
+
+  <div>
+    <%= f.label :password_confirmation, "Confirm New Password", class: "form-label" %>
+    <div class="mt-1">
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-input" %>
+    </div>
+  </div>
+
+  <div>
+    <%= f.submit "Set My Password", class: "w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-orange-200 bg-orange-950 hover:bg-orange-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" %>
+  </div>
+<% end %>
+
+<div class="mt-6 text-center">
+  <%= link_to "Back to Home", root_path, class: "text-orange-600 hover:text-orange-950" %>
+</div> 

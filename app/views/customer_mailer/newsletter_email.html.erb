@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Share Your Mang Crinkle Experience</title>
+  <title><%= @subject %></title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -81,8 +81,22 @@
       margin-bottom: 8px;
     }
     
-    /* Order Info Card */
-    .order-info {
+    .content-section h2 {
+      color: #9a3412;
+      font-size: 20px;
+      font-weight: 600;
+      margin: 24px 0 16px 0;
+    }
+    
+    .content-section h3 {
+      color: #ea580c;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 20px 0 12px 0;
+    }
+    
+    /* Newsletter Highlight */
+    .newsletter-highlight {
       background-color: #fef3c7;
       border: 1px solid #f59e0b;
       padding: 20px;
@@ -90,48 +104,70 @@
       margin: 20px 0;
     }
     
-    .order-info h3 {
+    .newsletter-highlight h3 {
       color: #92400e;
       font-size: 18px;
       font-weight: 600;
       margin: 0 0 16px 0;
     }
     
-    .order-info p {
+    .newsletter-highlight p {
       margin: 8px 0;
       color: #b45309;
     }
     
-    .order-info strong {
+    .newsletter-highlight strong {
       color: #92400e;
     }
     
     /* CTA Button */
     .btn-container {
       text-align: center;
-      margin: 30px 0;
+      margin: 24px 0;
     }
     
     .btn-primary {
       display: inline-block;
       background-color: #ea580c;
       color: white;
-      padding: 15px 30px;
+      padding: 12px 24px;
       text-decoration: none;
       border-radius: 6px;
-      font-weight: 600;
-      font-size: 16px;
+      font-weight: 500;
+      font-size: 14px;
       text-align: center;
       transition: background-color 0.15s ease-in-out;
       border: 1px solid transparent;
+      margin-right: 8px;
+      margin-bottom: 8px;
     }
     
     .btn-primary:hover {
       background-color: #dc2626;
     }
     
-    /* Why Review Matters */
-    .review-benefits {
+    .btn-secondary {
+      display: inline-block;
+      background-color: #6b7280;
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      text-align: center;
+      transition: background-color 0.15s ease-in-out;
+      border: 1px solid transparent;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #374151;
+    }
+    
+    /* Feature Box */
+    .feature-box {
       background-color: #f0f9ff;
       border: 1px solid #60a5fa;
       padding: 20px;
@@ -139,21 +175,51 @@
       margin: 20px 0;
     }
     
-    .review-benefits h3 {
+    .feature-box h3 {
       color: #1e40af;
       font-size: 18px;
       font-weight: 600;
       margin: 0 0 16px 0;
     }
     
-    .review-benefits ul {
+    .feature-box ul {
       margin: 0;
       padding-left: 20px;
     }
     
-    .review-benefits li {
+    .feature-box li {
       margin-bottom: 8px;
       color: #1e3a8a;
+    }
+    
+    .feature-box p {
+      color: #1e3a8a;
+      margin: 0;
+    }
+    
+    /* Newsletter Footer */
+    .newsletter-footer {
+      background-color: #f3f4f6;
+      border: 1px solid #d1d5db;
+      padding: 16px;
+      border-radius: 6px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    
+    .newsletter-footer p {
+      margin: 0;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    .newsletter-footer a {
+      color: #ea580c;
+      text-decoration: none;
+    }
+    
+    .newsletter-footer a:hover {
+      color: #dc2626;
     }
     
     .footer {
@@ -162,6 +228,15 @@
       border-top: 1px solid #e5e7eb;
       font-size: 14px;
       color: #6b7280;
+    }
+    
+    .footer-link {
+      color: #ea580c;
+      text-decoration: none;
+    }
+    
+    .footer-link:hover {
+      color: #dc2626;
     }
     
     .signature {
@@ -175,19 +250,21 @@
       font-weight: 600;
     }
     
-    .expiry-notice {
-      background-color: #fef3c7;
-      border: 1px solid #f59e0b;
-      padding: 12px;
-      border-radius: 6px;
-      margin: 20px 0;
+    .social-links {
       text-align: center;
+      margin: 20px 0;
     }
     
-    .expiry-notice p {
-      margin: 0;
-      color: #b45309;
+    .social-links a {
+      display: inline-block;
+      margin: 0 8px;
+      color: #ea580c;
+      text-decoration: none;
       font-size: 14px;
+    }
+    
+    .social-links a:hover {
+      color: #dc2626;
     }
   </style>
 </head>
@@ -196,58 +273,57 @@
     <div class="main-container">
       <div class="container-header">
         <div class="brand-logo">🍪 Mang Crinkle</div>
-        <h1 class="container-title">We'd Love Your Feedback!</h1>
-        <p class="container-subtitle">Help us bake even better cookies for everyone</p>
+        <h1 class="container-title">Newsletter</h1>
+        <p class="container-subtitle">Sweet updates from our Filipino kitchen</p>
       </div>
 
       <div class="container-content">
         <div class="content-section">
-          <p>Hi <%= @customer_name %>!</p>
+          <p>Hello <%= @customer_name %>,</p>
           
-          <p>Thank you for choosing Mang Crinkle! We hope you absolutely loved your delicious Filipino crinkle cookies.</p>
-          
-          <% if @order %>
-            <div class="order-info">
-              <h3>📦 Your Order Details:</h3>
-              <p><strong>Order #:</strong> <%= @order.id %></p>
-              <p><strong>Date:</strong> <%= @order.created_at.strftime("%B %d, %Y") %></p>
-              <p><strong>Total:</strong> $<%= number_with_precision(@order.total_price, precision: 2) %></p>
-            </div>
-          <% end %>
-          
-          <p>Your experience matters to us! Would you take a moment to share your thoughts? Your review helps other cookie lovers discover our traditional Filipino treats and helps us continue improving our recipes.</p>
+          <p><%= simple_format(@body) %></p>
           
           <div class="btn-container">
-            <a href="<%= @review_url %>" class="btn-primary">✍️ Write Your Review</a>
+            <a href="<%= root_url %>" class="btn-primary">Shop Our Cookies</a>
+            <a href="<%= root_url %>#story" class="btn-secondary">Our Story</a>
           </div>
           
-          <div class="review-benefits">
-            <h3>🌟 Why your review matters:</h3>
+          <div class="feature-box">
+            <h3>🌟 Why Choose Mang Crinkle?</h3>
             <ul>
-              <li>Help fellow cookie lovers discover authentic Filipino treats</li>
-              <li>Support our family-owned small business</li>
-              <li>Help us improve our recipes and service</li>
-              <li>Share the joy of traditional Filipino baking</li>
-              <li>Build a community of crinkle cookie enthusiasts</li>
+              <li>Authentic Filipino recipes passed down through generations</li>
+              <li>Fresh-baked cookies made with premium ingredients</li>
+              <li>Family-owned business supporting local community</li>
+              <li>Traditional techniques meet modern quality standards</li>
+              <li>Bringing the taste of the Philippines to your doorstep</li>
             </ul>
           </div>
           
-          <p>It only takes a minute, and your honest feedback is incredibly valuable to us. Whether you share what you loved most or suggestions for improvement, every review helps us serve you better.</p>
-          
-          <div class="expiry-notice">
-            <p>⏰ This review invitation expires in 30 days.</p>
+          <div class="social-links">
+            <p style="margin-bottom: 12px; color: #6b7280; font-size: 14px;">Follow us for daily updates:</p>
+            <a href="#">Facebook</a> |
+            <a href="#">Instagram</a> |
+            <a href="#">Twitter</a>
           </div>
           
-          <p>If you have any questions or concerns, please don't hesitate to contact us at <strong>info@mangcrinkle.com</strong>.</p>
+          <p>Have questions or want to share your cookie experience? We'd love to hear from you at <strong>info@mangcrinkle.com</strong>!</p>
           
           <div class="signature">
-            <p>Salamat (thank you) for being part of our family!</p>
-            <p class="signature-name">The Mang Crinkle Team</p>
+            <p>With love and crinkles,</p>
+            <p class="signature-name">The Mang Crinkle Family</p>
           </div>
         </div>
 
+        <div class="newsletter-footer">
+          <p>You're receiving this newsletter because you subscribed to Mang Crinkle updates.</p>
+          <p style="margin-top: 8px;">
+            <a href="<%= root_url %>#newsletter">Manage preferences</a> | 
+            <a href="#">Unsubscribe</a>
+          </p>
+        </div>
+
         <div class="footer">
-          <p>This review invitation was sent to <%= @review_invite&.email || 'your email' %> because you recently placed an order with us.</p>
+          <p>This email was sent to <%= @user&.email || 'your email' %> because you subscribed to our newsletter.</p>
           <p style="margin-top: 20px;">
             &copy; <%= Date.current.year %> Mang Crinkle. All rights reserved.
           </p>

@@ -75,6 +75,9 @@ group :development do
   gem "web-console"
 
   gem "dotenv-rails"
+  
+  # Preview emails in browser instead of sending them
+  gem "letter_opener"
 
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   # gem "rack-mini-profiler"

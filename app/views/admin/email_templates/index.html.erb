@@ -11,7 +11,7 @@
       </div>
       <div class="admin-stats-content">
         <h2 class="admin-stats-label">Total Templates</h2>
-        <p class="admin-stats-value admin-stats-value-orange"><%= @email_templates.count %></p>
+        <p class="admin-stats-value admin-stats-value-orange"><%= @email_templates.count + @hardcoded_templates.count %></p>
       </div>
     </div>
   </div>
@@ -25,7 +25,7 @@
       </div>
       <div class="admin-stats-content">
         <h2 class="admin-stats-label">Active Templates</h2>
-        <p class="admin-stats-value admin-stats-value-green"><%= @email_templates.select(&:active?).count %></p>
+        <p class="admin-stats-value admin-stats-value-green"><%= @email_templates.select(&:active?).count + @hardcoded_templates.select { |t| t[:active] }.count %></p>
       </div>
     </div>
   </div>
@@ -38,8 +38,8 @@
         </svg>
       </div>
       <div class="admin-stats-content">
-        <h2 class="admin-stats-label">Template Types</h2>
-        <p class="admin-stats-value admin-stats-value-blue"><%= @template_types.count %></p>
+        <h2 class="admin-stats-label">Database Templates</h2>
+        <p class="admin-stats-value admin-stats-value-blue"><%= @email_templates.count %></p>
       </div>
     </div>
   </div>
@@ -48,12 +48,12 @@
     <div class="flex items-center">
       <div class="admin-stats-icon admin-stats-icon-purple">
         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
         </svg>
       </div>
       <div class="admin-stats-content">
-        <h2 class="admin-stats-label">Automated</h2>
-        <p class="admin-stats-value admin-stats-value-purple"><%= @email_templates.reject { |t| t.template_type == 'manual' }.count %></p>
+        <h2 class="admin-stats-label">Hardcoded Templates</h2>
+        <p class="admin-stats-value admin-stats-value-purple"><%= @hardcoded_templates.count %></p>
       </div>
     </div>
   </div>
@@ -119,8 +119,13 @@
 
   <div class="admin-container-content">
     <% if @email_templates.any? %>
-      <!-- Templates List -->
+      <!-- Database Templates List -->
       <div class="space-y-4 p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="text-lg font-semibold text-orange-950">Database Templates</h4>
+          <span class="text-sm text-orange-600">Editable templates stored in database</span>
+        </div>
+        
         <% @email_templates.group_by(&:template_type).each do |template_type, templates| %>
           <div class="bg-white rounded-lg shadow-sm border border-orange-200">
             <div class="px-6 py-4 border-b border-orange-200">
@@ -191,7 +196,95 @@
           </div>
         <% end %>
       </div>
-    <% else %>
+    <% end %>
+    
+    <!-- Hardcoded Templates List -->
+    <% if @hardcoded_templates.any? %>
+      <div class="space-y-4 p-6 <%= @email_templates.any? ? 'border-t border-orange-200' : '' %>">
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="text-lg font-semibold text-orange-950">Hardcoded Templates</h4>
+          <span class="text-sm text-orange-600">Read-only templates built into the application</span>
+        </div>
+        
+        <% @hardcoded_templates.group_by { |t| t[:template_type] }.each do |template_type, templates| %>
+          <div class="bg-white rounded-lg shadow-sm border border-purple-200">
+            <div class="px-6 py-4 border-b border-purple-200 bg-purple-50">
+              <h4 class="text-lg font-medium text-purple-950 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+                <%= template_type.titleize %> Templates
+                <span class="ml-2 text-sm text-purple-600">(<%= templates.count %>)</span>
+                <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  Hardcoded
+                </span>
+              </h4>
+            </div>
+            
+            <div class="divide-y divide-purple-200">
+              <% templates.each do |template| %>
+                <div class="px-6 py-4 hover:bg-purple-50 transition-colors duration-200">
+                  <div class="flex items-center justify-between">
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center space-x-3">
+                        <h5 class="text-sm font-medium text-purple-950 truncate">
+                          <%= template[:name] %>
+                        </h5>
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                          <%= template[:active] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                          <%= template[:active] ? 'Active' : 'Inactive' %>
+                        </span>
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                          Read-only
+                        </span>
+                      </div>
+                      <p class="text-sm text-purple-600 mt-1 truncate">
+                        Subject: <%= template[:subject] %>
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1 truncate">
+                        <%= template[:description] %>
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1 truncate">
+                        Path: <%= template[:path] %>
+                      </p>
+                      <% if template[:variables].present? %>
+                        <div class="mt-2 flex flex-wrap gap-1">
+                          <span class="text-xs text-purple-500">Variables:</span>
+                          <% template[:variables].each do |var| %>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                              <%= var %>
+                            </span>
+                          <% end %>
+                        </div>
+                      <% end %>
+                    </div>
+                    
+                    <div class="flex items-center space-x-2 ml-4">
+                      <div class="admin-action-btn-group">
+                        <%= link_to show_hardcoded_admin_email_templates_path(template_path: template[:path]), class: "admin-action-btn", title: "View Template" do %>
+                          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        <% end %>
+                        
+                        <span class="admin-action-btn opacity-50 cursor-not-allowed" title="Cannot edit hardcoded templates">
+                          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728" />
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+    
+    <% if @email_templates.empty? && @hardcoded_templates.empty? %>
       <!-- Empty State -->
       <div class="text-center py-12">
         <svg class="mx-auto h-12 w-12 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

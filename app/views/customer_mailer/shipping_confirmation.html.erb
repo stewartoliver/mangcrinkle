@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Mang Crinkle Order is on its Way!</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #292524;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9fafb;
+    }
+    .email-wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #f9fafb;
+    }
+    
+    /* Main Container */
+    .main-container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      border: 1px solid #fed7aa;
+      overflow: hidden;
+    }
+    
+    .container-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #fed7aa;
+      background-color: #fff7ed;
+    }
+    
+    .container-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #9a3412;
+      margin: 0 0 4px 0;
+      line-height: 1.4;
+    }
+    
+    .container-subtitle {
+      font-size: 14px;
+      color: #ea580c;
+      margin: 0;
+      font-weight: 400;
+    }
+    
+    .container-content {
+      padding: 24px;
+    }
+    
+    .brand-logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ea580c;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    
+    .content-section {
+      margin-bottom: 24px;
+    }
+    
+    .content-section p {
+      margin: 0 0 16px 0;
+      color: #374151;
+      line-height: 1.6;
+    }
+    
+    .content-section ul {
+      margin: 16px 0;
+      padding-left: 20px;
+      color: #374151;
+    }
+    
+    .content-section li {
+      margin-bottom: 8px;
+    }
+    
+    /* Shipping Details Card */
+    .shipping-details {
+      background-color: #f0fdf4;
+      border: 1px solid #22c55e;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .shipping-details h3 {
+      color: #15803d;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+    }
+    
+    .shipping-details p {
+      margin: 8px 0;
+      color: #166534;
+    }
+    
+    .shipping-details strong {
+      color: #15803d;
+    }
+    
+    /* Tracking Info */
+    .tracking-info {
+      background-color: #fef3c7;
+      border: 1px solid #f59e0b;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    
+    .tracking-info h3 {
+      color: #92400e;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+    }
+    
+    .tracking-number {
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      font-weight: 600;
+      color: #b45309;
+      background-color: #fffbeb;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #fbbf24;
+      margin: 12px 0;
+    }
+    
+    /* Order Summary */
+    .order-summary {
+      background-color: #f0f9ff;
+      border: 1px solid #60a5fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .order-summary h3 {
+      color: #1e40af;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+    }
+    
+    .order-summary p {
+      margin: 8px 0;
+      color: #1e3a8a;
+    }
+    
+    .order-summary strong {
+      color: #1e40af;
+    }
+    
+    .order-items {
+      background-color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 16px;
+      border-radius: 6px;
+      margin: 16px 0;
+    }
+    
+    .order-items ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    
+    .order-items li {
+      margin-bottom: 6px;
+      color: #475569;
+    }
+    
+    /* CTA Button */
+    .btn-container {
+      text-align: center;
+      margin: 24px 0;
+    }
+    
+    .btn-primary {
+      display: inline-block;
+      background-color: #ea580c;
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      text-align: center;
+      transition: background-color 0.15s ease-in-out;
+      border: 1px solid transparent;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .btn-primary:hover {
+      background-color: #dc2626;
+    }
+    
+    .btn-secondary {
+      display: inline-block;
+      background-color: #6b7280;
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      text-align: center;
+      transition: background-color 0.15s ease-in-out;
+      border: 1px solid transparent;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #374151;
+    }
+    
+    /* Delivery Timeline */
+    .delivery-timeline {
+      background-color: #f3f4f6;
+      border: 1px solid #d1d5db;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .delivery-timeline h3 {
+      color: #374151;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+    }
+    
+    .delivery-timeline ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    
+    .delivery-timeline li {
+      margin-bottom: 8px;
+      color: #6b7280;
+    }
+    
+    .footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 14px;
+      color: #6b7280;
+    }
+    
+    .footer-link {
+      color: #ea580c;
+      text-decoration: none;
+    }
+    
+    .footer-link:hover {
+      color: #dc2626;
+    }
+    
+    .signature {
+      margin-top: 24px;
+      font-weight: 500;
+      color: #374151;
+    }
+    
+    .signature-name {
+      color: #ea580c;
+      font-weight: 600;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-wrapper">
+    <div class="main-container">
+      <div class="container-header">
+        <div class="brand-logo">🍪 Mang Crinkle</div>
+        <h1 class="container-title">Your Order Has Shipped!</h1>
+        <p class="container-subtitle">Your delicious cookies are on their way to you</p>
+      </div>
+
+      <div class="container-content">
+        <div class="content-section">
+          <% if @order %>
+            <p>Hello <%= @order.user&.display_name || @order.customer_name %>,</p>
+          <% else %>
+            <p>Hello valued customer,</p>
+          <% end %>
+          
+          <p>Great news! Your Mang Crinkle order has been shipped and is on its way to you. We know you're excited to taste our authentic Filipino crinkle cookies!</p>
+          
+          <% if @order %>
+            <div class="shipping-details">
+              <h3>📦 Shipping Details</h3>
+              <p><strong>Order Number:</strong> #<%= @order.id %></p>
+              <p><strong>Ship Date:</strong> <%= Date.current.strftime('%B %d, %Y') %></p>
+              <p><strong>Estimated Delivery:</strong> <%= (Date.current + 3.days).strftime('%B %d, %Y') %> - <%= (Date.current + 5.days).strftime('%B %d, %Y') %></p>
+              <p><strong>Status:</strong> <span class="status-badge">Shipped</span></p>
+            </div>
+            
+            <div class="tracking-info">
+              <h3>📍 Track Your Package</h3>
+              <p>Your tracking number is:</p>
+              <div class="tracking-number">MG<%= @order.id %>-<%= Date.current.strftime('%Y%m%d') %></div>
+              <p style="margin-top: 16px; color: #b45309;">Use this number to track your package with our shipping partner.</p>
+            </div>
+            
+            <div class="order-summary">
+              <h3>📋 Order Summary</h3>
+              <p><strong>Order Date:</strong> <%= @order.created_at.strftime('%B %d, %Y') %></p>
+              <p><strong>Total:</strong> $<%= number_with_precision(@order.total_price, precision: 2) %></p>
+              
+              <div class="order-items">
+                <h4>🍪 Items Shipped:</h4>
+                <ul>
+                  <% @order.line_items.each do |item| %>
+                    <li><%= item.quantity %>x <%= item.purchasable.name %> - $<%= number_with_precision(item.price, precision: 2) %></li>
+                  <% end %>
+                </ul>
+              </div>
+              
+              <p><strong>Shipping Address:</strong></p>
+              <p style="white-space: pre-line; margin: 8px 0;"><%= @order.address %></p>
+            </div>
+          <% end %>
+          
+          <div class="delivery-timeline">
+            <h3>📅 What to Expect</h3>
+            <ul>
+              <li><strong>Today:</strong> Your cookies have left our kitchen and are in transit</li>
+              <li><strong>1-2 days:</strong> Package is processed through shipping facilities</li>
+              <li><strong>3-5 days:</strong> Delivery to your doorstep</li>
+              <li><strong>Enjoy!</strong> Fresh, authentic Filipino crinkle cookies await you</li>
+            </ul>
+          </div>
+          
+          <div class="btn-container">
+            <a href="#" class="btn-primary">Track Your Package</a>
+            <a href="<%= root_url %>" class="btn-secondary">Shop More Cookies</a>
+          </div>
+          
+          <p>Your cookies are carefully packaged to ensure they arrive fresh and delicious. If you have any questions about your shipment, please don't hesitate to contact us at <strong>info@mangcrinkle.com</strong>.</p>
+          
+          <p>We can't wait for you to taste our authentic Filipino treats! Don't forget to share your experience with us on social media.</p>
+          
+          <div class="signature">
+            <p>Thank you for choosing Mang Crinkle!</p>
+            <p class="signature-name">The Mang Crinkle Team</p>
+          </div>
+        </div>
+
+        <div class="footer">
+          <p>This email was sent to <%= @order&.email || 'your email' %> because your order has been shipped.</p>
+          <p style="margin-top: 20px;">
+            &copy; <%= Date.current.year %> Mang Crinkle. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html> 

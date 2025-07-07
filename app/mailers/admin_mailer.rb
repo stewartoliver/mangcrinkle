@@ -45,6 +45,23 @@ class AdminMailer < ApplicationMailer
     )
   end
 
+  def admin_activation(admin_user)
+    @admin_user = admin_user
+    
+    # Generate a Devise password reset token
+    raw_token, encrypted_token = Devise.token_generator.generate(User, :reset_password_token)
+    @admin_user.reset_password_token = encrypted_token
+    @admin_user.reset_password_sent_at = Time.current
+    @admin_user.save!
+    
+    @activation_url = edit_user_password_url(reset_password_token: raw_token)
+    
+    mail(
+      to: @admin_user.email,
+      subject: "Welcome to Mang Crinkle Admin - Set Up Your Password"
+    )
+  end
+
   def template_preview(admin_user, template, variables = {})
     @admin_user = admin_user
     @template = template
@@ -57,6 +74,17 @@ class AdminMailer < ApplicationMailer
     mail(
       to: @admin_user.email,
       subject: "[PREVIEW] #{@subject}"
+    )
+  end
+
+  def test_admin_activation(test_email, admin_user)
+    @admin_user = admin_user
+    @activation_url = "https://example.com/admin/activate/test-token"
+    
+    mail(
+      to: test_email,
+      subject: "[TEST] Welcome to Mang Crinkle Admin - Set Up Your Password",
+      template_name: 'admin_activation'
     )
   end
 end 

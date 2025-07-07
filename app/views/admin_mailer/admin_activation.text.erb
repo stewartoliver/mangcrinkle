@@ -1,0 +1,28 @@
+Welcome to Mang Crinkle Admin!
+
+Hello <%= @admin_user.display_name %>,
+
+You've been granted administrator access to the Mang Crinkle admin system. To get started, you'll need to set up your password.
+
+Click the link below to create your password and activate your admin account:
+<%= @activation_url %>
+
+🔒 SECURITY NOTICE:
+This activation link is unique to your account and will expire after you set your password. For security reasons, please don't share this link with anyone.
+
+Once you've set up your password, you'll be able to:
+- Manage products and packages
+- View and process orders
+- Handle customer inquiries
+- Access sales reports and analytics
+- Manage other admin users
+
+If you have any questions or need assistance, please don't hesitate to reach out.
+
+Welcome to the team!
+
+Best regards,
+The Mang Crinkle Team
+
+---
+This email was sent to <%= @admin_user.email %> because you were added as an administrator to Mang Crinkle. 

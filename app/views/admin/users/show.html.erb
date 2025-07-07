@@ -9,6 +9,12 @@
       </div>
       <div class="flex space-x-3">
         <%= link_to "Edit", edit_admin_user_path(@user), class: "admin-btn-primary" %>
+        <% if @user.admin? && @user.pending_activation? %>
+          <%= link_to "Send Activation Email", activate_admin_user_path(@user), method: :post, 
+                      class: "admin-btn-secondary",
+                      confirm: "Send activation email to #{@user.email}? This will allow them to set up their password and access the admin system.",
+                      data: { turbo_method: :post } %>
+        <% end %>
         <%= link_to "Back to Users", admin_users_path, class: "admin-btn-back" %>
       </div>
     </div>
@@ -29,6 +35,29 @@
           </span>
         </dd>
       </div>
+
+      <% if @user.admin? %>
+        <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-orange-700">Admin Status</dt>
+          <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+            <% if @user.activated? %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                ✓ Activated
+              </span>
+              <div class="text-xs text-orange-600 mt-1">
+                Activated on <%= @user.activated_at.strftime("%B %d, %Y at %I:%M %p") %>
+              </div>
+            <% else %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                ⏳ Pending Activation
+              </span>
+              <div class="text-xs text-orange-600 mt-1">
+                Admin needs to set up password to access the system
+              </div>
+            <% end %>
+          </dd>
+        </div>
+      <% end %>
 
       <!-- Contact Details -->
       <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

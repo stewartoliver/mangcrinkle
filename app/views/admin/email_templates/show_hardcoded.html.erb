@@ -1,0 +1,214 @@
+<% content_for :title, "Hardcoded Email Template - #{@hardcoded_template[:name]}" %>
+
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="admin-container-title">Hardcoded Email Template</h3>
+        <p class="admin-container-subtitle">Read-only template built into the application</p>
+      </div>
+      <div class="flex space-x-3">
+        <%= link_to "Back to Templates", admin_email_templates_path, class: "admin-btn-back" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-container-content p-6">
+    
+    <!-- Template Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h4 class="text-xl font-semibold text-purple-950"><%= @hardcoded_template[:name] %></h4>
+        <p class="text-sm text-purple-600 mt-1">
+          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+            <%= @hardcoded_template[:template_type].titleize %>
+          </span>
+          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 ml-2">
+            Hardcoded
+          </span>
+        </p>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+          <%= @hardcoded_template[:active] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+          <%= @hardcoded_template[:active] ? 'Active' : 'Inactive' %>
+        </span>
+      </div>
+    </div>
+
+    <!-- Template Details -->
+    <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+      <div>
+        <dt class="text-sm font-medium text-purple-700">Template Name</dt>
+        <dd class="mt-1 text-sm text-purple-950"><%= @hardcoded_template[:name] %></dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-purple-700">Template Type</dt>
+        <dd class="mt-1 text-sm text-purple-950"><%= @hardcoded_template[:template_type].titleize %></dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-purple-700">Status</dt>
+        <dd class="mt-1 text-sm text-purple-950">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+            <%= @hardcoded_template[:active] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+            <%= @hardcoded_template[:active] ? 'Active' : 'Inactive' %>
+          </span>
+        </dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-purple-700">File Path</dt>
+        <dd class="mt-1 text-sm text-purple-950 font-mono"><%= @hardcoded_template[:path] %></dd>
+      </div>
+      <div class="sm:col-span-2">
+        <dt class="text-sm font-medium text-purple-700">Subject Line</dt>
+        <dd class="mt-1 text-sm text-purple-950 bg-gray-50 p-3 rounded-lg border">
+          <%= @hardcoded_template[:subject] %>
+        </dd>
+      </div>
+      <div class="sm:col-span-2">
+        <dt class="text-sm font-medium text-purple-700">Description</dt>
+        <dd class="mt-1 text-sm text-purple-950 bg-gray-50 p-3 rounded-lg border">
+          <%= @hardcoded_template[:description] %>
+        </dd>
+      </div>
+      <% if @hardcoded_template[:variables].present? %>
+        <div class="sm:col-span-2">
+          <dt class="text-sm font-medium text-purple-700">Available Variables</dt>
+          <dd class="mt-1">
+            <div class="flex flex-wrap gap-2">
+              <% @hardcoded_template[:variables].each do |var| %>
+                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                  <%= var %>
+                </span>
+              <% end %>
+            </div>
+          </dd>
+        </div>
+      <% end %>
+    </dl>
+
+    <!-- Test Email Form -->
+    <div class="bg-white rounded-lg shadow-sm border border-green-200 p-6 mb-6 mt-6">
+      <div class="flex items-center justify-between mb-4">
+        <h4 class="text-lg font-semibold text-green-950">Send Test Email</h4>
+        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+          Preview Template
+        </span>
+      </div>
+      
+      <%= form_with url: send_test_hardcoded_admin_email_templates_path(template_path: @hardcoded_template[:path]), method: :post, local: true, class: "space-y-4" do |form| %>
+        <div>
+          <label for="test_email" class="block text-sm font-medium text-gray-700 mb-2">
+            Email Address
+          </label>
+          <div class="flex space-x-3">
+            <%= form.email_field :test_email, 
+                                 placeholder: "Enter email address to receive test email", 
+                                 class: "flex-1 form-input border-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring-green-500",
+                                 required: true %>
+            <%= form.submit "Send Test Email", 
+                           class: "admin-btn-primary bg-green-600 hover:bg-green-700 border-green-600 hover:border-green-700" %>
+          </div>
+          <p class="mt-2 text-sm text-gray-500">
+            This will send a test email using sample data so you can see how the template looks when received.
+            <% if Rails.env.development? %>
+              <br><strong>Development mode:</strong> The email will open in your browser automatically.
+            <% end %>
+          </p>
+        </div>
+      <% end %>
+      
+      <div class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-blue-800">Test Email Information</h3>
+            <div class="mt-2 text-sm text-blue-700">
+              <ul class="list-disc list-inside space-y-1">
+                <li>Test emails use sample data and will be marked with [TEST] in the subject line</li>
+                <li>The email will be sent using the actual template design and styling</li>
+                <li>This helps you see exactly how recipients will view the email</li>
+                <% if Rails.env.development? %>
+                  <li><strong>Development:</strong> Emails will automatically open in your browser (no actual email sent)</li>
+                <% else %>
+                  <li>Test emails are sent immediately to the specified address</li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Template Source Code -->
+    <div class="bg-white rounded-lg shadow-sm border border-purple-200 p-6 mb-6 mt-6">
+      <div class="flex items-center justify-between mb-4">
+        <h4 class="text-lg font-semibold text-purple-950">Template Source Code</h4>
+        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+          Read-only
+        </span>
+      </div>
+      <div class="bg-gray-900 p-4 rounded-lg border overflow-x-auto">
+        <pre class="text-sm text-green-400 whitespace-pre-wrap font-mono"><%= @template_content %></pre>
+      </div>
+    </div>
+
+    <!-- Template Usage Information -->
+    <div class="bg-white rounded-lg shadow-sm border border-purple-200 p-6">
+      <h4 class="text-lg font-semibold text-purple-950 mb-4">Template Usage & Information</h4>
+      <div class="space-y-3">
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-yellow-800">Important Notice</h3>
+              <div class="mt-2 text-sm text-yellow-700">
+                <p>This is a hardcoded email template that is built into the application. It cannot be edited through the admin interface. To modify this template, you need to edit the source file directly in your code editor.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="space-y-2">
+          <p class="text-sm text-purple-600">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <strong>Usage:</strong> <%= @hardcoded_template[:description] %>
+          </p>
+          
+          <p class="text-sm text-purple-600">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <strong>File Location:</strong> <code class="bg-gray-100 px-1 py-0.5 rounded text-xs"><%= @hardcoded_template[:path] %></code>
+          </p>
+          
+          <p class="text-sm text-purple-600">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM7 3H5a2 2 0 00-2 2v12a4 4 0 004 4h2a2 2 0 002-2V5a2 2 0 00-2-2z"></path>
+            </svg>
+            <strong>Template Type:</strong> <%= @hardcoded_template[:template_type].titleize %>
+          </p>
+          
+          <% if @hardcoded_template[:variables].present? %>
+            <p class="text-sm text-purple-600">
+              <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+              </svg>
+              <strong>Variables Used:</strong> <%= @hardcoded_template[:variables].join(', ') %>
+            </p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

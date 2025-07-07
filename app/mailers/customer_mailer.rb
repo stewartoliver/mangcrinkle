@@ -76,6 +76,112 @@ class CustomerMailer < ApplicationMailer
     mail(to: @user.email, subject: @subject)
   end
 
+  # Test email methods with sample data
+  def test_order_confirmation(test_email)
+    @order = OpenStruct.new(
+      id: 12345,
+      total_price: 29.99,
+      email: test_email,
+      customer_name: "Test Customer",
+      created_at: Time.current,
+      address: "123 Test Street\nTest City, TC 12345\nNew Zealand",
+      line_items: [
+        OpenStruct.new(
+          quantity: 6, 
+          purchasable: OpenStruct.new(name: "Classic Chocolate Crinkles"),
+          price: 18.00
+        ),
+        OpenStruct.new(
+          quantity: 3, 
+          purchasable: OpenStruct.new(name: "Peanut Butter Crinkles"),
+          price: 11.99
+        )
+      ],
+      user: OpenStruct.new(display_name: "Test Customer"),
+      delivery_address: "123 Test Street, Test City, TC 12345",
+      delivery_date: Date.current + 2.days,
+      order_notes: "Please ring doorbell"
+    )
+    @user = @order.user
+    @customer_name = @order.customer_name
+    
+    mail(to: test_email, subject: "[TEST] Your Mang Crinkle Order ##{@order.id} is Confirmed! 🎉", template_name: 'order_confirmation')
+  end
+
+  def test_welcome_email(test_email)
+    @user = OpenStruct.new(
+      display_name: "Test Customer",
+      email: test_email
+    )
+    @customer_name = @user.display_name
+    
+    mail(to: test_email, subject: "[TEST] Welcome to the Mang Crinkle Family! 🍪", template_name: 'welcome_email')
+  end
+
+  def test_newsletter_email(test_email)
+    @user = OpenStruct.new(
+      display_name: "Test Customer",
+      email: test_email
+    )
+    @customer_name = @user.display_name
+    @subject = "[TEST] Fresh Crinkles & Family Updates from Mang! 🍪"
+    @body = "Test newsletter content with exciting updates about our latest cookie flavors and family stories!"
+    
+    mail(to: test_email, subject: @subject, template_name: 'newsletter_email')
+  end
+
+  def test_contact_response(test_email)
+    @contact_message = OpenStruct.new(
+      subject: "Question about cookie ingredients",
+      message: "Hi, I wanted to ask about the ingredients in your chocolate crinkles. Are they gluten-free?",
+      created_at: 1.day.ago
+    )
+    @user = OpenStruct.new(
+      display_name: "Test Customer",
+      email: test_email
+    )
+    @admin_response = OpenStruct.new(
+      response: "Thank you for your question! Our classic chocolate crinkles do contain gluten as they're made with wheat flour. However, we're working on a gluten-free version that should be available next month. I'll keep you updated!",
+      admin_name: "Maria Santos",
+      created_at: Time.current
+    )
+    @customer_name = @user.display_name
+    
+    mail(to: test_email, subject: "[TEST] Re: Question about cookie ingredients", template_name: 'contact_response')
+  end
+
+  def test_shipping_confirmation(test_email)
+    @order = OpenStruct.new(
+      id: 12345,
+      total_price: 29.99,
+      email: test_email,
+      customer_name: "Test Customer",
+      tracking_number: "MC123456789",
+      estimated_delivery: Date.current + 2.days,
+      carrier: "Local Delivery",
+      created_at: 1.week.ago,
+      address: "123 Test Street\nTest City, TC 12345\nNew Zealand",
+      line_items: [
+        OpenStruct.new(
+          quantity: 6, 
+          purchasable: OpenStruct.new(name: "Classic Chocolate Crinkles"),
+          price: 18.00
+        ),
+        OpenStruct.new(
+          quantity: 3, 
+          purchasable: OpenStruct.new(name: "Peanut Butter Crinkles"),
+          price: 11.99
+        )
+      ],
+      user: OpenStruct.new(display_name: "Test Customer"),
+      delivery_address: "123 Test Street, Test City, TC 12345"
+    )
+    @user = @order.user
+    @customer_name = @order.customer_name
+    
+    mail(to: test_email, subject: "[TEST] Your Mang Crinkle Order is on its Way! 🚚", template_name: 'shipping_confirmation')
+  end
+
   private
 
   def order_items_summary(order)

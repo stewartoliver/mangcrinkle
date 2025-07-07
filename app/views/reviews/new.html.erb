@@ -69,9 +69,9 @@
             <%= form.text_field :customer_name, 
                                 class: "form-input",
                                 placeholder: "Your full name",
-                                readonly: @review_invite.present? %>
+                                readonly: @review_invite.present? && !@review_invite.quick_link? %>
           </div>
-          <% if @review_invite %>
+          <% if @review_invite && !@review_invite.quick_link? %>
             <p class="mt-1 text-xs text-orange-500">Pre-filled from your invitation</p>
           <% end %>
         </div>
@@ -82,9 +82,9 @@
             <%= form.email_field :email, 
                                  class: "form-input",
                                  placeholder: "your@email.com",
-                                 readonly: @review_invite.present? %>
+                                 readonly: @review_invite.present? && !@review_invite.quick_link? %>
           </div>
-          <% if @review_invite %>
+          <% if @review_invite && !@review_invite.quick_link? %>
             <p class="mt-1 text-xs text-orange-500">Pre-filled from your invitation</p>
           <% end %>
         </div>
@@ -95,7 +95,7 @@
         <%= form.label :rating, "Rating", class: "form-label" %>
         <div class="flex items-center space-x-1 mt-1" id="star-rating">
           <% (1..5).each do |star| %>
-            <button type="button" class="star-btn text-3xl text-gray-300 hover:text-yellow-400 transition-colors duration-150" data-rating="<%= star %>">
+            <button type="button" class="star-btn text-3xl text-gray-300 transition-colors duration-150" data-rating="<%= star %>">
               ★
             </button>
           <% end %>

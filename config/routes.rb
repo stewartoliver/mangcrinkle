@@ -120,6 +120,7 @@ Rails.application.routes.draw do
         delete :bulk_cleanup
         get :quick_link
         post :create_quick_link
+        get :quick_link_created
       end
     end
   end

@@ -79,22 +79,30 @@ class Admin::ReviewInvitesController < Admin::BaseController
   end
 
   def create_quick_link
-    # Create a quick review link without requiring an order
+    # Create a quick review link without requiring an order or customer details
     @review_invite = ReviewInvite.new
-    @review_invite.name = params[:name]
-    @review_invite.email = params[:email]
-    @review_invite.invite_type = 'manual'
+    @review_invite.name = "Quick Link Customer" # Placeholder name
+    @review_invite.email = "quicklink@placeholder.com" # Placeholder email
+    @review_invite.invite_type = 'quick_link' # Special type for quick links
     @review_invite.admin_notes = "Quick link created by #{current_user.email}"
     
     if @review_invite.save
-      @quick_link = @review_invite.review_url
-      render :quick_link_created
+      redirect_to quick_link_created_admin_review_invites_path(token: @review_invite.token)
     else
       render :quick_link
     end
   rescue => e
     Rails.logger.error "Failed to create quick link: #{e.message}"
     redirect_to admin_review_invites_path, alert: 'Failed to generate quick link.'
+  end
+
+  def quick_link_created
+    @review_invite = ReviewInvite.find_by_token(params[:token])
+    unless @review_invite
+      redirect_to admin_review_invites_path, alert: 'Invalid or expired link.'
+      return
+    end
+    @review_link = new_review_url(token: @review_invite.token, host: request.host_with_port)
   end
 
   private

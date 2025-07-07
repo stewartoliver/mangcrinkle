@@ -36,6 +36,10 @@ class ReviewInvite < ApplicationRecord
     order.present?
   end
   
+  def quick_link?
+    invite_type == 'quick_link'
+  end
+  
   def review_url
     Rails.application.routes.url_helpers.new_review_url(token: token)
   end

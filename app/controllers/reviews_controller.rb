@@ -22,8 +22,8 @@ class ReviewsController < ApplicationController
     @order = current_user&.orders&.find(params[:order_id]) if params[:order_id]
     @review_invite = @current_review_invite if @current_review_invite
     
-    # Pre-fill form data if we have a review invite
-    if @review_invite
+    # Pre-fill form data if we have a review invite (but not for quick links)
+    if @review_invite && !@review_invite.quick_link?
       @review.customer_name = @review_invite.name
       @review.email = @review_invite.email
       @review.order = @review_invite.order if @review_invite.order
@@ -43,8 +43,12 @@ class ReviewsController < ApplicationController
     # If using a review invite, associate the order and mark invite as used
     if @review_invite
       @review.order = @review_invite.order if @review_invite.order
-      @review.customer_name = @review_invite.name
-      @review.email = @review_invite.email
+      # For quick links, use the customer details from the form
+      # For regular invites, use the invite's customer details
+      unless @review_invite.quick_link?
+        @review.customer_name = @review_invite.name
+        @review.email = @review_invite.email
+      end
     elsif current_user
       # Pre-fill customer info if user is logged in
       @review.customer_name ||= current_user.full_name

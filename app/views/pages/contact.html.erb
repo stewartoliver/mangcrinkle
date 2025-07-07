@@ -64,15 +64,7 @@
           </div>
         </div>
 
-        <div>
-          <%= form.label :priority, "Priority", class: "form-label" %>
-          <div class="mt-1">
-            <%= form.select :priority, 
-                [['Normal', 'normal'], ['High', 'high'], ['Urgent', 'urgent']], 
-                { selected: 'normal' }, 
-                { class: "form-select" } %>
-          </div>
-        </div>
+        <%= form.hidden_field :priority, value: 'normal' %>
 
         <div>
           <%= form.label :message, "Message", class: "form-label" %>

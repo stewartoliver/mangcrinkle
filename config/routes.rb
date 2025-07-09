@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   # Health check for Fly.io
   get "up" => "rails/health#show", as: :rails_health_check
+  # Simple backup health endpoint
+  get "health" => proc { [200, {}, ["OK"]] }
 
   # Public routes
   root 'pages#home'

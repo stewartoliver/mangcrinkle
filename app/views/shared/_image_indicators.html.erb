@@ -1,0 +1,11 @@
+<% if images.length > 1 %>
+  <div class="absolute bottom-3 right-3 flex space-x-1">
+    <% images.each_with_index do |image, index| %>
+      <button type="button" 
+              class="image-indicator w-3 h-3 rounded transition-all duration-200 hover:scale-110 <%= index == 0 ? 'bg-orange-600 hover:bg-orange-700' : 'bg-orange-200 hover:bg-orange-400' %>"
+              data-indicator-index="<%= index %>"
+              title="Image <%= index + 1 %>">
+      </button>
+    <% end %>
+  </div>
+<% end %> 

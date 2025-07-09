@@ -1,0 +1,75 @@
+<%
+  # Default values
+  layout ||= 'column' # 'row' or 'column'
+  size ||= 'medium'   # 'small', 'medium', 'large'
+  color_class ||= 'text-orange-200 hover:text-white'
+  
+  # Size classes
+  icon_size_class = case size
+    when 'small' then 'h-4 w-4'
+    when 'large' then 'h-8 w-8'
+    else 'h-6 w-6' # medium
+  end
+  
+  # Layout classes
+  container_class = layout == 'row' ? 'flex items-center space-x-4' : 'space-y-3'
+  item_class = layout == 'row' ? 'flex items-center' : 'flex items-center space-x-3'
+%>
+
+<div class="<%= container_class %>">
+  <!-- Instagram -->
+  <a href="https://instagram.com/mangcrinkle" target="_blank" rel="noopener noreferrer" class="<%= item_class %> <%= color_class %> transition-colors duration-200 group" title="Follow us on Instagram">
+    <svg class="<%= icon_size_class %> transition-transform duration-200 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill-rule="evenodd" d="M12.017 0C8.396 0 7.955.01 6.729.048 2.695.26.26 2.695.048 6.729.01 7.955 0 8.396 0 12.017c0 3.622.01 4.062.048 5.288.212 4.034 2.647 6.47 6.681 6.682 1.226.038 1.666.048 5.288.048 3.621 0 4.062-.01 5.288-.048 4.034-.212 6.47-2.648 6.682-6.682.038-1.226.048-1.666.048-5.288 0-3.621-.01-4.062-.048-5.288C23.78 2.695 21.345.26 17.311.048 16.085.01 15.644 0 12.017 0zm0 2.161c3.549 0 3.97.014 5.375.052 3.231.148 4.508 1.438 4.656 4.656.038 1.405.052 1.826.052 5.375 0 3.549-.014 3.97-.052 5.375-.148 3.218-1.425 4.508-4.656 4.656-1.405.038-1.826.052-5.375.052-3.549 0-3.97-.014-5.375-.052-3.231-.148-4.508-1.438-4.656-4.656-.038-1.405-.052-1.826-.052-5.375 0-3.549.014-3.97.052-5.375.148-3.218 1.425-4.508 4.656-4.656 1.405-.038 1.826-.052 5.375-.052zM5.838 12.017a6.179 6.179 0 1112.358 0 6.179 6.179 0 01-12.358 0zm6.179-4.049a4.049 4.049 0 100 8.098 4.049 4.049 0 000-8.098zm7.94-1.628a1.443 1.443 0 11-2.887 0 1.443 1.443 0 012.887 0z" clip-rule="evenodd" />
+    </svg>
+    <% if layout == 'column' %>
+      <span class="text-sm">Instagram</span>
+    <% end %>
+  </a>
+
+  <!-- Facebook -->
+  <a href="https://www.facebook.com/profile.php?id=61576862162794" target="_blank" rel="noopener noreferrer" class="<%= item_class %> <%= color_class %> transition-colors duration-200 group" title="Follow us on Facebook">
+    <svg class="<%= icon_size_class %> transition-transform duration-200 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M0 5.5C0 2.46243 2.46243 0 5.5 0H18.5C21.5376 0 24 2.46243 24 5.5V18.5C24 21.5376 21.5376 24 18.5 24H5.5C2.46243 24 0 21.5376 0 18.5V5.5ZM15.7272 12.0001L16.0532 8.86412H12.9512V6.77012C12.9512 5.88312 13.3732 5.20112 14.7382 5.20112H16.1622V2.25212C15.8512 2.20612 14.6092 2.08912 13.2102 2.08912C10.4712 2.08912 8.5702 3.79812 8.5702 6.49812V8.86412H5.7492V12.0001H8.5702V19.9991H12.9512V12.0001H15.7272Z"/>
+    </svg>
+    <% if layout == 'column' %>
+      <span class="text-sm">Facebook</span>
+    <% end %>
+  </a>
+
+  <!-- Twitter/X (ready for future use) -->
+  <!-- Uncomment when needed:
+  <a href="#" class="<%= item_class %> <%= color_class %> transition-colors duration-200 group" title="Follow us on Twitter">
+    <svg class="<%= icon_size_class %> transition-transform duration-200 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+    </svg>
+    <% if layout == 'column' %>
+      <span class="text-sm">Twitter</span>
+    <% end %>
+  </a>
+  -->
+
+  <!-- TikTok (ready for future use) -->
+  <!-- Uncomment when needed:
+  <a href="#" class="<%= item_class %> <%= color_class %> transition-colors duration-200 group" title="Follow us on TikTok">
+    <svg class="<%= icon_size_class %> transition-transform duration-200 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-.88-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
+    </svg>
+    <% if layout == 'column' %>
+      <span class="text-sm">TikTok</span>
+    <% end %>
+  </a>
+  -->
+
+  <!-- YouTube (ready for future use) -->
+  <!-- Uncomment when needed:
+  <a href="#" class="<%= item_class %> <%= color_class %> transition-colors duration-200 group" title="Subscribe to our YouTube">
+    <svg class="<%= icon_size_class %> transition-transform duration-200 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z" clip-rule="evenodd" />
+    </svg>
+    <% if layout == 'column' %>
+      <span class="text-sm">YouTube</span>
+    <% end %>
+  </a>
+  -->
+</div> 

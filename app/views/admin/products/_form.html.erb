@@ -76,6 +76,39 @@
     </div>
   </div>
 
+  <!-- Ingredients & Allergen Information Section -->
+  <div class="bg-white border border-orange-200 rounded-lg p-6">
+    <h3 class="text-lg font-semibold text-orange-950 mb-4 border-b border-orange-100 pb-2">
+      Ingredients & Allergen Information
+    </h3>
+    
+    <div class="space-y-4">
+      <div>
+        <%= f.label :ingredients, "Ingredients", class: "form-label" %>
+        <p class="text-xs text-orange-600 mb-2">List all ingredients used in this product (optional)</p>
+        <%= f.text_area :ingredients, rows: 3, class: "form-textarea", placeholder: "All-purpose flour, dark cocoa powder, baking powder, salt..." %>
+      </div>
+      
+      <div>
+        <%= f.label :allergen_info, "Allergen Information", class: "form-label" %>
+        <p class="text-xs text-orange-600 mb-2">Allergen warnings and dietary information (optional)</p>
+        <%= f.text_area :allergen_info, rows: 4, class: "form-textarea", placeholder: "Contains Eggs
+Contains Gluten (Wheat)
+Contains Soy (from chocolate)
+Dairy-free recipe (chocolate may contain traces)
+May contain traces of milk, nuts due to shared equipment..." %>
+      </div>
+      
+      <div>
+        <%= f.label :storage_instructions, "Storage Instructions", class: "form-label" %>
+        <p class="text-xs text-orange-600 mb-2">Storage and freshness information (optional)</p>
+        <%= f.text_area :storage_instructions, rows: 3, class: "form-textarea", placeholder: "Keep in a cool, dry place.
+Best consumed within 5 days of purchase.
+Can be frozen up to 1 month — thaw at room temperature." %>
+      </div>
+    </div>
+  </div>
+
   <!-- Images Section -->
   <!-- 
     To configure different image limits for different models:

@@ -574,6 +574,309 @@
     }
 
     .admin-link-primary {
-        @apply text-orange-600 hover:text-orange-950 font-medium;
+        @apply text-orange-600 hover:text-orange-900 font-medium;
+    }
+
+}
+
+/* Customer-Facing Components */
+@layer components {
+
+    /* ======================
+       LAYOUT COMPONENTS
+       ====================== */
+
+    /* Main Container - Used across all customer pages */
+    .customer-container {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    /* Section Wrapper - Consistent vertical spacing */
+    .customer-section {
+        @apply py-16;
+    }
+
+    /* Section Wrapper with smaller padding for nested content */
+    .customer-section-sm {
+        @apply py-12;
+    }
+
+    /* ======================
+       CTA & HERO SECTIONS
+       ====================== */
+
+    /* CTA Section Background - Orange theme used in multiple places */
+    .customer-cta-section {
+        @apply bg-orange-200 text-orange-950;
+    }
+
+    /* CTA Content Container - Two column responsive layout */
+    .customer-cta-container {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:grid lg:grid-cols-2 lg:gap-8 items-center;
+    }
+
+    /* CTA Content - Left side content area */
+    .customer-cta-content {
+        @apply mt-8 lg:mt-0;
+    }
+
+    /* CTA Title - Large headline style */
+    .customer-cta-title {
+        @apply text-3xl font-extrabold tracking-tight sm:text-4xl;
+    }
+
+    /* CTA Subtitle - Supporting text */
+    .customer-cta-subtitle {
+        @apply mt-4 text-lg;
+    }
+
+    /* Centered CTA Section - For single column CTAs like About page */
+    .customer-cta-centered {
+        @apply bg-orange-200 text-orange-950;
+    }
+
+    .customer-cta-centered-container {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center;
+    }
+
+    /* ======================
+       CONTENT SECTIONS
+       ====================== */
+
+    /* White content section background */
+    .customer-content-section {
+        @apply bg-white py-16;
+    }
+
+    /* Light orange content section background */
+    .customer-content-section-light {
+        @apply bg-orange-50 py-16;
+    }
+
+    /* Section Headers - Used for section titles */
+    .customer-section-header {
+        @apply text-center mb-12;
+    }
+
+    .customer-section-title {
+        @apply text-3xl font-bold text-orange-950 mb-4;
+    }
+
+    .customer-section-subtitle {
+        @apply text-lg text-orange-700 max-w-3xl mx-auto;
+    }
+
+    /* Two Column Content Layout */
+    .customer-two-column {
+        @apply lg:grid lg:grid-cols-2 lg:gap-8 items-center;
+    }
+
+    /* ======================
+       BUTTONS
+       ====================== */
+
+    /* Primary Customer Button - Orange background */
+    .customer-btn-primary {
+        @apply inline-block bg-orange-950 text-orange-200 px-8 py-3 rounded-md font-semibold hover:bg-orange-900 transition duration-150;
+    }
+
+    /* Secondary Customer Button - Orange border */
+    .customer-btn-secondary {
+        @apply inline-block border-2 border-orange-950 text-orange-950 px-8 py-3 rounded-md font-semibold hover:bg-orange-950 hover:text-orange-200 transition duration-150;
+    }
+
+    /* Small Customer Button - For product cards, etc. */
+    .customer-btn-sm {
+        @apply inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500;
+    }
+
+    /* Customer Button Group - For multiple buttons side by side */
+    .customer-btn-group {
+        @apply flex flex-col sm:flex-row gap-4;
+    }
+
+    /* ======================
+       CARD COMPONENTS
+       ====================== */
+
+    /* Product Card - Used in product grids */
+    .customer-product-card {
+        @apply bg-white rounded-lg shadow-md overflow-hidden border border-orange-200 hover:border-orange-500 transition duration-150;
+    }
+
+    /* Feature Card - Used for testimonials, values, benefits */
+    .customer-feature-card {
+        @apply text-center p-6 rounded-lg;
+    }
+
+    /* Feature Card with hover effect */
+    .customer-feature-card-hover {
+        @apply text-center p-6 rounded-lg hover:shadow-lg transition duration-300;
+    }
+
+    /* Testimonial Card - Specific styling for customer testimonials */
+    .customer-testimonial-card {
+        @apply bg-orange-50 p-6 rounded-lg;
+    }
+
+    /* Info Card - General purpose card with border */
+    .customer-info-card {
+        @apply bg-white rounded-lg shadow-md p-8 border border-orange-200;
+    }
+
+    /* Package Card - For package/pricing options */
+    .customer-package-card {
+        @apply text-center p-4 border border-orange-200 rounded-lg;
+    }
+
+    /* ======================
+       GRID LAYOUTS
+       ====================== */
+
+    /* Three Column Grid - For testimonials, features, etc. */
+    .customer-grid-3 {
+        @apply grid grid-cols-1 md:grid-cols-3 gap-8;
+    }
+
+    /* Two Column Grid - For products, packages */
+    .customer-grid-2 {
+        @apply grid grid-cols-1 md:grid-cols-2 gap-8;
+    }
+
+    /* Four Column Grid - For packages */
+    .customer-grid-4 {
+        @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6;
+    }
+
+    /* Responsive Product Grid */
+    .customer-product-grid {
+        @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8;
+    }
+
+    /* ======================
+       TYPOGRAPHY
+       ====================== */
+
+    /* Page Title - Main page headings */
+    .customer-page-title {
+        @apply text-4xl font-extrabold tracking-tight text-center;
+    }
+
+    /* Page Subtitle - Supporting page text */
+    .customer-page-subtitle {
+        @apply mt-4 text-xl text-center max-w-3xl mx-auto;
+    }
+
+    /* Feature Title - For cards and feature sections */
+    .customer-feature-title {
+        @apply text-xl font-semibold mb-2 text-orange-950;
+    }
+
+    /* Feature Description - For card descriptions */
+    .customer-feature-description {
+        @apply text-orange-700;
+    }
+
+    /* ======================
+       FORMS
+       ====================== */
+
+    /* Newsletter Form - Inline form layout */
+    .customer-newsletter-form {
+        @apply flex gap-3;
+    }
+
+    /* Newsletter Input - Email input styling */
+    .customer-newsletter-input {
+        @apply block w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 bg-white text-orange-950 flex-1;
+    }
+
+    /* Newsletter Submit Button */
+    .customer-newsletter-submit {
+        @apply px-8 py-3 bg-orange-950 text-orange-200 font-semibold rounded-md hover:bg-orange-900 transition duration-150;
+    }
+
+    /* ======================
+       SPECIALTY COMPONENTS
+       ====================== */
+
+    /* Logo Container - For brand logo display */
+    .customer-logo-container {
+        @apply flex justify-center mb-6;
+    }
+
+    /* Star Rating Display */
+    .customer-star-rating {
+        @apply text-2xl text-orange-600;
+    }
+
+    /* Status Badge - For verified purchases, etc. */
+    .customer-status-badge {
+        @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
+    }
+
+    /* Verified Badge - Green styling for verified purchases */
+    .customer-verified-badge {
+        @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800;
+    }
+
+    /* Image Placeholder - For missing product images */
+    .customer-image-placeholder {
+        @apply bg-orange-100 flex items-center justify-center;
+    }
+
+    /* Price Display - For product pricing */
+    .customer-price {
+        @apply text-lg font-bold text-orange-950;
+    }
+
+    .customer-price-large {
+        @apply text-3xl font-bold text-orange-950;
+    }
+
+    /* ======================
+       HEADER SECTIONS
+       ====================== */
+
+    /* Page Header - Orange background for page tops */
+    .customer-page-header {
+        @apply bg-orange-200 text-orange-950 py-12;
+    }
+
+    .customer-page-header-container {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center;
+    }
+
+    /* ======================
+       ANIMATION HELPERS
+       ====================== */
+
+    /* Hover Scale - For interactive elements */
+    .customer-hover-scale {
+        @apply transform hover:scale-105 transition-transform duration-300;
+    }
+
+    /* Smooth Transition - For general transitions */
+    .customer-transition {
+        @apply transition duration-150;
+    }
+
+    /* ======================
+       UTILITY COMBINATIONS
+       ====================== */
+
+    /* Common spacing for section content */
+    .customer-section-spacing {
+        @apply space-y-6;
+    }
+
+    /* Common text styling for body content */
+    .customer-body-text {
+        @apply text-lg text-orange-700;
+    }
+
+    /* Icon styling for features */
+    .customer-feature-icon {
+        @apply text-4xl mb-4 text-orange-600;
     }
 }

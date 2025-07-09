@@ -1,9 +1,11 @@
 module.exports = {
     content: [
-        './app/views/**/*.erb',
+        './app/views/**/*.html.erb',
         './app/helpers/**/*.rb',
         './app/assets/stylesheets/**/*.css',
-        './app/javascript/**/*.js'
+        './app/assets/tailwind/**/*.css',
+        './app/javascript/**/*.js',
+        './app/controllers/**/*.rb'
     ],
     theme: {
         extend: {

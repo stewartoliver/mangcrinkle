@@ -58,30 +58,59 @@
 
     <footer class="bg-orange-950 text-orange-100">
       <div class="max-w-7xl mx-auto py-12 px-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div class="flex items-center space-x-4 md:col-span-2 lg:col-span-1">
-            <%= image_tag "Mang-not-text-logo.svg", alt: "MangCrinkle Logo", class: "h-10 w-auto flex-shrink-0" %>
-            <p class="text-orange-200">Artisanal baked goods made with love and the finest ingredients.</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <!-- Brand Section -->
+          <div class="lg:col-span-1">
+            <div class="flex items-center space-x-3 mb-4">
+              <%= image_tag "Mang-not-text-logo.svg", alt: "MangCrinkle Logo", class: "h-10 w-auto flex-shrink-0" %>
+              <div class="text-lg font-semibold text-orange-200">Mang Crinkle</div>
+            </div>
+            <p class="text-orange-200 text-sm leading-relaxed">
+              Artisanal baked goods made with love and the finest ingredients.
+            </p>
           </div>
+
+          <!-- Quick Links -->
           <div>
             <h3 class="text-lg font-semibold mb-4 text-orange-200">Quick Links</h3>
             <ul class="space-y-2">
-              <li><%= link_to "Products", products_path, class: "text-orange-200 hover:text-white" %></li>
-              <li><%= link_to "About Us", about_path, class: "text-orange-200 hover:text-white" %></li>
-              <li><%= link_to "Contact", contact_path, class: "text-orange-200 hover:text-white" %></li>
+              <li><%= link_to "Products", products_path, class: "text-orange-200 hover:text-white transition-colors duration-200" %></li>
+              <li><%= link_to "About Us", about_path, class: "text-orange-200 hover:text-white transition-colors duration-200" %></li>
+              <li><%= link_to "Contact", contact_path, class: "text-orange-200 hover:text-white transition-colors duration-200" %></li>
             </ul>
           </div>
+
+          <!-- Reviews -->
           <div>
             <h3 class="text-lg font-semibold mb-4 text-orange-200">Reviews</h3>
             <ul class="space-y-2">
-              <li><%= link_to "Write a Review", new_review_path, class: "text-orange-200 hover:text-white" %></li>
-              <li><%= link_to "Read Reviews", reviews_path, class: "text-orange-200 hover:text-white" %></li>
+              <li><%= link_to "Write a Review", new_review_path, class: "text-orange-200 hover:text-white transition-colors duration-200" %></li>
+              <li><%= link_to "Read Reviews", reviews_path, class: "text-orange-200 hover:text-white transition-colors duration-200" %></li>
             </ul>
           </div>
+
+          <!-- Contact Info -->
           <div>
             <h3 class="text-lg font-semibold mb-4 text-orange-200">Contact Us</h3>
-            <p class="text-orange-200">Email: <%= company_email %></p>
-            <p class="text-orange-200">Phone: <%= company_phone %></p>
+            <div class="space-y-3">
+              <p class="text-orange-200 text-sm">Email: <%= company_email %></p>
+              <p class="text-orange-200 text-sm">Phone: <%= company_phone %></p>
+            </div>
+          </div>
+
+          <!-- Social Media -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4 text-orange-200">Follow Us</h3>
+            
+            <!-- Social Media - Row layout on large screens -->
+            <div class="hidden lg:block">
+              <%= render "shared/social_media_buttons", layout: 'row', size: 'small', color_class: 'text-orange-200 hover:text-white' %>
+            </div>
+            
+            <!-- Social Media - Column layout on medium and smaller screens -->
+            <div class="lg:hidden">
+              <%= render "shared/social_media_buttons", layout: 'column', size: 'medium', color_class: 'text-orange-200 hover:text-white' %>
+            </div>
           </div>
         </div>
       </div>

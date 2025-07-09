@@ -8,6 +8,9 @@ class Product < ApplicationRecord
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :active, inclusion: { in: [true, false] }
   validates :category, presence: true, inclusion: { in: %w[Crinkles Extras Merch] }
+  validates :ingredients, length: { maximum: 2000 }
+  validates :allergen_info, length: { maximum: 2000 }
+  validates :storage_instructions, length: { maximum: 1000 }
 
   scope :active, -> { where(active: true) }
   scope :by_category, ->(category) { where(category: category) }

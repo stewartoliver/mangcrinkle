@@ -1,14 +1,14 @@
 <!-- Hero Section -->
-<div class="bg-orange-200 text-orange-950">
-  <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+<div class="customer-cta-section">
+  <div class="customer-container py-16">
     <div class="text-center">
-      <div class="flex justify-center mb-6">
+      <div class="customer-logo-container">
         <%= image_tag "Mang-logo.svg", alt: "MangCrinkle Logo", class: "h-20 w-auto" %>
       </div>
-      <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+      <h1 class="customer-page-title">
         <%= content_block_with_default('about_hero_title', 'Our Story') %>
       </h1>
-      <p class="mt-6 text-xl max-w-3xl mx-auto">
+      <p class="customer-page-subtitle">
         <%= content_block_with_default('about_hero_subtitle', 'From a small kitchen in Manila to your doorstep, discover the journey of Mang Crinkle Cookies.') %>
       </p>
     </div>
@@ -16,43 +16,45 @@
 </div>
 
 <!-- Founder's Story -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-  <div class="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
-    <div>
-      <div class="h-96 bg-orange-100 rounded-lg border-2 border-orange-200">
-        <% if content_block_image('founder_image') %>
-          <%= content_block_image('founder_image', class: "w-full h-full object-cover rounded-lg") %>
-        <% else %>
-          <%= image_tag "founder_img.jpg", class: "w-full h-full object-cover rounded-lg" %>
-        <% end %>
+<div class="customer-content-section">
+  <div class="customer-container">
+    <div class="customer-two-column">
+      <div>
+        <div class="customer-image-placeholder">
+          <% if content_block_image('founder_image') %>
+            <%= content_block_image('founder_image', class: "w-full h-full object-cover rounded-lg") %>
+          <% else %>
+            <%= image_tag "founder_img.jpg", class: "w-full h-full object-cover rounded-lg" %>
+          <% end %>
+        </div>
       </div>
-    </div>
-    <div class="mt-8 lg:mt-0">
-      <h2 class="text-3xl font-bold text-orange-950 mb-6">
-        <%= content_block_with_default('founder_section_title', 'Meet Our Founder') %>
-      </h2>
-      <div class="text-lg text-orange-700 space-y-6">
-        <%= render_content_block('founder_story', 
-          '<p>Born and raised in Manila, our founder discovered his passion for baking at an early age. 
-          His grandmother\'s kitchen was his first classroom, where he learned the art of traditional Filipino baking 
-          and the importance of using quality ingredients.</p>
-          
-          <p>After years of perfecting his craft, he decided to share his love for Filipino-style crinkle cookies 
-          with the world. What started as a small home-based business quickly grew into a beloved local brand, 
-          known for its authentic flavors and perfect texture.</p>
-          
-          <p>Today, he continues to personally oversee every batch of cookies, ensuring that each one meets his 
-          high standards of quality and taste. His dedication to tradition, combined with a willingness to 
-          experiment with new flavors, has made Mang Crinkle Cookies a favorite among cookie enthusiasts.</p>') %>
+      <div class="mt-8 lg:mt-0">
+        <h2 class="customer-section-title">
+          <%= content_block_with_default('founder_section_title', 'Meet Our Founder') %>
+        </h2>
+        <div class="customer-body-text customer-section-spacing">
+          <%= render_content_block('founder_story', 
+            '<p>Born and raised in Manila, our founder discovered his passion for baking at an early age. 
+            His grandmother\'s kitchen was his first classroom, where he learned the art of traditional Filipino baking 
+            and the importance of using quality ingredients.</p>
+            
+            <p>After years of perfecting his craft, he decided to share his love for Filipino-style crinkle cookies 
+            with the world. What started as a small home-based business quickly grew into a beloved local brand, 
+            known for its authentic flavors and perfect texture.</p>
+            
+            <p>Today, he continues to personally oversee every batch of cookies, ensuring that each one meets his 
+            high standards of quality and taste. His dedication to tradition, combined with a willingness to 
+            experiment with new flavors, has made Mang Crinkle Cookies a favorite among cookie enthusiasts.</p>') %>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <!-- Our Values -->
-<div class="bg-orange-50 py-16">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 class="text-3xl font-bold text-orange-950 mb-12 text-center">
+<div class="customer-content-section-light">
+  <div class="customer-container">
+    <h2 class="customer-section-title text-center">
       <%= content_block_with_default('values_section_title', 'Our Values') %>
     </h2>
     
@@ -60,16 +62,16 @@
     <% if company_values_block&.content.present? %>
       <% begin %>
         <% values = JSON.parse(company_values_block.content) %>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="customer-grid-3">
           <% values.each do |value| %>
-            <div class="text-center p-6 rounded-lg bg-white shadow-md">
-              <div class="text-4xl mb-4">
+            <div class="customer-feature-card">
+              <div class="customer-feature-icon">
                 <%= value['icon'] %>
               </div>
-              <h3 class="text-xl font-semibold mb-2 text-orange-950">
+              <h3 class="customer-feature-title">
                 <%= value['title'] %>
               </h3>
-              <p class="text-orange-700">
+              <p class="customer-feature-description">
                 <%= value['description'] %>
               </p>
             </div>
@@ -77,37 +79,37 @@
         </div>
       <% rescue JSON::ParserError %>
         <!-- Fallback to individual content blocks if JSON is invalid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div class="text-center p-6 rounded-lg bg-white shadow-md">
-            <div class="text-4xl mb-4">
+        <div class="customer-grid-3">
+          <div class="customer-feature-card">
+            <div class="customer-feature-icon">
               <%= content_block_with_default('value_1_icon', '🌟') %>
             </div>
-            <h3 class="text-xl font-semibold mb-2 text-orange-950">
+            <h3 class="customer-feature-title">
               <%= content_block_with_default('value_1_title', 'Authenticity') %>
             </h3>
-            <p class="text-orange-700">
+            <p class="customer-feature-description">
               <%= content_block_with_default('value_1_description', 'We stay true to traditional Filipino baking methods while adding our own unique twist.') %>
             </p>
           </div>
-          <div class="text-center p-6 rounded-lg bg-white shadow-md">
-            <div class="text-4xl mb-4">
+          <div class="customer-feature-card">
+            <div class="customer-feature-icon">
               <%= content_block_with_default('value_2_icon', '❤️') %>
             </div>
-            <h3 class="text-xl font-semibold mb-2 text-orange-950">
+            <h3 class="customer-feature-title">
               <%= content_block_with_default('value_2_title', 'Quality') %>
             </h3>
-            <p class="text-orange-700">
+            <p class="customer-feature-description">
               <%= content_block_with_default('value_2_description', 'We use only the finest ingredients, sourced locally whenever possible.') %>
             </p>
           </div>
-          <div class="text-center p-6 rounded-lg bg-white shadow-md">
-            <div class="text-4xl mb-4">
+          <div class="customer-feature-card">
+            <div class="customer-feature-icon">
               <%= content_block_with_default('value_3_icon', '🤝') %>
             </div>
-            <h3 class="text-xl font-semibold mb-2 text-orange-950">
+            <h3 class="customer-feature-title">
               <%= content_block_with_default('value_3_title', 'Community') %>
             </h3>
-            <p class="text-orange-700">
+            <p class="customer-feature-description">
               <%= content_block_with_default('value_3_description', 'We believe in supporting our local community and sharing our culture through food.') %>
             </p>
           </div>
@@ -115,37 +117,37 @@
       <% end %>
     <% else %>
       <!-- Fallback to individual content blocks if company_values doesn't exist -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="text-center p-6 rounded-lg bg-white shadow-md">
-          <div class="text-4xl mb-4">
+      <div class="customer-grid-3">
+        <div class="customer-feature-card">
+          <div class="customer-feature-icon">
             <%= content_block_with_default('value_1_icon', '🌟') %>
           </div>
-          <h3 class="text-xl font-semibold mb-2 text-orange-950">
+          <h3 class="customer-feature-title">
             <%= content_block_with_default('value_1_title', 'Authenticity') %>
           </h3>
-          <p class="text-orange-700">
+          <p class="customer-feature-description">
             <%= content_block_with_default('value_1_description', 'We stay true to traditional Filipino baking methods while adding our own unique twist.') %>
           </p>
         </div>
-        <div class="text-center p-6 rounded-lg bg-white shadow-md">
-          <div class="text-4xl mb-4">
+        <div class="customer-feature-card">
+          <div class="customer-feature-icon">
             <%= content_block_with_default('value_2_icon', '❤️') %>
           </div>
-          <h3 class="text-xl font-semibold mb-2 text-orange-950">
+          <h3 class="customer-feature-title">
             <%= content_block_with_default('value_2_title', 'Quality') %>
           </h3>
-          <p class="text-orange-700">
+          <p class="customer-feature-description">
             <%= content_block_with_default('value_2_description', 'We use only the finest ingredients, sourced locally whenever possible.') %>
           </p>
         </div>
-        <div class="text-center p-6 rounded-lg bg-white shadow-md">
-          <div class="text-4xl mb-4">
+        <div class="customer-feature-card">
+          <div class="customer-feature-icon">
             <%= content_block_with_default('value_3_icon', '🤝') %>
           </div>
-          <h3 class="text-xl font-semibold mb-2 text-orange-950">
+          <h3 class="customer-feature-title">
             <%= content_block_with_default('value_3_title', 'Community') %>
           </h3>
-          <p class="text-orange-700">
+          <p class="customer-feature-description">
             <%= content_block_with_default('value_3_description', 'We believe in supporting our local community and sharing our culture through food.') %>
           </p>
         </div>
@@ -155,33 +157,18 @@
 </div>
 
 <!-- Call to Action -->
-<div class="bg-orange-200 text-orange-950">
-  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-    <div class="text-center">
-      <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">
-        <%= content_block_with_default('cta_title', 'Ready to taste our story?') %>
-      </h2>
-      <p class="mt-4 text-lg">
-        <%= content_block_with_default('cta_subtitle', 'Experience the perfect blend of tradition and innovation in every bite.') %>
-      </p>
-      <div class="mt-8">
-        <%= link_to content_block_with_default('cta_button_text', 'Order Now'), products_path, 
-                    class: "inline-block bg-orange-950 text-orange-200 px-8 py-3 rounded-md font-semibold hover:bg-orange-900 transition duration-150" %>
-      </div>
+<div class="customer-cta-section">
+  <div class="customer-cta-centered-container">
+    <h2 class="customer-cta-title">
+      <%= content_block_with_default('cta_title', 'Ready to taste our story?') %>
+    </h2>
+    <p class="customer-cta-subtitle">
+      <%= content_block_with_default('cta_subtitle', 'Experience the perfect blend of tradition and innovation in every bite.') %>
+    </p>
+    <div class="mt-8">
+      <%= link_to content_block_with_default('cta_button_text', 'Order Now'), products_path, 
+                  class: "customer-btn-primary" %>
     </div>
   </div>
 </div>
-
-<!-- Admin Edit Links (only visible to admins) -->
-<% if user_signed_in? && current_user.admin? %>
-  <div class="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 border border-gray-200">
-    <h4 class="text-sm font-semibold text-gray-900 mb-2">Quick Edit</h4>
-    <div class="space-y-1 text-xs">
-      <%= link_to "Edit About Content", admin_content_blocks_path,
-        class: "inline-flex items-center px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-lg hover:bg-orange-700 transition-colors duration-200" %>
-      <%= link_to "Manage Reviews", admin_reviews_path, 
-                  class: "block text-blue-600 hover:text-blue-800", target: "_blank" %>
-    </div>
-  </div>
-<% end %>
 

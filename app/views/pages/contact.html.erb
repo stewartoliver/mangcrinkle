@@ -1,82 +1,84 @@
 <!-- Contact Header -->
-<div class="bg-orange-200 text-orange-950 py-12">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h1 class="text-4xl font-extrabold tracking-tight text-center">Contact Us</h1>
-    <p class="mt-4 text-xl text-center max-w-3xl mx-auto">
+<div class="customer-page-header">
+  <div class="customer-page-header-container">
+    <h1 class="customer-page-title">Contact Us</h1>
+    <p class="customer-page-subtitle">
       Have questions about our delicious crinkles? We'd love to hear from you!
     </p>
   </div>
 </div>
 
 <!-- Contact Content -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-    <!-- Contact Information -->
-    <div>
-      <h2 class="text-2xl font-bold text-orange-950 mb-6">Get in Touch</h2>
-      <div class="space-y-6">
-        <div>
-          <h3 class="text-lg font-semibold text-orange-950 mb-2">Email</h3>
-          <p class="text-orange-700"><%= company_email %></p>
-        </div>
-        <div>
-          <h3 class="text-lg font-semibold text-orange-950 mb-2">Phone</h3>
-          <p class="text-orange-700"><%= company_phone %></p>
-        </div>
-        <div>
-          <h3 class="text-lg font-semibold text-orange-950 mb-2">Address</h3>
-          <div class="text-orange-700">
-            <%= simple_format(company_address) %>
+<div class="customer-content-section">
+  <div class="customer-container">
+    <div class="customer-two-column">
+      <!-- Contact Information -->
+      <div>
+        <h2 class="customer-feature-title mb-6">Get in Touch</h2>
+        <div class="customer-section-spacing">
+          <div>
+            <h3 class="text-lg font-semibold text-orange-950 mb-2">Email</h3>
+            <p class="customer-feature-description"><%= company_email %></p>
           </div>
-        </div>
-        <div>
-          <h3 class="text-lg font-semibold text-orange-950 mb-2">Business Hours</h3>
-          <div class="text-orange-700">
-            <%= simple_format(company_business_hours) %>
+          <div>
+            <h3 class="text-lg font-semibold text-orange-950 mb-2">Phone</h3>
+            <p class="customer-feature-description"><%= company_phone %></p>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-orange-950 mb-2">Address</h3>
+            <div class="customer-feature-description">
+              <%= simple_format(company_address) %>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-orange-950 mb-2">Business Hours</h3>
+            <div class="customer-feature-description">
+              <%= simple_format(company_business_hours) %>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Contact Form -->
-    <div class="bg-white rounded-lg shadow-md p-6 border border-orange-200">
-      <h2 class="text-2xl font-bold text-orange-950 mb-6">Send us a Message</h2>
-      
-      <%= form_with model: ContactMessage.new, url: contact_messages_path, local: true, class: "space-y-6" do |form| %>
-        <div>
-          <%= form.label :name, "Name", class: "form-label" %>
-          <div class="mt-1">
-            <%= form.text_field :name, required: true, class: "form-input" %>
+      <!-- Contact Form -->
+      <div class="customer-info-card">
+        <h2 class="customer-feature-title mb-6">Send us a Message</h2>
+        
+        <%= form_with model: ContactMessage.new, url: contact_messages_path, local: true, class: "customer-section-spacing" do |form| %>
+          <div>
+            <%= form.label :name, "Name", class: "form-label" %>
+            <div class="mt-1">
+              <%= form.text_field :name, required: true, class: "form-input" %>
+            </div>
           </div>
-        </div>
 
-        <div>
-          <%= form.label :email, "Email", class: "form-label" %>
-          <div class="mt-1">
-            <%= form.email_field :email, required: true, class: "form-input" %>
+          <div>
+            <%= form.label :email, "Email", class: "form-label" %>
+            <div class="mt-1">
+              <%= form.email_field :email, required: true, class: "form-input" %>
+            </div>
           </div>
-        </div>
 
-        <div>
-          <%= form.label :subject, "Subject", class: "form-label" %>
-          <div class="mt-1">
-            <%= form.text_field :subject, required: true, class: "form-input" %>
+          <div>
+            <%= form.label :subject, "Subject", class: "form-label" %>
+            <div class="mt-1">
+              <%= form.text_field :subject, required: true, class: "form-input" %>
+            </div>
           </div>
-        </div>
 
-        <%= form.hidden_field :priority, value: 'normal' %>
+          <%= form.hidden_field :priority, value: 'normal' %>
 
-        <div>
-          <%= form.label :message, "Message", class: "form-label" %>
-          <div class="mt-1">
-            <%= form.text_area :message, rows: 4, required: true, class: "form-textarea" %>
+          <div>
+            <%= form.label :message, "Message", class: "form-label" %>
+            <div class="mt-1">
+              <%= form.text_area :message, rows: 4, required: true, class: "form-textarea" %>
+            </div>
           </div>
-        </div>
 
-        <div>
-          <%= form.submit "Send Message", class: "w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-orange-200 bg-orange-950 hover:bg-orange-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-150" %>
-        </div>
-      <% end %>
+          <div>
+            <%= form.submit "Send Message", class: "form-btn-primary customer-transition" %>
+          </div>
+        <% end %>
+      </div>
     </div>
   </div>
 </div> 

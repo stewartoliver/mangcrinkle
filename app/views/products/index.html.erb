@@ -1,170 +1,214 @@
 <!-- Products Header -->
-<div class="bg-orange-200 text-orange-950 py-12">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center">
-      <div class="flex justify-center mb-6">
-        <%= image_tag "Mang-logo.svg", alt: "MangCrinkle Logo", class: "h-20 w-auto" %>
-      </div>
-      <h1 class="text-4xl font-extrabold tracking-tight text-center">Our Delicious Crinkles</h1>
-      <p class="mt-4 text-xl text-center max-w-3xl mx-auto">
-        Handcrafted with love, each flavor tells a unique story of Filipino tradition and modern innovation.
-      </p>
+<div class="customer-page-header">
+  <div class="customer-page-header-container">
+    <div class="customer-logo-container">
+      <%= image_tag "Mang-logo.svg", alt: "MangCrinkle Logo", class: "h-20 w-auto" %>
     </div>
+    <h1 class="customer-page-title">Our Delicious Crinkles</h1>
+    <p class="customer-page-subtitle">
+      Handcrafted with love, each flavor tells a unique story of Filipino tradition and modern innovation.
+    </p>
   </div>
 </div>
 
 <!-- Package Options -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-  <div class="text-center mb-12">
-    <h2 class="text-3xl font-bold text-orange-950 mb-4">Package Options</h2>
-    <p class="text-lg text-orange-700 max-w-3xl mx-auto">
-      Choose from our curated packages and select your favorite flavors. Mix and match to create your perfect combination.
-    </p>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <% CrinklePackage.active.ordered_by_quantity.each do |package| %>
-      <div class="bg-white rounded-lg shadow-md overflow-hidden border border-orange-200 hover:border-orange-500 transition duration-150">
-        <div class="p-6">
-          <h3 class="text-xl font-semibold mb-2 text-orange-950"><%= package.name %></h3>
-          <p class="text-orange-700 mb-4"><%= package.description %></p>
-          <div class="flex justify-between items-center">
-            <span class="text-lg font-bold text-orange-950">$<%= number_with_precision(package.price, precision: 2) %></span>
-            <button data-package-modal-package-id-param="<%= package.id %>"
-                    data-package-modal-package-limit-param="<%= package.quantity %>"
-                    data-package-modal-products-param='<%= raw Product.active.map { |p| { id: p.id, name: p.name, image_url: p.primary_image ? rails_blob_url(p.primary_image) : nil } }.to_json %>'
-                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
-              Select Package
-            </button>
+<div class="customer-content-section">
+  <div class="customer-container">
+    <div class="customer-section-header">
+      <h2 class="customer-section-title">Package Options</h2>
+      <p class="customer-section-subtitle">
+        Choose from our curated packages and select your favorite flavors. Mix and match to create your perfect combination.
+      </p>
+    </div>
+    <div class="customer-grid-4">
+      <% CrinklePackage.active.ordered_by_quantity.each do |package| %>
+        <div class="customer-product-card">
+          <div class="p-6">
+            <h3 class="customer-feature-title"><%= package.name %></h3>
+            <p class="customer-feature-description mb-4"><%= package.description %></p>
+            <div class="flex justify-between items-center">
+              <span class="customer-price">$<%= number_with_precision(package.price, precision: 2) %></span>
+              <button data-package-modal-package-id-param="<%= package.id %>"
+                      data-package-modal-package-limit-param="<%= package.quantity %>"
+                      data-package-modal-products-param='<%= raw Product.active.map { |p| { id: p.id, name: p.name, image_url: p.primary_image ? rails_blob_url(p.primary_image) : nil } }.to_json %>'
+                      class="customer-btn-sm">
+                Select Package
+              </button>
+            </div>
           </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Individual Products by Category -->
+<div class="customer-content-section-light" id="products">
+  <div class="customer-container">
+    <div class="customer-section-header">
+      <h2 class="customer-section-title">Individual Products</h2>
+      <p class="customer-section-subtitle">
+        Prefer to choose individual items? Select from our full range of delicious products organized by category.
+      </p>
+    </div>
+
+    <!-- Crinkles Section -->
+    <% crinkles = @products.crinkles %>
+    <% if crinkles.any? %>
+      <div class="mb-16" id="crinkles">
+        <div class="text-center mb-8">
+          <h3 class="customer-feature-title text-center">Crinkles</h3>
+          <p class="customer-feature-description text-center">Our signature handcrafted cookies in various delicious flavors.</p>
+        </div>
+        <div class="customer-product-grid">
+          <% crinkles.each do |product| %>
+            <div class="customer-product-card">
+              <div class="relative product-card-image-container h-48">
+                <% product_images = product.all_images.any? ? product.all_images : [nil] %>
+                
+                <!-- Main Image Display -->
+                <% product_images.each_with_index do |image, index| %>
+                  <div class="product-card-image absolute inset-0 transition-opacity duration-300 <%= index == 0 ? 'opacity-100' : 'opacity-0' %>" 
+                       data-image-index="<%= index %>">
+                    <% if image %>
+                      <%= image_tag image, class: "w-full h-full object-cover" %>
+                    <% else %>
+                      <div class="h-full customer-image-placeholder"></div>
+                    <% end %>
+                  </div>
+                <% end %>
+                
+                <%= link_to product_path(product), class: "absolute top-4 right-4 inline-flex items-center justify-center w-6 h-6 rounded-full bg-white bg-opacity-90 border border-orange-300 text-orange-600 hover:bg-opacity-100 hover:border-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-orange-500 customer-transition shadow-sm", title: "View details" do %>
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                  </svg>
+                <% end %>
+                
+                <!-- Image Indicators (mini squares, no arrows) -->
+                <%= render 'shared/image_indicators', images: product_images, show_arrows: false %>
+              </div>
+              
+              <div class="p-6">
+                <h4 class="customer-feature-title"><%= product.name %></h4>
+                <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center justify-between space-x-2", data: { turbo: false } do |f| %>
+                  <span class="customer-price-large">$<%= number_with_precision(product.price, precision: 2) %></span>
+                  <div class="flex items-center space-x-2">
+                    <%= f.hidden_field :product_id, value: product.id %>
+                    <%= f.number_field :quantity, value: 1, min: 1, class: "form-input w-16" %>
+                    <%= f.submit "Add to Cart", class: "customer-btn-sm" %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Extras Section -->
+    <% extras = @products.extras %>
+    <% if extras.any? %>
+      <div class="mb-16">
+        <div class="text-center mb-8">
+          <h3 class="customer-feature-title text-center">Extras</h3>
+          <p class="customer-feature-description text-center">Additional treats and accompaniments to complement your crinkles.</p>
+        </div>
+        <div class="customer-product-grid">
+          <% extras.each do |product| %>
+            <div class="customer-product-card">
+              <div class="relative product-card-image-container h-48">
+                <% product_images = product.all_images.any? ? product.all_images : [nil] %>
+                
+                <!-- Main Image Display -->
+                <% product_images.each_with_index do |image, index| %>
+                  <div class="product-card-image absolute inset-0 transition-opacity duration-300 <%= index == 0 ? 'opacity-100' : 'opacity-0' %>" 
+                       data-image-index="<%= index %>">
+                    <% if image %>
+                      <%= image_tag image, class: "w-full h-full object-cover" %>
+                    <% else %>
+                      <div class="h-full customer-image-placeholder"></div>
+                    <% end %>
+                  </div>
+                <% end %>
+                
+                <%= link_to product_path(product), class: "absolute top-4 right-4 inline-flex items-center justify-center w-6 h-6 rounded-full bg-white bg-opacity-90 border border-orange-300 text-orange-600 hover:bg-opacity-100 hover:border-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-orange-500 customer-transition shadow-sm", title: "View details" do %>
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                  </svg>
+                <% end %>
+                
+                <!-- Image Indicators (mini squares, no arrows) -->
+                <%= render 'shared/image_indicators', images: product_images, show_arrows: false %>
+              </div>
+              
+              <div class="p-6">
+                <h4 class="customer-feature-title"><%= product.name %></h4>
+                <p class="customer-feature-description mb-4"><%= truncate(product.description, length: 100) %></p>
+                <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center justify-between space-x-2", data: { turbo: false } do |f| %>
+                  <span class="customer-price-large">$<%= number_with_precision(product.price, precision: 2) %></span>
+                  <div class="flex items-center space-x-2">
+                    <%= f.hidden_field :product_id, value: product.id %>
+                    <%= f.number_field :quantity, value: 1, min: 1, class: "form-input w-16" %>
+                    <%= f.submit "Add to Cart", class: "customer-btn-sm" %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Merch Section -->
+    <% merch = @products.merch %>
+    <% if merch.any? %>
+      <div class="mb-16">
+        <div class="text-center mb-8">
+          <h3 class="text-2xl font-bold text-blue-950 mb-2">Merchandise</h3>
+          <p class="text-blue-700">Show your love for crinkles with our branded merchandise.</p>
+        </div>
+        <div class="customer-product-grid">
+          <% merch.each do |product| %>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-blue-200 hover:border-blue-500 customer-transition">
+              <div class="relative product-card-image-container h-48">
+                <% product_images = product.all_images.any? ? product.all_images : [nil] %>
+                
+                <!-- Main Image Display -->
+                <% product_images.each_with_index do |image, index| %>
+                  <div class="product-card-image absolute inset-0 transition-opacity duration-300 <%= index == 0 ? 'opacity-100' : 'opacity-0' %>" 
+                       data-image-index="<%= index %>">
+                    <% if image %>
+                      <%= image_tag image, class: "w-full h-full object-cover" %>
+                    <% else %>
+                      <div class="h-full bg-blue-100"></div>
+                    <% end %>
+                  </div>
+                <% end %>
+                
+                <!-- Image Indicators (mini squares, no arrows) -->
+                <%= render 'shared/image_indicators', images: product_images, show_arrows: false %>
+              </div>
+              
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2 text-blue-950"><%= product.name %></h4>
+                <p class="text-blue-700 mb-4"><%= truncate(product.description, length: 100) %></p>
+                <div class="flex justify-between items-center">
+                  <span class="text-lg font-bold text-blue-950">$<%= number_with_precision(product.price, precision: 2) %></span>
+                  <div class="flex space-x-2">
+                    <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center space-x-2", data: { turbo: false } do |f| %>
+                      <%= f.hidden_field :product_id, value: product.id %>
+                      <%= f.number_field :quantity, value: 1, min: 1, class: "form-input w-16" %>
+                      <%= f.submit "Add to Cart", class: "inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
         </div>
       </div>
     <% end %>
   </div>
 </div>
 
-<!-- Individual Products by Category -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" id="products">
-  <div class="text-center mb-12">
-    <h2 class="text-3xl font-bold text-orange-950 mb-4">Individual Products</h2>
-    <p class="text-lg text-orange-700 max-w-3xl mx-auto">
-      Prefer to choose individual items? Select from our full range of delicious products organized by category.
-    </p>
-  </div>
-
-  <!-- Crinkles Section -->
-  <% crinkles = @products.crinkles %>
-  <% if crinkles.any? %>
-    <div class="mb-16" id="crinkles">
-      <div class="text-center mb-8">
-        <h3 class="text-2xl font-bold text-orange-950 mb-2">Crinkles</h3>
-        <p class="text-orange-700">Our signature handcrafted cookies in various delicious flavors.</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <% crinkles.each do |product| %>
-          <div class="bg-white rounded-lg shadow-md overflow-hidden border border-orange-200 hover:border-orange-500 transition duration-150">
-            <div class="relative">
-              <% if product.primary_image %>
-                <%= image_tag product.primary_image, class: "w-full h-48 object-cover" %>
-              <% else %>
-                <div class="h-48 bg-orange-100"></div>
-              <% end %>
-              <%= link_to product_path(product), class: "absolute top-4 right-4 inline-flex items-center justify-center w-6 h-6 rounded-full bg-white bg-opacity-90 border border-orange-300 text-orange-600 hover:bg-opacity-100 hover:border-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-orange-500 transition duration-150 shadow-sm", title: "View details" do %>
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                </svg>
-              <% end %>
-            </div>
-            
-            <div class="p-6">
-              <h4 class="text-xl font-semibold mb-2 text-orange-950"><%= product.name %></h4>
-              <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center justify-between space-x-2", data: { turbo: false } do |f| %>
-                <span class="text-2xl font-bold text-orange-950">$<%= number_with_precision(product.price, precision: 2) %></span>
-                <div class="flex items-center space-x-2">
-                  <%= f.hidden_field :product_id, value: product.id %>
-                  <%= f.number_field :quantity, value: 1, min: 1, class: "form-input w-16" %>
-                  <%= f.submit "Add to Cart", class: "inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" %>
-                </div>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
-
-  <!-- Extras Section -->
-  <% extras = @products.extras %>
-  <% if extras.any? %>
-    <div class="mb-16">
-      <div class="text-center mb-8">
-        <h3 class="text-2xl font-bold text-green-950 mb-2">Extras</h3>
-        <p class="text-green-700">Additional treats and accompaniments to complement your crinkles.</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <% extras.each do |product| %>
-          <div class="bg-white rounded-lg shadow-md overflow-hidden border border-green-200 hover:border-green-500 transition duration-150">
-            <% if product.primary_image %>
-              <%= image_tag product.primary_image, class: "w-full h-48 object-cover" %>
-            <% else %>
-              <div class="h-48 bg-green-100"></div>
-            <% end %>
-            
-            <div class="p-6">
-              <h4 class="text-xl font-semibold mb-2 text-green-950"><%= product.name %></h4>
-              <p class="text-green-700 mb-4"><%= truncate(product.description, length: 100) %></p>
-              <div class="flex justify-between items-center">
-                <span class="text-lg font-bold text-green-950">$<%= number_with_precision(product.price, precision: 2) %></span>
-                <div class="flex space-x-2">
-                  <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center space-x-2", data: { turbo: false } do |f| %>
-                    <%= f.hidden_field :product_id, value: product.id %>
-                    <%= f.number_field :quantity, value: 1, min: 1, class: "form-input w-16" %>
-                    <%= f.submit "Add to Cart", class: "inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
-                  <% end %>
-                </div>
-              </div>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
-
-  <!-- Merch Section -->
-  <% merch = @products.merch %>
-  <% if merch.any? %>
-    <div class="mb-16">
-      <div class="text-center mb-8">
-        <h3 class="text-2xl font-bold text-blue-950 mb-2">Merchandise</h3>
-        <p class="text-blue-700">Show your love for crinkles with our branded merchandise.</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <% merch.each do |product| %>
-          <div class="bg-white rounded-lg shadow-md overflow-hidden border border-blue-200 hover:border-blue-500 transition duration-150">
-            <% if product.primary_image %>
-              <%= image_tag product.primary_image, class: "w-full h-48 object-cover" %>
-            <% else %>
-              <div class="h-48 bg-blue-100"></div>
-            <% end %>
-            
-            <div class="p-6">
-              <h4 class="text-xl font-semibold mb-2 text-blue-950"><%= product.name %></h4>
-              <p class="text-blue-700 mb-4"><%= truncate(product.description, length: 100) %></p>
-              <div class="flex justify-between items-center">
-                <span class="text-lg font-bold text-blue-950">$<%= number_with_precision(product.price, precision: 2) %></span>
-                <div class="flex space-x-2">
-                  <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center space-x-2", data: { turbo: false } do |f| %>
-                    <%= f.hidden_field :product_id, value: product.id %>
-                    <%= f.number_field :quantity, value: 1, min: 1, class: "form-input w-16" %>
-                    <%= f.submit "Add to Cart", class: "inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
-                  <% end %>
-                </div>
-              </div>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
-</div>
-
-<%= render 'shared/package_selection_modal' %> 
+<%= render 'shared/package_selection_modal' %>

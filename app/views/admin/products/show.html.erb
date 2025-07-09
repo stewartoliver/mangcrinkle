@@ -89,6 +89,61 @@
   </div>
 </div>
 
+<!-- Customer Product Information -->
+<div class="mt-8 admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
+      <h3 class="admin-container-title">Customer Product Information</h3>
+      <p class="admin-container-subtitle">How this information appears to customers on the product page.</p>
+    </div>
+  </div>
+  <div class="admin-container-content">
+    <% if @product.ingredients.present? || @product.allergen_info.present? || @product.storage_instructions.present? %>
+      <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6">
+        <div class="space-y-6">
+          <% if @product.ingredients.present? %>
+            <div>
+              <h4 class="font-medium text-orange-950 mb-3">Ingredients</h4>
+              <div class="text-sm text-orange-700 leading-relaxed bg-orange-25 p-4 rounded-md border border-orange-100">
+                <%= simple_format(@product.ingredients) %>
+              </div>
+            </div>
+          <% end %>
+
+          <% if @product.allergen_info.present? %>
+            <div>
+              <h4 class="font-medium text-orange-950 mb-3">Allergen Information</h4>
+              <div class="text-sm text-orange-700 leading-relaxed bg-orange-25 p-4 rounded-md border border-orange-100">
+                <%= simple_format(@product.allergen_info) %>
+              </div>
+            </div>
+          <% end %>
+
+          <% if @product.storage_instructions.present? %>
+            <div>
+              <h4 class="font-medium text-orange-950 mb-3">Storage</h4>
+              <div class="text-sm text-orange-700 leading-relaxed bg-orange-25 p-4 rounded-md border border-orange-100">
+                <%= simple_format(@product.storage_instructions) %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <div class="text-center py-8">
+        <div class="text-orange-400 mb-2">
+          <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h3 class="text-sm font-medium text-orange-900">No product information</h3>
+        <p class="text-sm text-orange-600">Add ingredients, allergen information, or storage instructions to display here.</p>
+        <%= link_to "Edit Product", edit_admin_product_path(@product), class: "mt-3 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-orange-700 bg-orange-100 hover:bg-orange-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
 <!-- Product Orders -->
 <div class="mt-8 admin-container">
   <div class="admin-container-header">

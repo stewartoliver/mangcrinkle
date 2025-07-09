@@ -1,47 +1,46 @@
 <% content_for :title, "Customer Reviews" %>
 
 <!-- Reviews Header -->
-<div class="bg-orange-200 text-orange-950 py-12">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center">
-      <h1 class="text-4xl font-extrabold tracking-tight">What Our Customers Say</h1>
-      <p class="mt-4 text-xl max-w-3xl mx-auto">
-        Read reviews from our happy customers and share your own experience!
-      </p>
-      
-      <div class="flex justify-center items-center space-x-8 mt-8">
-        <div class="text-center">
-          <div class="text-3xl font-bold"><%= @average_rating %></div>
-          <div class="text-orange-700">Average Rating</div>
-          <div class="text-yellow-400 text-xl">
-            <%= '★' * @average_rating.to_i %>
-          </div>
-        </div>
-        <div class="text-center">
-          <div class="text-3xl font-bold"><%= @total_reviews %></div>
-          <div class="text-orange-700">Total Reviews</div>
+<div class="customer-page-header">
+  <div class="customer-page-header-container">
+    <h1 class="customer-page-title">What Our Customers Say</h1>
+    <p class="customer-page-subtitle">
+      Read reviews from our happy customers and share your own experience!
+    </p>
+    
+    <div class="flex justify-center items-center space-x-8 mt-8">
+      <div class="text-center">
+        <div class="text-3xl font-bold text-orange-950"><%= @average_rating %></div>
+        <div class="customer-feature-description">Average Rating</div>
+        <div class="customer-star-rating text-xl">
+          <%= '★' * @average_rating.to_i %>
         </div>
       </div>
-      
-      <div class="mt-8">
-        <%= link_to "Write a Review", new_review_path, 
-                    class: "inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-950 hover:bg-orange-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-150" %>
+      <div class="text-center">
+        <div class="text-3xl font-bold text-orange-950"><%= @total_reviews %></div>
+        <div class="customer-feature-description">Total Reviews</div>
       </div>
+    </div>
+    
+    <div class="mt-8">
+      <%= link_to "Write a Review", new_review_path, 
+                  class: "customer-btn-primary" %>
     </div>
   </div>
 </div>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+<div class="customer-content-section">
+  <div class="customer-container">
   <!-- Featured Reviews -->
   <% if @featured_reviews.any? %>
     <div class="mb-12">
-      <h2 class="text-2xl font-bold text-orange-950 mb-6">Featured Reviews</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <h2 class="customer-section-title">Featured Reviews</h2>
+      <div class="customer-grid-3">
         <% @featured_reviews.each do |review| %>
-          <div class="bg-white rounded-lg shadow-md p-6 border border-orange-200">
+          <div class="customer-testimonial-card">
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center">
-                <div class="text-yellow-400 text-lg">
+                <div class="customer-star-rating">
                   <%= review.star_display %>
                 </div>
                 <span class="ml-2 text-sm text-orange-600">
@@ -49,7 +48,7 @@
                 </span>
               </div>
               <% if review.verified_purchase? %>
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                <span class="customer-verified-badge">
                   <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                   </svg>
@@ -58,9 +57,9 @@
               <% end %>
             </div>
             <% if review.title.present? %>
-              <h3 class="font-semibold text-orange-950 mb-2"><%= review.title %></h3>
+              <h3 class="customer-feature-title"><%= review.title %></h3>
             <% end %>
-            <p class="text-orange-700 mb-4 italic">"<%= review.content %>"</p>
+            <p class="customer-feature-description mb-4 italic">"<%= review.content %>"</p>
             <div class="text-sm font-medium text-orange-950">
               - <%= review.customer_display_name %>
             </div>

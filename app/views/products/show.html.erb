@@ -1,155 +1,126 @@
 <!-- Product Header -->
-<div class="bg-orange-200 text-orange-950 py-12">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h1 class="text-4xl font-extrabold tracking-tight text-center"><%= @product.name %></h1>
+<div class="customer-page-header">
+  <div class="customer-page-header-container">
+    <h1 class="customer-page-title"><%= @product.name %></h1>
     <% if @product.short_description.present? %>
-      <p class="mt-4 text-xl text-center max-w-3xl mx-auto"><%= @product.short_description %></p>
+      <p class="customer-page-subtitle"><%= @product.short_description %></p>
     <% end %>
   </div>
 </div>
 
 <!-- Product Details -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-  <div class="lg:grid lg:grid-cols-4 lg:gap-6">
-    <!-- Main Product Container -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-orange-200 mb-8 lg:mb-0 lg:col-span-3 lg:h-96">
-      <div class="md:flex h-full">
-        <!-- Product Image -->
-        <div class="md:w-1/2 h-64 md:h-full">
-          <% if @product.primary_image %>
-            <%= image_tag @product.primary_image, class: "w-full h-full object-cover object-center" %>
-          <% else %>
-            <div class="w-full h-full bg-orange-100"></div>
-          <% end %>
-        </div>
-        
-        <!-- Product Info -->
-        <div class="p-8 md:w-1/2 flex flex-col h-full">
-          <div class="mb-6 flex-grow">
-            <h2 class="text-2xl font-bold text-orange-950 mb-4"><%= @product.name %></h2>
-            <p class="text-orange-700"><%= @product.description %></p>
+<div class="customer-content-section">
+  <div class="customer-container">
+    <div class="lg:grid lg:grid-cols-4 lg:gap-6">
+      <!-- Main Product Container -->
+      <div class="customer-product-card mb-8 lg:mb-0 lg:col-span-3 lg:h-96">
+        <div class="md:flex h-full">
+          <!-- Product Image with Interactive Switching -->
+          <div class="md:w-1/2 h-64 md:h-full relative" id="productImageContainer">
+            <% product_images = @product.all_images.any? ? @product.all_images : [nil] %>
+            
+            <!-- Main Image Display -->
+            <div class="relative w-full h-full group">
+              <% product_images.each_with_index do |image, index| %>
+                <div class="product-image absolute inset-0 transition-opacity duration-300 <%= index == 0 ? 'opacity-100' : 'opacity-0' %>" 
+                     data-image-index="<%= index %>">
+                  <% if image %>
+                    <%= image_tag image, class: "w-full h-full object-cover object-center rounded-l-lg" %>
+                  <% else %>
+                    <div class="customer-image-placeholder rounded-l-lg w-full h-full"></div>
+                  <% end %>
+                </div>
+              <% end %>
+
+              <!-- Navigation Arrows (only show if multiple images) -->
+              <% if product_images.length > 1 %>
+                <button type="button" 
+                        class="image-arrow absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 shadow-md transition-all duration-200 opacity-0"
+                        id="prevButton">
+                  <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                  </svg>
+                </button>
+                
+                <button type="button" 
+                        class="image-arrow absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 shadow-md transition-all duration-200 opacity-0"
+                        id="nextButton">
+                  <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                </button>
+              <% end %>
+            </div>
+
+            <!-- Image Indicators (mini squares) -->
+            <%= render 'shared/image_indicators', images: product_images, show_arrows: true %>
           </div>
           
-          <div class="mb-6">
-            <span class="text-3xl font-bold text-orange-950">$<%= number_with_precision(@product.price, precision: 2) %></span>
-          </div>
-          
-          <%= form_with url: new_order_path, method: :get, class: "flex items-end gap-4" do |f| %>
-            <%= f.hidden_field :product_id, value: @product.id %>
-            <div>
-              <%= f.label :quantity, class: "block text-sm font-medium text-orange-600 mb-1" %>
-              <%= f.number_field :quantity, min: 1, value: 1, class: "w-20 px-3 py-2 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 bg-white text-orange-950" %>
+          <!-- Product Info -->
+          <div class="p-8 md:w-1/2 flex flex-col h-full">
+            <div class="mb-6 flex-grow">
+              <h2 class="customer-feature-title"><%= @product.name %></h2>
+              <p class="customer-feature-description"><%= @product.description %></p>
             </div>
             
-            <%= f.submit "Add to Order", class: "inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-150" %>
-          <% end %>
+            <div class="mb-6">
+              <span class="customer-price-large">$<%= number_with_precision(@product.price, precision: 2) %></span>
+            </div>
+            
+            <%= form_with url: new_order_path, method: :get, class: "flex items-end gap-4" do |f| %>
+              <%= f.hidden_field :product_id, value: @product.id %>
+              <div>
+                <%= f.label :quantity, class: "form-label" %>
+                <%= f.number_field :quantity, min: 1, value: 1, class: "form-input w-20" %>
+              </div>
+              
+              <%= f.submit "Add to Order", class: "customer-btn-sm" %>
+            <% end %>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Nutrition & Ingredients Container -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-orange-200 lg:col-span-1 lg:h-96">
-      <div class="p-4 h-full flex flex-col">
-        <!-- Tab Headers -->
-        <div class="flex border-b border-orange-200 mb-4">
-          <div class="relative group flex-1">
-            <button class="w-full py-2 px-2 text-xs font-medium text-orange-950 bg-orange-50 border-b-2 border-orange-600 opacity-50 cursor-not-allowed focus:outline-none" disabled>
-              <span class="block">Nutrition</span>
-              <span class="block text-xs text-orange-500 md:hidden">Coming Soon</span>
-            </button>
-            <div class="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 w-48 bg-gray-900 text-white text-xs rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 hidden md:block">
-              <div class="flex items-start">
-                <svg class="h-4 w-4 text-yellow-400 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                  <p class="font-medium whitespace-nowrap">In Development</p>
-                  <p class="mt-1">Nutrition information will be available soon!</p>
-                </div>
-              </div>
-            </div>
+      <!-- Ingredients & Allergen Information Container -->
+      <div class="customer-info-card lg:col-span-1 lg:h-96">
+        <div class="h-full flex flex-col">
+          <!-- Header -->
+          <div class="border-b border-orange-200 mb-6 pb-3">
+            <h3 class="customer-feature-title">Product Information</h3>
           </div>
-          <div class="relative group flex-1">
-            <button class="w-full py-2 px-2 text-xs font-medium text-orange-600 opacity-50 cursor-not-allowed focus:outline-none" disabled>
-              <span class="block">Ingredients</span>
-              <span class="block text-xs text-orange-500 md:hidden">Coming Soon</span>
-            </button>
-            <div class="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 w-48 bg-gray-900 text-white text-xs rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 hidden md:block">
-              <div class="flex items-start">
-                <svg class="h-4 w-4 text-yellow-400 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                  <p class="font-medium whitespace-nowrap">In Development</p>
-                  <p class="mt-1">Ingredients list will be available soon!</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Nutrition Content (Static Mockup) -->
-        <div class="nutrition-content flex-1 flex items-center justify-center">
-          <div class="bg-white border-2 border-orange-950 rounded-lg overflow-hidden w-full max-w-xs opacity-60">
-            <div class="bg-orange-950 text-orange-100 px-2 py-1">
-              <h4 class="font-bold text-xs text-center">Nutrition Facts</h4>
-            </div>
-            <div class="p-2">
-              <div class="border-b-2 border-orange-950 pb-1 mb-1">
-                <div class="text-xs text-orange-700">Serving Size: 1 cookie (••g)</div>
+          <!-- Content -->
+          <div class="flex-1 overflow-y-auto customer-section-spacing">
+            <% if @product.ingredients.present? %>
+              <div>
+                <h4 class="font-medium text-orange-950 mb-3">Ingredients</h4>
+                <div class="customer-body-text"><%= simple_format(@product.ingredients) %></div>
               </div>
-              
-              <!-- Calories -->
-              <div class="border-b-2 border-orange-950 pb-1 mb-1">
-                <div class="flex justify-between items-end">
-                  <span class="text-sm font-bold text-orange-950">Calories</span>
-                  <span class="text-sm font-bold text-orange-950">•••</span>
+            <% end %>
+
+            <% if @product.allergen_info.present? %>
+              <div>
+                <h4 class="font-medium text-orange-950 mb-3">Allergen Information</h4>
+                <div class="customer-body-text"><%= simple_format(@product.allergen_info) %></div>
+              </div>
+            <% end %>
+
+            <% if @product.storage_instructions.present? %>
+              <div>
+                <h4 class="font-medium text-orange-950 mb-3">Storage</h4>
+                <div class="customer-body-text"><%= simple_format(@product.storage_instructions) %></div>
+              </div>
+            <% end %>
+
+            <% if @product.ingredients.blank? && @product.allergen_info.blank? && @product.storage_instructions.blank? %>
+              <div class="flex items-center justify-center h-full">
+                <div class="text-center text-orange-600">
+                  <svg class="h-12 w-12 mx-auto mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p class="text-sm">Product information coming soon!</p>
                 </div>
               </div>
-              
-              <!-- Daily Value Header -->
-              <div class="text-right text-xs text-orange-600 mb-1">% Daily Value*</div>
-              
-              <table class="w-full text-xs">
-                <tbody>
-                  <tr class="border-b border-orange-200">
-                    <td class="py-0.5 text-orange-950 font-bold">Total Fat</td>
-                    <td class="py-0.5 text-right text-orange-700">••g</td>
-                    <td class="py-0.5 text-right text-orange-600 w-6">••%</td>
-                  </tr>
-                  <tr class="border-b border-orange-200">
-                    <td class="py-0.5 pl-1 text-orange-700">Sat. Fat</td>
-                    <td class="py-0.5 text-right text-orange-700">••g</td>
-                    <td class="py-0.5 text-right text-orange-600 w-6">••%</td>
-                  </tr>
-                  <tr class="border-b border-orange-200">
-                    <td class="py-0.5 text-orange-950 font-bold">Sodium</td>
-                    <td class="py-0.5 text-right text-orange-700">••mg</td>
-                    <td class="py-0.5 text-right text-orange-600 w-6">••%</td>
-                  </tr>
-                  <tr class="border-b border-orange-200">
-                    <td class="py-0.5 text-orange-950 font-bold">Total Carbs</td>
-                    <td class="py-0.5 text-right text-orange-700">••g</td>
-                    <td class="py-0.5 text-right text-orange-600 w-6">••%</td>
-                  </tr>
-                  <tr class="border-b border-orange-200">
-                    <td class="py-0.5 pl-1 text-orange-700">Sugars</td>
-                    <td class="py-0.5 text-right text-orange-700">••g</td>
-                    <td class="py-0.5 text-right"></td>
-                  </tr>
-                  <tr>
-                    <td class="py-0.5 text-orange-950 font-bold">Protein</td>
-                    <td class="py-0.5 text-right text-orange-700">••g</td>
-                    <td class="py-0.5 text-right"></td>
-                  </tr>
-                </tbody>
-              </table>
-              
-              <!-- Footer -->
-              <div class="mt-1 text-xs text-orange-600">
-                <p>*% Daily Value based on 2000 calorie diet.</p>
-              </div>
-            </div>
+            <% end %>
           </div>
         </div>
       </div>
@@ -158,37 +129,21 @@
 </div>
 
 <!-- Browse Other Products CTA -->
-<div class="bg-orange-200 text-orange-950">
-  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-    <div class="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
-      <div>
-        <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Explore our other crinkle flavors
-        </h2>
-        <p class="mt-4 text-lg">
-          Discover more handcrafted Filipino-style crinkle cookies, each with its own unique story and flavor profile.
-        </p>
-      </div>
-      <div class="mt-8 lg:mt-0">
-        <div class="flex flex-col sm:flex-row gap-4">
-          <%= link_to "Browse All Crinkles", "#{products_path}#crinkles", class: "inline-block bg-orange-950 text-orange-200 px-8 py-3 rounded-md font-semibold hover:bg-orange-900 transition duration-150" %>
-          <%= link_to "All Products", products_path, class: "inline-block border-2 border-orange-950 text-orange-950 px-8 py-3 rounded-md font-semibold hover:bg-orange-950 hover:text-orange-200 transition duration-150" %>
-        </div>
+<div class="customer-cta-section">
+  <div class="customer-cta-container">
+    <div>
+      <h2 class="customer-cta-title">
+        Explore our other crinkle flavors
+      </h2>
+      <p class="customer-cta-subtitle">
+        Discover more handcrafted Filipino-style crinkle cookies, each with its own unique story and flavor profile.
+      </p>
+    </div>
+    <div class="customer-cta-content">
+      <div class="customer-btn-group">
+        <%= link_to "Browse All Crinkles", "#{products_path}#crinkles", class: "customer-btn-primary" %>
+        <%= link_to "All Products", products_path, class: "customer-btn-secondary" %>
       </div>
     </div>
   </div>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const nutritionTab = document.querySelector('.nutrition-tab');
-  const ingredientsTab = document.querySelector('.ingredients-tab');
-  
-  function showDevelopmentMessage() {
-    alert('This feature is still in development. Full nutrition and ingredients information will be available soon!');
-  }
-  
-  nutritionTab.addEventListener('click', showDevelopmentMessage);
-  ingredientsTab.addEventListener('click', showDevelopmentMessage);
-});
-</script> 
+</div> 

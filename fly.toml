@@ -15,6 +15,13 @@ internal_port = 3000
 min_machines_running = 1
 processes = ["app"]
 
+[[http_service.checks]]
+grace_period = "10s"
+interval = "30s"
+method = "GET"
+timeout = "5s"
+path = "/up"
+
 [[vm]]
 cpu_kind = "shared"
 cpus = 1

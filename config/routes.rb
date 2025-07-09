@@ -3,6 +3,9 @@ Rails.application.routes.draw do
     passwords: 'passwords'
   }
 
+  # Health check for Fly.io
+  get "up" => "rails/health#show", as: :rails_health_check
+
   # Public routes
   root 'pages#home'
   get 'about', to: 'pages#about'

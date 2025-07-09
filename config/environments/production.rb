@@ -49,14 +49,8 @@ Rails.application.configure do
   # config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
-  
-  # Allow health check endpoints to be accessed via HTTP for Fly.io internal health checks
-  config.ssl_options = {
-    exclude: ->(request) { 
-      request.path == '/up' || request.path == '/health'
-    }
-  }
+  # Disabled because Fly.io handles SSL termination at the proxy level
+  # config.force_ssl = true
 
   # Log to STDOUT by default
   config.logger = ActiveSupport::Logger.new(STDOUT)

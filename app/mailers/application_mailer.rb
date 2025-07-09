@@ -1,4 +1,6 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "noreply@mangcrinkle.com"
+  include ApplicationHelper
+  
+  default from: -> { company_email }
   layout "mailer"
 end

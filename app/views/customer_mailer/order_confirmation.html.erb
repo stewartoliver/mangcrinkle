@@ -206,7 +206,7 @@
   <div class="email-wrapper">
     <div class="main-container">
       <div class="container-header">
-        <div class="brand-logo">🍪 Mang Crinkle</div>
+        <div class="brand-logo">🍪 <%= company_name %></div>
         <h1 class="container-title">Order Confirmation</h1>
         <p class="container-subtitle">Your delicious cookies are on their way!</p>
       </div>
@@ -254,21 +254,21 @@
             <li>We'll start preparing your order fresh in our kitchen</li>
             <li>You'll receive a shipping confirmation when your cookies are on their way</li>
             <li>Your order will be delivered within 3-5 business days</li>
-            <li>Enjoy your delicious Mang Crinkle cookies!</li>
+            <li>Enjoy your delicious <%= company_name %> cookies!</li>
           </ul>
           
-          <p>If you have any questions about your order, please don't hesitate to reach out to us at <strong>info@mangcrinkle.com</strong>.</p>
+          <p>If you have any questions about your order, please don't hesitate to reach out to us at <strong><%= company_email %></strong>.</p>
           
           <div class="signature">
-            <p>Thank you for choosing Mang Crinkle!</p>
-            <p class="signature-name">The Mang Crinkle Team</p>
+            <p>Thank you for choosing <%= company_name %>!</p>
+            <p class="signature-name">The <%= company_name %> Team</p>
           </div>
         </div>
 
         <div class="footer">
-          <p>This email was sent to <%= @order&.email || 'your email' %> because you placed an order with Mang Crinkle.</p>
+          <p>This email was sent to <%= @order&.email || 'your email' %> because you placed an order with <%= company_name %>.</p>
           <p style="margin-top: 20px;">
-            &copy; <%= Date.current.year %> Mang Crinkle. All rights reserved.
+            &copy; <%= Date.current.year %> <%= company_name %>. All rights reserved.
           </p>
         </div>
       </div>

@@ -187,6 +187,18 @@ class CustomerMailer < ApplicationMailer
   def order_items_summary(order)
     order.line_items.map do |item|
       "#{item.quantity}x #{item.purchasable.name}"
-    end.join(', ')
+    end.join(", ")
   end
+
+  # Helper method to ensure company_name is available in mailer context
+  def company_name
+    @company_name ||= Company.main.name.presence || 'Mang Crinkle Cookies'
+  end
+  helper_method :company_name
+
+  # Helper method to ensure company_email is available in mailer context
+  def company_email
+    @company_email ||= Company.main.email.presence || 'info@mangcrinkle.com'
+  end
+  helper_method :company_email
 end 

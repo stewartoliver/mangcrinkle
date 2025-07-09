@@ -124,6 +124,25 @@ class Admin::UsersController < Admin::BaseController
     redirect_to admin_user_path(@user), notice: 'Activation email sent successfully! The admin will receive an email with instructions to set up their password.'
   end
 
+  def reset_password
+    @user = User.find(params[:id])
+    
+    unless @user.admin?
+      redirect_to admin_user_path(@user), alert: 'Only admin users can have their passwords reset.'
+      return
+    end
+
+    unless @user.activated?
+      redirect_to admin_user_path(@user), alert: 'Admin user must be activated before password reset.'
+      return
+    end
+
+    # Send password reset email (token generation handled in mailer)
+    AdminMailer.admin_password_reset(@user).deliver_later
+    
+    redirect_to admin_user_path(@user), notice: 'Password reset email sent successfully! The admin will receive an email with instructions to reset their password.'
+  end
+
   private
 
   def user_params

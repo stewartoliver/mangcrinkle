@@ -15,6 +15,12 @@
                       confirm: "Send activation email to #{@user.email}? This will allow them to set up their password and access the admin system.",
                       data: { turbo_method: :post } %>
         <% end %>
+        <% if @user.admin? && @user.activated? %>
+          <%= link_to "Reset Password", reset_password_admin_user_path(@user), method: :post, 
+                      class: "admin-btn-secondary",
+                      confirm: "Send password reset email to #{@user.email}? This will allow them to reset their password.",
+                      data: { turbo_method: :post } %>
+        <% end %>
         <%= link_to "Back to Users", admin_users_path, class: "admin-btn-back" %>
       </div>
     </div>

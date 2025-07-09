@@ -5,7 +5,7 @@ module ApplicationHelper
   end
 
   def company_email
-    main_company.email.presence || 'info@mangcrinkle.com'
+    main_company.email.presence || 'mangcrinkle@gmail.com'
   end
 
   def company_phone
@@ -22,5 +22,25 @@ module ApplicationHelper
 
   def company_website
     main_company.website.presence || 'https://mangcrinkle.com'
+  end
+
+  # Additional helper methods for email templates
+  def company_name
+    main_company.name.presence || 'Mang Crinkle Cookies'
+  end
+
+  def company_display_name
+    main_company.display_name
+  end
+
+  # Helper for email "from" field with company name
+  def company_email_with_name
+    "#{company_name} <#{company_email}>"
+  end
+
+  # Helper for admin notification email (can be different from main contact email)
+  def admin_notification_email
+    # You can later add a specific admin_email field to Company model if needed
+    main_company.email.presence || company_email
   end
 end

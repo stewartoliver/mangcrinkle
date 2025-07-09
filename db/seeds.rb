@@ -90,7 +90,7 @@ Company.destroy_all
 
 # Create the main company with details from the front-facing website
 main_company = Company.find_or_create_by(name: 'Mang Crinkle Cookies') do |company|
-  company.email = 'info@mangcrinkle.com'
+  company.email = 'mangcrinkle@gmail.com'
   company.phone = '(555) 123-4567'
   company.website = 'https://mangcrinkle.com'
   company.address = '123 Cookie Street
@@ -441,7 +441,7 @@ else
 end
 
 # Create default admin user
-admin = User.find_or_create_by!(email: 'admin@mangcrinkle.com') do |user|
+admin = User.find_or_create_by!(email: 'mangcrinkle@gmail.com') do |user|
   user.password = 'password123'
   user.password_confirmation = 'password123'
   user.user_type = 'admin'

@@ -62,6 +62,23 @@ class AdminMailer < ApplicationMailer
     )
   end
 
+  def admin_password_reset(admin_user)
+    @admin_user = admin_user
+    
+    # Generate a Devise password reset token
+    raw_token, encrypted_token = Devise.token_generator.generate(User, :reset_password_token)
+    @admin_user.reset_password_token = encrypted_token
+    @admin_user.reset_password_sent_at = Time.current
+    @admin_user.save!
+    
+    @reset_url = edit_user_password_url(reset_password_token: raw_token)
+    
+    mail(
+      to: @admin_user.email,
+      subject: "Mang Crinkle Admin - Password Reset Request"
+    )
+  end
+
   def template_preview(admin_user, template, variables = {})
     @admin_user = admin_user
     @template = template
@@ -87,4 +104,18 @@ class AdminMailer < ApplicationMailer
       template_name: 'admin_activation'
     )
   end
+
+  private
+
+  # Helper method to ensure company_name is available in mailer context
+  def company_name
+    @company_name ||= Company.main.name.presence || 'Mang Crinkle Cookies'
+  end
+  helper_method :company_name
+
+  # Helper method to ensure company_email is available in mailer context
+  def company_email
+    @company_email ||= Company.main.email.presence || 'info@mangcrinkle.com'
+  end
+  helper_method :company_email
 end 

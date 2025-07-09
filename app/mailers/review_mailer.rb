@@ -13,7 +13,7 @@ class ReviewMailer < ApplicationMailer
   
   def new_review_notification(review)
     @review = review
-    @admin_email = 'admin@mangcrinkle.com' # You can make this configurable
+    @admin_email = admin_notification_email
     
     mail(
       to: @admin_email,
@@ -66,4 +66,23 @@ class ReviewMailer < ApplicationMailer
       template_name: 'new_review_notification'
     )
   end
+
+  private
+
+  def admin_notification_email
+    # You can later add a specific admin_email field to Company model if needed
+    Company.main.email.presence || 'admin@example.com'
+  end
+
+  # Helper method to ensure company_name is available in mailer context
+  def company_name
+    @company_name ||= Company.main.name.presence || 'Mang Crinkle Cookies'
+  end
+  helper_method :company_name
+
+  # Helper method to ensure company_email is available in mailer context
+  def company_email
+    @company_email ||= Company.main.email.presence || 'info@mangcrinkle.com'
+  end
+  helper_method :company_email
 end 

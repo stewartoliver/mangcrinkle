@@ -18,9 +18,9 @@
     <!-- Template Header -->
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h4 class="text-xl font-semibold text-purple-950"><%= @hardcoded_template[:name] %></h4>
-        <p class="text-sm text-purple-600 mt-1">
-          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+        <h4 class="text-xl font-semibold text-orange-950"><%= @hardcoded_template[:name] %></h4>
+        <p class="text-sm text-orange-600 mt-1">
+          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
             <%= @hardcoded_template[:template_type].titleize %>
           </span>
           <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 ml-2">
@@ -39,16 +39,16 @@
     <!-- Template Details -->
     <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
       <div>
-        <dt class="text-sm font-medium text-purple-700">Template Name</dt>
-        <dd class="mt-1 text-sm text-purple-950"><%= @hardcoded_template[:name] %></dd>
+        <dt class="text-sm font-medium text-orange-700">Template Name</dt>
+        <dd class="mt-1 text-sm text-orange-950"><%= @hardcoded_template[:name] %></dd>
       </div>
       <div>
-        <dt class="text-sm font-medium text-purple-700">Template Type</dt>
-        <dd class="mt-1 text-sm text-purple-950"><%= @hardcoded_template[:template_type].titleize %></dd>
+        <dt class="text-sm font-medium text-orange-700">Template Type</dt>
+        <dd class="mt-1 text-sm text-orange-950"><%= @hardcoded_template[:template_type].titleize %></dd>
       </div>
       <div>
-        <dt class="text-sm font-medium text-purple-700">Status</dt>
-        <dd class="mt-1 text-sm text-purple-950">
+        <dt class="text-sm font-medium text-orange-700">Status</dt>
+        <dd class="mt-1 text-sm text-orange-950">
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
             <%= @hardcoded_template[:active] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
             <%= @hardcoded_template[:active] ? 'Active' : 'Inactive' %>
@@ -56,28 +56,28 @@
         </dd>
       </div>
       <div>
-        <dt class="text-sm font-medium text-purple-700">File Path</dt>
-        <dd class="mt-1 text-sm text-purple-950 font-mono"><%= @hardcoded_template[:path] %></dd>
+        <dt class="text-sm font-medium text-orange-700">File Path</dt>
+        <dd class="mt-1 text-sm text-orange-950 font-mono"><%= @hardcoded_template[:path] %></dd>
       </div>
       <div class="sm:col-span-2">
-        <dt class="text-sm font-medium text-purple-700">Subject Line</dt>
-        <dd class="mt-1 text-sm text-purple-950 bg-gray-50 p-3 rounded-lg border">
+        <dt class="text-sm font-medium text-orange-700">Subject Line</dt>
+        <dd class="mt-1 text-sm text-orange-950 bg-gray-50 p-3 rounded-lg border">
           <%= @hardcoded_template[:subject] %>
         </dd>
       </div>
       <div class="sm:col-span-2">
-        <dt class="text-sm font-medium text-purple-700">Description</dt>
-        <dd class="mt-1 text-sm text-purple-950 bg-gray-50 p-3 rounded-lg border">
+        <dt class="text-sm font-medium text-orange-700">Description</dt>
+        <dd class="mt-1 text-sm text-orange-950 bg-gray-50 p-3 rounded-lg border">
           <%= @hardcoded_template[:description] %>
         </dd>
       </div>
       <% if @hardcoded_template[:variables].present? %>
         <div class="sm:col-span-2">
-          <dt class="text-sm font-medium text-purple-700">Available Variables</dt>
+          <dt class="text-sm font-medium text-orange-700">Available Variables</dt>
           <dd class="mt-1">
             <div class="flex flex-wrap gap-2">
               <% @hardcoded_template[:variables].each do |var| %>
-                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
                   <%= var %>
                 </span>
               <% end %>
@@ -144,22 +144,114 @@
       </div>
     </div>
 
-    <!-- Template Source Code -->
-    <div class="bg-white rounded-lg shadow-sm border border-purple-200 p-6 mb-6 mt-6">
+    <!-- Template Preview -->
+    <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6 mb-6 mt-6">
       <div class="flex items-center justify-between mb-4">
-        <h4 class="text-lg font-semibold text-purple-950">Template Source Code</h4>
-        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-          Read-only
-        </span>
+        <h4 class="text-lg font-semibold text-orange-950">Template Preview</h4>
+        <div class="flex items-center space-x-2">
+          <div class="inline-flex rounded-lg border border-orange-200 bg-orange-50 p-1 space-x-1">
+            <button 
+              id="styled-view-btn"
+              class="px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200"
+              onclick="switchView('styled')"
+            >
+              Styled View
+            </button>
+            <button 
+              id="code-view-btn"
+              class="px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200"
+              onclick="switchView('code')"
+            >
+              Code View
+            </button>
+          </div>
+          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+            Read-only
+          </span>
+        </div>
       </div>
-      <div class="bg-gray-900 p-4 rounded-lg border overflow-x-auto">
-        <pre class="text-sm text-green-400 whitespace-pre-wrap font-mono"><%= @template_content %></pre>
+      
+      <!-- Styled View -->
+      <div id="styled-view" class="template-view">
+        <% if @rendered_template.present? %>
+          <div class="border rounded-lg overflow-hidden bg-white">
+            <div class="bg-gray-50 px-4 py-2 border-b">
+              <div class="flex items-center space-x-2 text-sm text-gray-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                <span>Rendered with sample data</span>
+              </div>
+            </div>
+            <div class="bg-white" style="height: 500px; overflow-y: auto;">
+              <div class="p-4">
+                <%= @rendered_template.html_safe %>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-yellow-800">Preview Not Available</h3>
+                <div class="mt-2 text-sm text-yellow-700">
+                  <p>Styled preview is not available for this template type. Please use the code view to see the template structure.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      
+      <!-- Code View -->
+      <div id="code-view" class="template-view hidden">
+        <div class="bg-gray-900 p-4 rounded-lg border overflow-x-auto">
+          <pre class="text-sm text-green-400 whitespace-pre-wrap font-mono"><%= @template_content %></pre>
+        </div>
       </div>
     </div>
 
+    <script>
+      function switchView(viewType) {
+        const codeView = document.getElementById('code-view');
+        const styledView = document.getElementById('styled-view');
+        const codeBtn = document.getElementById('code-view-btn');
+        const styledBtn = document.getElementById('styled-view-btn');
+        
+        if (viewType === 'code') {
+          // Show code view
+          codeView.classList.remove('hidden');
+          styledView.classList.add('hidden');
+          
+          // Update button styles - make code button primary (orange)
+          codeBtn.className = 'px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 bg-orange-600 text-white hover:bg-orange-700';
+          styledBtn.className = 'px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 text-orange-700 bg-white hover:bg-orange-50 border border-orange-300';
+        } else {
+          // Show styled view
+          styledView.classList.remove('hidden');
+          codeView.classList.add('hidden');
+          
+          // Update button styles - make styled button primary (orange)
+          styledBtn.className = 'px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 bg-orange-600 text-white hover:bg-orange-700';
+          codeBtn.className = 'px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 text-orange-700 bg-white hover:bg-orange-50 border border-orange-300';
+        }
+      }
+      
+      // Set initial view to styled (changed from code)
+      document.addEventListener('DOMContentLoaded', function() {
+        switchView('styled');
+      });
+    </script>
+
     <!-- Template Usage Information -->
-    <div class="bg-white rounded-lg shadow-sm border border-purple-200 p-6">
-      <h4 class="text-lg font-semibold text-purple-950 mb-4">Template Usage & Information</h4>
+    <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6">
+      <h4 class="text-lg font-semibold text-orange-950 mb-4">Template Usage & Information</h4>
       <div class="space-y-3">
         <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <div class="flex">
@@ -178,21 +270,21 @@
         </div>
         
         <div class="space-y-2">
-          <p class="text-sm text-purple-600">
+          <p class="text-sm text-orange-600">
             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             <strong>Usage:</strong> <%= @hardcoded_template[:description] %>
           </p>
           
-          <p class="text-sm text-purple-600">
+          <p class="text-sm text-orange-600">
             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
             <strong>File Location:</strong> <code class="bg-gray-100 px-1 py-0.5 rounded text-xs"><%= @hardcoded_template[:path] %></code>
           </p>
           
-          <p class="text-sm text-purple-600">
+          <p class="text-sm text-orange-600">
             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM7 3H5a2 2 0 00-2 2v12a4 4 0 004 4h2a2 2 0 002-2V5a2 2 0 00-2-2z"></path>
             </svg>
@@ -200,7 +292,7 @@
           </p>
           
           <% if @hardcoded_template[:variables].present? %>
-            <p class="text-sm text-purple-600">
+            <p class="text-sm text-orange-600">
               <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
               </svg>

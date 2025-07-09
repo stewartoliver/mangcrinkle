@@ -239,7 +239,7 @@
   <div class="email-wrapper">
     <div class="main-container">
       <div class="container-header">
-        <div class="brand-logo">🍪 Mang Crinkle</div>
+        <div class="brand-logo">🍪 <%= company_name %></div>
         <h1 class="container-title">Response to Your Inquiry</h1>
         <p class="container-subtitle">We're here to help with your questions</p>
       </div>
@@ -274,7 +274,7 @@
           <div class="contact-info">
             <h3>📞 Need More Help?</h3>
             <ul>
-              <li>Email us at <strong>info@mangcrinkle.com</strong></li>
+              <li>Email us at <strong><%= company_email %></strong></li>
               <li>Browse our <a href="<%= root_url %>#faq" style="color: #1e40af;">frequently asked questions</a></li>
               <li>Visit our website at <a href="<%= root_url %>" style="color: #1e40af;">mangcrinkle.com</a></li>
             </ul>
@@ -289,14 +289,14 @@
           
           <div class="signature">
             <p>Thank you for being part of our family!</p>
-            <p class="signature-name">The Mang Crinkle Team</p>
+            <p class="signature-name">The <%= company_name %> Team</p>
           </div>
         </div>
 
         <div class="footer">
           <p>This email was sent to <%= @user&.email || 'your email' %> in response to your inquiry.</p>
           <p style="margin-top: 20px;">
-            &copy; <%= Date.current.year %> Mang Crinkle. All rights reserved.
+            &copy; <%= Date.current.year %> <%= company_name %>. All rights reserved.
           </p>
         </div>
       </div>

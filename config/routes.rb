@@ -61,6 +61,7 @@ Rails.application.routes.draw do
       end
       member do
         post :activate
+        post :reset_password
       end
     end
     

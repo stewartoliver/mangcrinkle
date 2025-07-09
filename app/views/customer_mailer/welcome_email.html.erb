@@ -178,7 +178,7 @@
   <div class="email-wrapper">
     <div class="main-container">
       <div class="container-header">
-        <div class="brand-logo">🍪 Mang Crinkle</div>
+        <div class="brand-logo">🍪 <%= company_name %></div>
         <h1 class="container-title">Welcome to the Family!</h1>
         <p class="container-subtitle">Get ready for the most delicious Filipino treats</p>
       </div>
@@ -190,7 +190,7 @@
           <p><%= simple_format(@body) %></p>
           
           <div class="welcome-benefits">
-            <h3>🎉 As a Mang Crinkle family member, you'll enjoy:</h3>
+            <h3>🎉 As a <%= company_name %> family member, you'll enjoy:</h3>
             <ul>
               <li>Early access to new flavors and seasonal treats</li>
               <li>Exclusive discounts and special offers</li>
@@ -210,11 +210,11 @@
             <p>📧 You're now subscribed to our newsletter and will receive updates about new products, special offers, and baking tips. You can unsubscribe at any time.</p>
           </div>
           
-          <p>If you have any questions or need assistance, please don't hesitate to reach out to us at <strong>info@mangcrinkle.com</strong>.</p>
+          <p>If you have any questions or need assistance, please don't hesitate to reach out to us at <strong><%= company_email %></strong>.</p>
           
           <div class="signature">
             <p>Welcome to the sweetest family!</p>
-            <p class="signature-name">The Mang Crinkle Team</p>
+            <p class="signature-name">The <%= company_name %> Team</p>
           </div>
         </div>
 
@@ -224,7 +224,7 @@
             If you no longer wish to receive these emails, you can <a href="#" class="footer-link">unsubscribe at any time</a>.
           </p>
           <p style="margin-top: 20px;">
-            &copy; <%= Date.current.year %> Mang Crinkle. All rights reserved.
+            &copy; <%= Date.current.year %> <%= company_name %>. All rights reserved.
           </p>
         </div>
       </div>

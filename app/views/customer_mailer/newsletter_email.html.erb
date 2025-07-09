@@ -272,7 +272,7 @@
   <div class="email-wrapper">
     <div class="main-container">
       <div class="container-header">
-        <div class="brand-logo">🍪 Mang Crinkle</div>
+        <div class="brand-logo">🍪 <%= company_name %></div>
         <h1 class="container-title">Newsletter</h1>
         <p class="container-subtitle">Sweet updates from our Filipino kitchen</p>
       </div>
@@ -289,7 +289,7 @@
           </div>
           
           <div class="feature-box">
-            <h3>🌟 Why Choose Mang Crinkle?</h3>
+            <h3>🌟 Why Choose <%= company_name %>?</h3>
             <ul>
               <li>Authentic Filipino recipes passed down through generations</li>
               <li>Fresh-baked cookies made with premium ingredients</li>
@@ -306,16 +306,16 @@
             <a href="#">Twitter</a>
           </div>
           
-          <p>Have questions or want to share your cookie experience? We'd love to hear from you at <strong>info@mangcrinkle.com</strong>!</p>
+          <p>Have questions or want to share your cookie experience? We'd love to hear from you at <strong><%= company_email %></strong>!</p>
           
           <div class="signature">
             <p>With love and crinkles,</p>
-            <p class="signature-name">The Mang Crinkle Family</p>
+            <p class="signature-name">The <%= company_name %> Family</p>
           </div>
         </div>
 
         <div class="newsletter-footer">
-          <p>You're receiving this newsletter because you subscribed to Mang Crinkle updates.</p>
+          <p>You're receiving this newsletter because you subscribed to <%= company_name %> updates.</p>
           <p style="margin-top: 8px;">
             <a href="<%= root_url %>#newsletter">Manage preferences</a> | 
             <a href="#">Unsubscribe</a>
@@ -325,7 +325,7 @@
         <div class="footer">
           <p>This email was sent to <%= @user&.email || 'your email' %> because you subscribed to our newsletter.</p>
           <p style="margin-top: 20px;">
-            &copy; <%= Date.current.year %> Mang Crinkle. All rights reserved.
+            &copy; <%= Date.current.year %> <%= company_name %>. All rights reserved.
           </p>
         </div>
       </div>

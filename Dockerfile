@@ -49,7 +49,8 @@ RUN npm install -g yarn@$YARN_VERSION
 ENV PATH="/usr/local/node/bin:$PATH"
 
 # Install application gems
-COPY Gemfile Gemfile.lock ./
+COPY Gemfile Gemfile.loc[k] ./
+RUN [ ! -f Gemfile.lock ] && bundle lock --add-platform x86_64-linux || true
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile

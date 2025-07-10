@@ -109,7 +109,7 @@
               class: "customer-newsletter-input" %>
         
         <% if show_recaptcha? %>
-          <%= recaptcha_v3(action: 'form_submission') %>
+          <%= recaptcha_v3(action: 'newsletter_signup') %>
         <% end %>
         
         <%= form.submit "Subscribe", 

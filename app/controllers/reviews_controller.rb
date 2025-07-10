@@ -34,8 +34,9 @@ class ReviewsController < ApplicationController
   end
 
   def create
-    # Verify reCAPTCHA first
-    unless verify_recaptcha_if_needed
+    # Verify reCAPTCHA Enterprise first
+    recaptcha_token = params['g-recaptcha-response-data-review_submission'] || params['g-recaptcha-response']
+    unless verify_recaptcha_enterprise(recaptcha_token, 'review_submission')
       @order = current_user&.orders&.find(params[:order_id]) if params[:order_id]
       @review_invite = @current_review_invite if @current_review_invite
       flash.now[:alert] = 'Please complete the reCAPTCHA verification.'

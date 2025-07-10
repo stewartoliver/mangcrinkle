@@ -1,7 +1,8 @@
 class NewsletterSubscriptionsController < ApplicationController
   def create
-    # Verify reCAPTCHA first
-    unless verify_recaptcha_if_needed
+    # Verify reCAPTCHA Enterprise first
+    recaptcha_token = params['g-recaptcha-response-data-newsletter_signup'] || params['g-recaptcha-response']
+    unless verify_recaptcha_enterprise(recaptcha_token, 'newsletter_signup')
       redirect_to root_path, alert: 'Please complete the reCAPTCHA verification.'
       return
     end

@@ -38,8 +38,8 @@ This means you can develop and test locally without any reCAPTCHA interference!
 
 **For Fly.io deployment:**
 ```bash
-fly secrets set RECAPTCHA_SITE_KEY=your-public-site-key-here
-fly secrets set RECAPTCHA_SECRET_KEY=your-private-secret-key-here
+fly secrets set RECAPTCHA_SITE_KEY=
+fly secrets set RECAPTCHA_SECRET_KEY=
 fly deploy
 ```
 

@@ -12,16 +12,37 @@ end
 # Helper methods for reCAPTCHA
 module RecaptchaHelper
   def show_recaptcha?
+    # Debug logging (safe - no key values)
+    Rails.logger.info "🔍 reCAPTCHA Debug - Request path: #{request.path}"
+    Rails.logger.info "🔍 reCAPTCHA Debug - Request host: #{request.host}"
+    Rails.logger.info "🔍 reCAPTCHA Debug - Rails env: #{Rails.env}"
+    Rails.logger.info "🔍 reCAPTCHA Debug - Site key present: #{ENV['RECAPTCHA_SITE_KEY'].present?}"
+    Rails.logger.info "🔍 reCAPTCHA Debug - Secret key present: #{ENV['RECAPTCHA_SECRET_KEY'].present?}"
+    
     # Don't show reCAPTCHA in admin routes
-    return false if request.path.start_with?('/admin')
+    if request.path.start_with?('/admin')
+      Rails.logger.info "🔍 reCAPTCHA Debug - Skipping: admin route"
+      return false
+    end
     
     # Don't show reCAPTCHA in development/test or when keys are missing
-    return false if Rails.env.development? || Rails.env.test?
-    return false if ENV['RECAPTCHA_SITE_KEY'].blank? || ENV['RECAPTCHA_SECRET_KEY'].blank?
+    if Rails.env.development? || Rails.env.test?
+      Rails.logger.info "🔍 reCAPTCHA Debug - Skipping: dev/test environment"
+      return false
+    end
+    
+    if ENV['RECAPTCHA_SITE_KEY'].blank? || ENV['RECAPTCHA_SECRET_KEY'].blank?
+      Rails.logger.info "🔍 reCAPTCHA Debug - Skipping: missing keys"
+      return false
+    end
     
     # Don't show on localhost
-    return false if request.host.include?('localhost') || request.host.include?('127.0.0.1')
+    if request.host.include?('localhost') || request.host.include?('127.0.0.1')
+      Rails.logger.info "🔍 reCAPTCHA Debug - Skipping: localhost"
+      return false
+    end
     
+    Rails.logger.info "🔍 reCAPTCHA Debug - Showing reCAPTCHA: TRUE"
     true
   end
   

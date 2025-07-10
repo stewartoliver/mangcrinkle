@@ -43,4 +43,18 @@ module ApplicationHelper
     # You can later add a specific admin_email field to Company model if needed
     main_company.email.presence || company_email
   end
+
+  # Helper to check if email delivery is enabled
+  def email_delivery_enabled?
+    Rails.application.config.action_mailer.perform_deliveries
+  end
+
+  # Helper to show email status for admin interface
+  def email_status_message
+    if email_delivery_enabled?
+      "Email delivery is enabled"
+    else
+      "Email delivery is disabled - missing SMTP credentials"
+    end
+  end
 end

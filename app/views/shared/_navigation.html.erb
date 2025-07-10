@@ -6,13 +6,14 @@
         <div class="flex-shrink-0 flex items-center">
           <%= link_to root_path, class: "flex items-center" do %>
             <%= image_tag "Mang-not-text-logo.svg", alt: "MangCrinkle Logo", class: "h-10 w-auto" %>
-            <span class="ml-2 text-xl text-orange-950 font-medium uppercase tracking-wide leading-none" style="font-family: 'Cooper Black', serif; font-weight: 900; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility;">Mang Crinkle</span>
+            <span class="ml-2 text-xl text-orange-950 font-medium uppercase tracking-wide leading-none company-name-font">Mang Crinkle</span>
           <% end %>
         </div>
         <div class="hidden sm:ml-6 sm:flex sm:space-x-2">
           <%= link_to "Home", root_path, class: "inline-flex items-center px-4 md:px-8 lg:px-12 py-2 text-sm font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 transition-all duration-200 active:bg-orange-100 active:scale-95 #{current_page?(root_path) ? 'border-b-2 border-orange-600' : ''}" %>
           <%= link_to "Products", products_path, class: "inline-flex items-center px-4 md:px-8 lg:px-12 py-2 text-sm font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 transition-all duration-200 active:bg-orange-100 active:scale-95 #{current_page?(products_path) ? 'border-b-2 border-orange-600' : ''}" %>
           <%= link_to "About", about_path, class: "inline-flex items-center px-4 md:px-8 lg:px-12 py-2 text-sm font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 transition-all duration-200 active:bg-orange-100 active:scale-95 #{current_page?(about_path) ? 'border-b-2 border-orange-600' : ''}" %>
+          <%= link_to "Reviews", reviews_path, class: "inline-flex items-center px-4 md:px-8 lg:px-12 py-2 text-sm font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 transition-all duration-200 active:bg-orange-100 active:scale-95 #{current_page?(reviews_path) ? 'border-b-2 border-orange-600' : ''}" %>
           <%= link_to "Contact", contact_path, class: "inline-flex items-center px-4 md:px-8 lg:px-12 py-2 text-sm font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 transition-all duration-200 active:bg-orange-100 active:scale-95 #{current_page?(contact_path) ? 'border-b-2 border-orange-600' : ''}" %>
         </div>
       </div>
@@ -33,6 +34,7 @@
         <%= link_to "Home", root_path, class: "block px-3 py-2 text-base font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 rounded-md transition-all duration-200 #{current_page?(root_path) ? 'bg-orange-100 text-orange-950' : ''}" %>
         <%= link_to "Products", products_path, class: "block px-3 py-2 text-base font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 rounded-md transition-all duration-200 #{current_page?(products_path) ? 'bg-orange-100 text-orange-950' : ''}" %>
         <%= link_to "About", about_path, class: "block px-3 py-2 text-base font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 rounded-md transition-all duration-200 #{current_page?(about_path) ? 'bg-orange-100 text-orange-950' : ''}" %>
+        <%= link_to "Reviews", reviews_path, class: "block px-3 py-2 text-base font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 rounded-md transition-all duration-200 #{current_page?(reviews_path) ? 'bg-orange-100 text-orange-950' : ''}" %>
         <%= link_to "Contact", contact_path, class: "block px-3 py-2 text-base font-medium text-orange-600 hover:text-orange-950 hover:bg-orange-50 rounded-md transition-all duration-200 #{current_page?(contact_path) ? 'bg-orange-100 text-orange-950' : ''}" %>
       </div>
     </div>

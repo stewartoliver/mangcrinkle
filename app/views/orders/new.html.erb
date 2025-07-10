@@ -182,6 +182,12 @@
           </div>
         </div>
       </div>
+
+      <% if show_recaptcha? %>
+        <div class="mt-4 sm:mt-6">
+          <%= recaptcha_tags %>
+        </div>
+      <% end %>
     </div>
 
     <!-- Action Buttons -->

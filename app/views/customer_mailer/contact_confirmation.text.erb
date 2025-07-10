@@ -1,0 +1,33 @@
+🍪 Message Received - <%= company_name %>
+
+Hi <%= @customer_name %>! 👋
+
+Thank you for reaching out to us! We've successfully received your message and wanted to confirm that it's safely in our inbox.
+
+YOUR MESSAGE DETAILS
+====================
+Subject: <%= @contact_message.subject %>
+Priority: <%= @contact_message.priority.humanize %>
+Submitted: <%= @contact_message.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+
+WHAT HAPPENS NEXT?
+==================
+✓ Our team has been notified and will review your message
+✓ We typically respond within 24 hours during business days
+✓ High priority messages are handled even faster
+✓ You'll receive our response at <%= @user.email %>
+
+We really appreciate you taking the time to contact us. Whether you have questions about our delicious crinkle cookies, need help with an order, or just want to share some feedback, we're here to help!
+
+NEED IMMEDIATE ASSISTANCE?
+=========================
+If your message is urgent, feel free to reach out directly:
+📧 <%= company_email %>
+
+With love and fresh-baked goodness,
+The <%= company_name %> Team
+Your friendly neighborhood cookie bakers 🍪
+
+--
+This confirmation was sent to: <%= @user.email %>
+Message received at: <%= @contact_message.created_at.strftime("%B %d, %Y at %I:%M %p") %> 

@@ -55,16 +55,22 @@
               </div>
             </div>
 
-            <!-- Password Management Note -->
-            <div class="bg-gray-50 border border-gray-200 rounded-md p-3">
+            <!-- User Type Change Information -->
+            <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
               <div class="flex items-start">
                 <div class="flex-shrink-0 pt-1">
-                  <svg class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                  <svg class="h-4 w-4 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
                   </svg>
                 </div>
                 <div class="ml-3">
-                  <p class="text-xs text-gray-600">Password changes are not available in this interface. Users can reset their passwords through the standard password reset process.</p>
+                  <p class="text-xs text-blue-700">
+                    <% if @user.customer? %>
+                      <strong>Promoting to Admin:</strong> If you change this user to an admin, they'll need to set up their password. After saving, use the "Send Activation Email" button on their profile page.
+                    <% else %>
+                      <strong>Admin User:</strong> Password changes are not available in this interface. Use the password reset feature if the admin needs to change their password.
+                    <% end %>
+                  </p>
                 </div>
               </div>
             </div>

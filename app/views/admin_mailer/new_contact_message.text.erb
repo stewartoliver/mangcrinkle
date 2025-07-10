@@ -1,0 +1,30 @@
+🍪 <%= company_name %> - New Contact Message
+
+New Contact Message
+===================
+
+Hello <%= @admin_user.display_name %>,
+
+A new contact message has been submitted through the website contact form.
+
+MESSAGE DETAILS
+---------------
+From: <%= @customer.display_name %>
+Email: <%= @customer.email %>
+Subject: <%= @contact_message.subject %>
+Priority: <%= @contact_message.priority.humanize %>
+Received: <%= @contact_message.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+
+MESSAGE
+-------
+<%= @contact_message.message %>
+
+View this message in the admin panel:
+<%= Rails.application.routes.url_helpers.admin_contact_messages_url(host: Rails.application.config.action_mailer.default_url_options[:host]) %>
+
+Message submitted at: <%= @contact_message.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+
+This notification was sent to: <%= @admin_user.email %>
+
+--
+The <%= company_name %> Team 

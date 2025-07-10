@@ -55,6 +55,10 @@ class Admin::EmailTemplatesController < Admin::BaseController
         # Use the sample review data
         sample_review = create_sample_review_for_email(test_email)
         ReviewMailer.new_review_notification(sample_review).deliver_now
+      when 'review_confirmation'
+        # Use the sample review confirmation data
+        sample_review = create_sample_review_for_email(test_email)
+        ReviewMailer.review_confirmation(sample_review, sample_review.customer_display_name).deliver_now
       when 'newsletter'
         # Use the sample user data
         sample_user = create_sample_user_for_email(test_email)
@@ -64,6 +68,11 @@ class Admin::EmailTemplatesController < Admin::BaseController
         sample_contact = create_sample_contact_for_email(test_email)
         sample_response = create_sample_response_for_email
         CustomerMailer.contact_response(sample_contact, sample_response).deliver_now
+      when 'contact_confirmation'
+        # Use the sample contact confirmation data
+        sample_contact = create_sample_contact_for_email(test_email)
+        sample_user = create_sample_user_for_email(test_email)
+        CustomerMailer.contact_confirmation(sample_contact, sample_user).deliver_now
       when 'shipping_confirmation'
         # Use the sample order data - need to add shipping details
         sample_order = create_sample_order_for_email(test_email)
@@ -72,6 +81,15 @@ class Admin::EmailTemplatesController < Admin::BaseController
         sample_order.define_singleton_method(:carrier) { 'FedEx' }
         sample_order.define_singleton_method(:estimated_delivery) { Date.current + 2.days }
         CustomerMailer.shipping_confirmation(sample_order).deliver_now
+      when 'new_order_notification'
+        # Use the sample order data for admin notification
+        sample_order = create_sample_order_for_email(test_email)
+        AdminMailer.new_order_notification(sample_order, current_admin_user, sample_order.customer_name).deliver_now
+      when 'new_contact_message'
+        # Use the sample contact message data for admin notification
+        sample_contact = create_sample_contact_for_email(test_email)
+        sample_user = create_sample_user_for_email(test_email)
+        AdminMailer.new_contact_message(sample_contact, sample_user, current_admin_user).deliver_now
       else
         redirect_to show_hardcoded_admin_email_templates_path(template_path: @hardcoded_template[:path]), 
                     alert: 'Test email not supported for this template type.'
@@ -163,36 +181,7 @@ class Admin::EmailTemplatesController < Admin::BaseController
 
   def hardcoded_email_templates
     [
-      {
-        name: 'Admin Activation Email',
-        template_type: 'admin_activation',
-        subject: 'Welcome to Mang Crinkle Admin',
-        path: 'app/views/admin_mailer/admin_activation.html.erb',
-        description: 'Email sent to new admin users for account activation',
-        variables: ['admin_user.display_name', 'admin_user.email', 'activation_url'],
-        active: true,
-        hardcoded: true
-      },
-      {
-        name: 'Admin Password Reset Email',
-        template_type: 'admin_password_reset',
-        subject: 'Mang Crinkle Admin - Password Reset Request',
-        path: 'app/views/admin_mailer/admin_password_reset.html.erb',
-        description: 'Email sent to admin users for password reset',
-        variables: ['admin_user.display_name', 'admin_user.email', 'reset_url'],
-        active: true,
-        hardcoded: true
-      },
-      {
-        name: 'Order Confirmation Email',
-        template_type: 'order_confirmation',
-        subject: 'Order Confirmation',
-        path: 'app/views/customer_mailer/order_confirmation.html.erb',
-        description: 'Email sent to customers when they place an order',
-        variables: ['order', 'order.user.display_name', 'order.customer_name', 'order.id', 'order.total_price', 'order.line_items'],
-        active: true,
-        hardcoded: true
-      },
+      # Customer Communications Group
       {
         name: 'Welcome Email',
         template_type: 'welcome',
@@ -201,27 +190,8 @@ class Admin::EmailTemplatesController < Admin::BaseController
         description: 'Email sent to new customers when they sign up',
         variables: ['customer_name', 'user.email'],
         active: true,
-        hardcoded: true
-      },
-      {
-        name: 'Review Invitation Email',
-        template_type: 'review_invite',
-        subject: 'Share Your Mang Crinkle Experience',
-        path: 'app/views/review_mailer/review_invite.html.erb',
-        description: 'Email sent to customers inviting them to leave a review',
-        variables: ['customer_name', 'order', 'review_url', 'review_invite.email'],
-        active: true,
-        hardcoded: true
-      },
-      {
-        name: 'New Review Notification',
-        template_type: 'review_notification',
-        subject: 'New Review Submitted - Mang Crinkle',
-        path: 'app/views/review_mailer/new_review_notification.html.erb',
-        description: 'Email sent to admins when a new review is submitted',
-        variables: ['review', 'review.customer_display_name', 'review.email', 'review.rating', 'review.title', 'review.content'],
-        active: true,
-        hardcoded: true
+        hardcoded: true,
+        group: 'customer_communications'
       },
       {
         name: 'Newsletter Email',
@@ -231,7 +201,8 @@ class Admin::EmailTemplatesController < Admin::BaseController
         description: 'Email template for newsletter campaigns',
         variables: ['customer_name', 'body', 'user.email'],
         active: true,
-        hardcoded: true
+        hardcoded: true,
+        group: 'customer_communications'
       },
       {
         name: 'Contact Response Email',
@@ -241,7 +212,32 @@ class Admin::EmailTemplatesController < Admin::BaseController
         description: 'Email template for responding to customer inquiries',
         variables: ['customer_name', 'body', 'contact_message', 'admin_response', 'user.email'],
         active: true,
-        hardcoded: true
+        hardcoded: true,
+        group: 'customer_communications'
+      },
+      {
+        name: 'Contact Confirmation Email',
+        template_type: 'contact_confirmation',
+        subject: 'Message Received - We\'ll Be In Touch Soon',
+        path: 'app/views/customer_mailer/contact_confirmation.html.erb',
+        description: 'Confirmation email sent to customers when they submit a contact form',
+        variables: ['customer_name', 'contact_message', 'user.email'],
+        active: true,
+        hardcoded: true,
+        group: 'customer_communications'
+      },
+      
+      # Order Management Group
+      {
+        name: 'Order Confirmation Email',
+        template_type: 'order_confirmation',
+        subject: 'Order Confirmation',
+        path: 'app/views/customer_mailer/order_confirmation.html.erb',
+        description: 'Email sent to customers when they place an order',
+        variables: ['order', 'order.user.display_name', 'order.customer_name', 'order.id', 'order.total_price', 'order.line_items'],
+        active: true,
+        hardcoded: true,
+        group: 'order_management'
       },
       {
         name: 'Shipping Confirmation Email',
@@ -251,7 +247,89 @@ class Admin::EmailTemplatesController < Admin::BaseController
         description: 'Email sent to customers when their order has shipped',
         variables: ['order', 'order.user.display_name', 'order.customer_name', 'order.id', 'order.total_price', 'order.line_items'],
         active: true,
-        hardcoded: true
+        hardcoded: true,
+        group: 'order_management'
+      },
+      {
+        name: 'New Order Notification (Admin)',
+        template_type: 'new_order_notification',
+        subject: 'New Order Received - Admin Notification',
+        path: 'app/views/admin_mailer/new_order_notification.html.erb',
+        description: 'Email sent to admins when a new order is placed',
+        variables: ['order', 'admin_user', 'customer_name', 'order.id', 'order.total_price', 'order.line_items'],
+        active: true,
+        hardcoded: true,
+        group: 'order_management'
+      },
+      
+      # Customer Reviews Group
+      {
+        name: 'Review Invitation Email',
+        template_type: 'review_invite',
+        subject: 'Share Your Mang Crinkle Experience',
+        path: 'app/views/review_mailer/review_invite.html.erb',
+        description: 'Email sent to customers inviting them to leave a review',
+        variables: ['customer_name', 'order', 'review_url', 'review_invite.email'],
+        active: true,
+        hardcoded: true,
+        group: 'customer_reviews'
+      },
+      {
+        name: 'Review Confirmation Email (Customer)',
+        template_type: 'review_confirmation',
+        subject: 'Thank you for your review!',
+        path: 'app/views/review_mailer/review_confirmation.html.erb',
+        description: 'Confirmation email sent to customers when they submit a review',
+        variables: ['customer_name', 'review.rating', 'review.title', 'review.content', 'review.email'],
+        active: true,
+        hardcoded: true,
+        group: 'customer_reviews'
+      },
+      {
+        name: 'New Review Notification',
+        template_type: 'review_notification',
+        subject: 'New Review Submitted - Mang Crinkle',
+        path: 'app/views/review_mailer/new_review_notification.html.erb',
+        description: 'Email sent to admins when a new review is submitted',
+        variables: ['review', 'review.customer_display_name', 'review.email', 'review.rating', 'review.title', 'review.content'],
+        active: true,
+        hardcoded: true,
+        group: 'customer_reviews'
+      },
+      
+      # Admin System Group
+      {
+        name: 'Admin Activation Email',
+        template_type: 'admin_activation',
+        subject: 'Welcome to Mang Crinkle Admin',
+        path: 'app/views/admin_mailer/admin_activation.html.erb',
+        description: 'Email sent to new admin users for account activation',
+        variables: ['admin_user.display_name', 'admin_user.email', 'activation_url'],
+        active: true,
+        hardcoded: true,
+        group: 'admin_system'
+      },
+      {
+        name: 'Admin Password Reset Email',
+        template_type: 'admin_password_reset',
+        subject: 'Mang Crinkle Admin - Password Reset Request',
+        path: 'app/views/admin_mailer/admin_password_reset.html.erb',
+        description: 'Email sent to admin users for password reset',
+        variables: ['admin_user.display_name', 'admin_user.email', 'reset_url'],
+        active: true,
+        hardcoded: true,
+        group: 'admin_system'
+      },
+      {
+        name: 'New Contact Message Notification (Admin)',
+        template_type: 'new_contact_message',
+        subject: 'New Contact Message - Admin Notification',
+        path: 'app/views/admin_mailer/new_contact_message.html.erb',
+        description: 'Email sent to admins when a new contact message is submitted',
+        variables: ['admin_user', 'customer', 'contact_message'],
+        active: true,
+        hardcoded: true,
+        group: 'admin_system'
       }
     ]
   end
@@ -324,12 +402,20 @@ class Admin::EmailTemplatesController < Admin::BaseController
       render_review_invite_sample
     when 'review_notification'
       render_review_notification_sample
+    when 'review_confirmation'
+      render_review_confirmation_sample
     when 'newsletter'
       render_newsletter_sample
     when 'contact_response'
       render_contact_response_sample
+    when 'contact_confirmation'
+      render_contact_confirmation_sample
     when 'shipping_confirmation'
       render_shipping_confirmation_sample
+    when 'new_order_notification'
+      render_new_order_notification_sample
+    when 'new_contact_message'
+      render_new_contact_message_sample
     else
       nil
     end
@@ -503,6 +589,31 @@ class Admin::EmailTemplatesController < Admin::BaseController
     )
   end
 
+  def render_review_confirmation_sample
+    sample_review = OpenStruct.new(
+      customer_display_name: 'Jane Customer',
+      customer_name: 'Jane Customer',
+      email: 'jane@example.com',
+      rating: 5,
+      title: 'Amazing cookies!',
+      content: 'Amazing cookies! The ube flavor is incredible and they arrived fresh. Will definitely order again!',
+      comment: 'Amazing cookies! The ube flavor is incredible and they arrived fresh. Will definitely order again!',
+      product_name: 'Ube Cookies (6-pack)',
+      verified_purchase?: true,
+      created_at: Time.current,
+      order: OpenStruct.new(id: 12345)
+    )
+    
+    render_to_string(
+      template: 'review_mailer/review_confirmation',
+      layout: false,
+      assigns: {
+        review: sample_review,
+        customer_name: sample_review.customer_name
+      }
+    )
+  end
+
   def render_newsletter_sample
     sample_user = OpenStruct.new(
       display_name: 'Jane Customer',
@@ -548,6 +659,30 @@ class Admin::EmailTemplatesController < Admin::BaseController
     )
   end
 
+  def render_contact_confirmation_sample
+    sample_contact = OpenStruct.new(
+      subject: 'Message Received - We\'ll Be In Touch Soon',
+      message: 'Hi, I wanted to ask about the ingredients in your chocolate crinkles. Are they gluten-free?',
+      user: OpenStruct.new(display_name: 'Jane Customer', email: 'jane@example.com'),
+      created_at: 1.day.ago
+    )
+    
+    sample_user = OpenStruct.new(
+      display_name: 'Jane Customer',
+      email: 'jane@example.com'
+    )
+    
+    render_to_string(
+      template: 'customer_mailer/contact_confirmation',
+      layout: false,
+      assigns: {
+        contact_message: sample_contact,
+        user: sample_user,
+        subject: 'Message Received - We\'ll Be In Touch Soon'
+      }
+    )
+  end
+
   def render_shipping_confirmation_sample
     sample_user = OpenStruct.new(
       display_name: 'Jane Customer',
@@ -589,6 +724,78 @@ class Admin::EmailTemplatesController < Admin::BaseController
         customer_name: sample_order.customer_name,
         user: sample_user,
         subject: 'Your Order Has Shipped! - #ORD-12345'
+      }
+    )
+  end
+
+  def render_new_order_notification_sample
+    sample_order = OpenStruct.new(
+      id: 'ORD-12345',
+      customer_name: 'Jane Customer',
+      total_price: 45.99,
+      user: OpenStruct.new(display_name: 'Jane Customer', email: 'jane@example.com'),
+      line_items: [
+        OpenStruct.new(
+          name: 'Ube Cookies (6-pack)', 
+          quantity: 2, 
+          price: 18.99,
+          purchasable: OpenStruct.new(name: 'Ube Cookies (6-pack)')
+        ),
+        OpenStruct.new(
+          name: 'Pandan Cake Slice', 
+          quantity: 1, 
+          price: 8.99,
+          purchasable: OpenStruct.new(name: 'Pandan Cake Slice')
+        )
+      ],
+      shipping_address: "123 Main St\nSample City, ST 12345",
+      status: 'confirmed',
+      created_at: Time.current,
+      email: 'jane@example.com',
+      address: "123 Main St\nSample City, ST 12345",
+      delivery_address: "123 Main St\nSample City, ST 12345",
+      delivery_date: Date.current + 2.days,
+      order_notes: "Please ring doorbell"
+    )
+    
+    sample_admin_user = OpenStruct.new(
+      display_name: 'Admin User',
+      email: 'admin@example.com'
+    )
+    
+    render_to_string(
+      template: 'admin_mailer/new_order_notification',
+      layout: false,
+      assigns: {
+        order: sample_order,
+        admin_user: sample_admin_user,
+        customer_name: sample_order.customer_name,
+        subject: 'New Order Received - Admin Notification'
+      }
+    )
+  end
+
+  def render_new_contact_message_sample
+    sample_contact = OpenStruct.new(
+      subject: 'New Contact Message - Admin Notification',
+      message: 'Hi, I wanted to ask about the ingredients in your chocolate crinkles. Are they gluten-free?',
+      user: OpenStruct.new(display_name: 'Jane Customer', email: 'jane@example.com'),
+      created_at: 1.day.ago
+    )
+    
+    sample_admin_user = OpenStruct.new(
+      display_name: 'Admin User',
+      email: 'admin@example.com'
+    )
+    
+    render_to_string(
+      template: 'admin_mailer/new_contact_message',
+      layout: false,
+      assigns: {
+        admin_user: sample_admin_user,
+        customer: sample_contact.user,
+        contact_message: sample_contact,
+        subject: 'New Contact Message - Admin Notification'
       }
     )
   end

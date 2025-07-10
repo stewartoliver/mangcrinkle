@@ -6,11 +6,17 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <!-- Prevent search engines from indexing admin pages -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+    <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+
+    <!-- Admin Favicon -->
+    <%= render 'application/admin_favicon' %>
+
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <%= javascript_include_tag "image_manager", "data-turbo-track": "reload" %>
-
     
     <script>
       // Admin Navigation JavaScript
@@ -147,13 +153,8 @@
       <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-orange-950 to-orange-900 text-orange-100 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
         <!-- Logo and close button -->
         <div class="flex items-center justify-between h-16 px-6 border-b border-orange-800">
-          <%= link_to admin_dashboard_path, class: "flex items-center space-x-2 text-xl font-bold text-white" do %>
-            <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <span>Mang Crinkle</span>
+          <%= link_to admin_dashboard_path, class: "flex items-center space-x-3 text-xl font-bold text-white" do %>
+            <span class="company-name-font uppercase">Mang Crinkle</span>
           <% end %>
           <button id="close-sidebar" class="lg:hidden text-orange-300 hover:text-white">
             <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -294,7 +295,7 @@
       <!-- Main content -->
       <div class="lg:pl-64">
         <!-- Top navigation -->
-        <div class="bg-white shadow-sm border-b border-orange-200">
+        <div class="bg-white shadow-sm border-b border-orange-200 fixed top-0 left-0 right-0 z-40 lg:left-64">
           <div class="px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
               <!-- Mobile menu button and title -->
@@ -341,7 +342,7 @@
         </div>
 
         <!-- Page content -->
-        <main class="py-6">
+        <main class="py-3 pt-16">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Flash Messages -->
             <% if notice %>
@@ -391,6 +392,26 @@
                         </svg>
                       </button>
                     </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+
+            <!-- Email Status Banner -->
+            <% unless email_delivery_enabled? %>
+              <div class="mb-6 bg-yellow-50 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md shadow-sm relative" role="alert">
+                <div class="flex">
+                  <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium text-yellow-800">Email System Disabled</p>
+                    <p class="text-sm text-yellow-700 mt-1">
+                      Email delivery is currently disabled because SMTP credentials are not configured. 
+                      Users won't receive notifications, activation emails, or contact responses.
+                    </p>
                   </div>
                 </div>
               </div>

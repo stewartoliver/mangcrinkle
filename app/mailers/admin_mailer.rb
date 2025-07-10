@@ -109,7 +109,7 @@ class AdminMailer < ApplicationMailer
 
   # Helper method to ensure company_name is available in mailer context
   def company_name
-    @company_name ||= Company.main.name.presence || 'Mang Crinkle Cookies'
+    @company_name ||= Company.main.name.presence || 'Mang Crinkle'
   end
   helper_method :company_name
 

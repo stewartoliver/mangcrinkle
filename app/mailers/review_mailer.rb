@@ -21,6 +21,16 @@ class ReviewMailer < ApplicationMailer
     )
   end
 
+  def review_confirmation(review)
+    @review = review
+    @customer_name = review.customer_display_name
+    
+    mail(
+      to: review.email,
+      subject: "Thank you for your review! 🍪"
+    )
+  end
+
   # Test email methods with sample data
   def test_review_invite(test_email)
     @review_invite = OpenStruct.new(
@@ -67,6 +77,26 @@ class ReviewMailer < ApplicationMailer
     )
   end
 
+  def test_review_confirmation(test_email)
+    @review = OpenStruct.new(
+      customer_display_name: "Test Customer",
+      email: test_email,
+      rating: 5,
+      title: "Amazing cookies!",
+      content: "These are absolutely delicious! The texture is perfect and the flavor is incredible. Will definitely order again!",
+      verified_purchase?: true,
+      created_at: Time.current,
+      order: OpenStruct.new(id: 12345)
+    )
+    @customer_name = @review.customer_display_name
+    
+    mail(
+      to: test_email,
+      subject: "[TEST] Thank you for your review! 🍪",
+      template_name: 'review_confirmation'
+    )
+  end
+
   private
 
   def admin_notification_email
@@ -76,7 +106,7 @@ class ReviewMailer < ApplicationMailer
 
   # Helper method to ensure company_name is available in mailer context
   def company_name
-    @company_name ||= Company.main.name.presence || 'Mang Crinkle Cookies'
+    @company_name ||= Company.main.name.presence || 'Mang Crinkle'
   end
   helper_method :company_name
 

@@ -4,8 +4,8 @@
   <div class="admin-container-header">
     <div class="flex items-center justify-between">
       <div>
-        <h3 class="admin-container-title">New User</h3>
-        <p class="admin-container-subtitle">Create a new user account.</p>
+        <h3 class="admin-container-title">New Customer</h3>
+        <p class="admin-container-subtitle">Create a new customer account. You can change the user type to admin later if needed.</p>
       </div>
       <%= link_to "Back to Users", admin_users_path, class: "admin-btn-back" %>
     </div>
@@ -33,6 +33,9 @@
           </div>
         <% end %>
 
+        <!-- Hidden field to always create customers -->
+        <%= form.hidden_field :user_type, value: "customer" %>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Basic Information -->
           <div class="space-y-4">
@@ -45,53 +48,24 @@
               </div>
             </div>
 
-            <div class="form-group">
-              <%= form.label :user_type, class: "form-label" %>
-              <div class="mt-1">
-                <%= form.select :user_type, [['Customer', 'customer'], ['Admin', 'admin']], {}, 
-                    class: "form-select",
-                    data: { action: "change->user-form#toggleFields" } %>
-              </div>
-            </div>
-
-            <div class="admin-fields" style="display: none;">
-              <div class="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
-                <div class="flex items-start">
-                  <div class="flex-shrink-0 pt-1">
-                    <svg class="h-4 w-4 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                    </svg>
-                  </div>
-                  <div class="ml-3">
-                    <p class="text-xs text-blue-700">
-                      <strong>Admin Password Options:</strong><br>
-                      • Leave password blank to send an activation email later<br>
-                      • Or set a password now for immediate access
-                    </p>
-                  </div>
+            <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 pt-1">
+                  <svg class="h-4 w-4 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                  </svg>
                 </div>
-              </div>
-              
-              <div class="form-group">
-                <%= form.label :password, "Password (Optional)", class: "form-label" %>
-                <div class="mt-1">
-                  <%= form.password_field :password, class: "form-input", placeholder: "Leave blank to send activation email" %>
-                </div>
-              </div>
-            </div>
-
-            <div class="admin-fields" style="display: none;">
-              <div class="form-group">
-                <%= form.label :password_confirmation, "Confirm Password", class: "form-label" %>
-                <div class="mt-1">
-                  <%= form.password_field :password_confirmation, class: "form-input", placeholder: "Only required if password is set" %>
+                <div class="ml-3">
+                  <p class="text-xs text-blue-700">
+                    <strong>Note:</strong> New users are created as customers by default. You can change the user type to admin after creation using the edit page.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Customer Information -->
-          <div class="customer-fields space-y-4">
+          <div class="space-y-4">
             <h4 class="text-md font-medium text-orange-950">Customer Information</h4>
             
             <div class="form-group">
@@ -131,32 +105,9 @@
 
         <div class="flex justify-end space-x-3 pt-6 border-t border-orange-200">
           <%= link_to "Cancel", admin_users_path, class: "admin-btn-secondary" %>
-          <%= form.submit "Create User", class: "admin-btn-primary" %>
+          <%= form.submit "Create Customer", class: "admin-btn-primary" %>
         </div>
       <% end %>
     </div>
   </div>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const userTypeSelect = document.querySelector('select[name="user[user_type]"]');
-  const adminFields = document.querySelectorAll('.admin-fields');
-  const customerFields = document.querySelectorAll('.customer-fields');
-
-  function toggleFields() {
-    const isAdmin = userTypeSelect.value === 'admin';
-    
-    adminFields.forEach(field => {
-      field.style.display = isAdmin ? 'block' : 'none';
-    });
-    
-    customerFields.forEach(field => {
-      field.style.display = isAdmin ? 'none' : 'block';
-    });
-  }
-
-  userTypeSelect.addEventListener('change', toggleFields);
-  toggleFields(); // Initial state
-});
-</script> 
+</div> 

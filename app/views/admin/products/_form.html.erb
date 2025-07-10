@@ -285,6 +285,11 @@ function initializeImageManager() {
         }
       } else {
         console.log('No new files to transfer or hidden input not found');
+        // Clear the hidden input if no new files to prevent Rails from processing empty file array
+        if (hiddenInput) {
+          hiddenInput.value = '';
+          console.log('Cleared hidden input');
+        }
       }
     });
   }

@@ -113,13 +113,21 @@ class ImageManager {
                 console.log('Processed current images:', this.currentImages);
 
                 this.primaryImageId = this.container.dataset.primaryImageId;
-                console.log('Primary image ID:', this.primaryImageId);
+                console.log('Primary image ID from dataset:', this.primaryImageId);
+
+                console.log('Final state after loading existing images:', {
+                    currentImagesCount: this.currentImages.length,
+                    newFilesCount: this.newFiles.length,
+                    primaryImageId: this.primaryImageId
+                });
 
                 this.renderImages();
             } catch (e) {
                 console.error('Error parsing existing images:', e);
                 console.error('Raw data that failed to parse:', existingImages);
             }
+        } else {
+            console.log('No existing images data found');
         }
     }
 
@@ -157,7 +165,22 @@ class ImageManager {
             isNew: true
         };
 
+        console.log('Adding new file:', {
+            fileName: file.name,
+            fileId: fileObj.id,
+            currentImagesCount: this.currentImages.length,
+            newFilesCount: this.newFiles.length,
+            primaryImageId: this.primaryImageId
+        });
+
         this.newFiles.push(fileObj);
+
+        console.log('After adding new file:', {
+            currentImagesCount: this.currentImages.length,
+            newFilesCount: this.newFiles.length,
+            totalImages: this.currentImages.length + this.newFiles.length
+        });
+
         this.renderImages();
         this.updateUploadVisibility();
     }
@@ -166,36 +189,60 @@ class ImageManager {
         if (isNew) {
             // Remove new file from memory
             this.newFiles = this.newFiles.filter(img => img.id !== imageId);
+
+            // Reset primary if it was the removed image
+            if (this.primaryImageId === imageId) {
+                this.primaryImageId = null;
+            }
+
+            // Update UI immediately for new files
+            this.renderImages();
+            this.updateUploadVisibility();
         } else {
-            // Remove existing image via AJAX
+            // Remove existing image via AJAX - UI will be updated on success
             const productId = this.getProductId();
             if (productId) {
                 this.removeExistingImage(productId, imageId);
             }
         }
-
-        // Reset primary if it was the removed image
-        if (this.primaryImageId === imageId) {
-            this.primaryImageId = null;
-        }
-
-        this.renderImages();
-        this.updateUploadVisibility();
     }
 
     getProductId() {
         // Try to get product ID from URL or form
         const pathParts = window.location.pathname.split('/');
         const productIndex = pathParts.indexOf('products');
+
+        console.log('URL path parts:', pathParts);
+        console.log('Product index:', productIndex);
+
         if (productIndex !== -1 && pathParts[productIndex + 1]) {
-            return pathParts[productIndex + 1];
+            const productId = pathParts[productIndex + 1];
+            console.log('Extracted product ID:', productId);
+            return productId;
         }
+
+        // Try to get from form action as fallback
+        const form = this.container.closest('form');
+        if (form && form.action) {
+            const actionMatch = form.action.match(/\/admin\/products\/(\d+)/);
+            if (actionMatch) {
+                const productId = actionMatch[1];
+                console.log('Product ID from form action:', productId);
+                return productId;
+            }
+        }
+
+        console.error('Could not extract product ID from URL or form');
         return null;
     }
 
     async removeExistingImage(productId, imageId) {
         try {
-            const response = await fetch(`/admin/products/${productId}/remove_image`, {
+            const url = `/admin/products/${productId}/remove_image`;
+            console.log('Making DELETE request to:', url);
+            console.log('Image ID:', imageId);
+
+            const response = await fetch(url, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -204,12 +251,26 @@ class ImageManager {
                 body: JSON.stringify({ image_id: imageId })
             });
 
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+
             if (response.ok) {
                 // Remove from current images array
-                this.currentImages = this.currentImages.filter(img => img.id !== imageId);
+                this.currentImages = this.currentImages.filter(img => img.id.toString() !== imageId.toString());
+
+                // Reset primary if it was the removed image
+                if (this.primaryImageId && this.primaryImageId.toString() === imageId.toString()) {
+                    this.primaryImageId = null;
+                }
+
+                // Update UI after successful removal
+                this.renderImages();
+                this.updateUploadVisibility();
+
                 console.log('Image removed successfully');
             } else {
-                console.error('Failed to remove image');
+                const errorText = await response.text();
+                console.error('Server error:', errorText);
                 alert('Failed to remove image. Please try again.');
             }
         } catch (error) {
@@ -235,7 +296,24 @@ class ImageManager {
         const grid = this.container.querySelector('#imageGrid');
         const allImages = [...this.currentImages, ...this.newFiles];
 
-        grid.innerHTML = allImages.map(img => {
+        // Only auto-set primary image if we have no existing images and no primary is set
+        if (allImages.length > 0 && !this.primaryImageId && this.currentImages.length === 0) {
+            console.log('Auto-setting primary image for new images only');
+            this.primaryImageId = allImages[0].id;
+        }
+
+        // Sort images to put primary first
+        const sortedImages = this.sortImagesByPrimary(allImages);
+
+        console.log('Rendering images:', {
+            currentImages: this.currentImages.length,
+            newFiles: this.newFiles.length,
+            totalImages: allImages.length,
+            primaryImageId: this.primaryImageId,
+            sortedImages: sortedImages.length
+        });
+
+        grid.innerHTML = sortedImages.map(img => {
             // Defensive programming - ensure img and img.id exist
             if (!img || (!img.id && img.id !== 0)) {
                 console.warn('Invalid image object:', img);
@@ -267,6 +345,19 @@ class ImageManager {
                 </div>
             `;
         }).filter(html => html !== '').join('');
+    }
+
+    // Helper method to sort images with primary first
+    sortImagesByPrimary(images) {
+        if (!this.primaryImageId || images.length === 0) {
+            return images;
+        }
+
+        const primaryId = this.primaryImageId.toString();
+        const primaryImage = images.find(img => img.id.toString() === primaryId);
+        const otherImages = images.filter(img => img.id.toString() !== primaryId);
+
+        return primaryImage ? [primaryImage, ...otherImages] : images;
     }
 
     updateUploadVisibility() {

@@ -1,1 +1,18 @@
 # See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+
+# Allow all crawlers for customer-facing content
+User-agent: *
+Allow: /
+
+# Block admin sections from being indexed
+Disallow: /admin/
+Disallow: /admin
+Disallow: /users/password/
+Disallow: /users/password
+
+# Block other authentication and sensitive paths
+Disallow: /cart/
+Disallow: /orders/
+
+# Future sitemap reference (uncomment when sitemap is created)
+# Sitemap: https://yourdomain.com/sitemap.xml

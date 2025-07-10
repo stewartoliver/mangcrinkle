@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Order #<%= @order.id %> - Mang Crinkle</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #292524;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9fafb;
+    }
+    .email-wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #f9fafb;
+    }
+    
+    /* Admin Container - matching admin design system */
+    .admin-container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      border: 1px solid #fed7aa;
+      overflow: hidden;
+    }
+    
+    .admin-container-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #fed7aa;
+      background-color: #fff7ed;
+    }
+    
+    .admin-container-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #7e2a0c;
+      margin: 0 0 4px 0;
+      line-height: 1.4;
+    }
+    
+    .admin-container-subtitle {
+      font-size: 14px;
+      color: #ea580c;
+      margin: 0;
+      font-weight: 400;
+    }
+    
+    .admin-container-content {
+      padding: 24px;
+    }
+    
+    .brand-logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #7e2a0c;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    
+    .content-section {
+      margin-bottom: 24px;
+    }
+    
+    .content-section p {
+      margin: 0 0 16px 0;
+      color: #374151;
+      line-height: 1.6;
+    }
+    
+    /* Order Details Styling */
+    .order-summary {
+      background-color: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 6px;
+      padding: 16px;
+      margin: 20px 0;
+    }
+    
+    .order-summary-title {
+      font-weight: 600;
+      color: #7e2a0c;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+    
+    .order-detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #fed7aa;
+    }
+    
+    .order-detail-row:last-child {
+      border-bottom: none;
+      font-weight: 600;
+      color: #7e2a0c;
+    }
+    
+    .order-detail-label {
+      color: #ea580c;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .order-detail-value {
+      color: #7e2a0c;
+      font-weight: 500;
+      text-align: right;
+    }
+    
+    /* Line Items Table - matching admin-table styling */
+    .line-items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .line-items-table thead {
+      background-color: #fff7ed;
+    }
+    
+    .line-items-table th {
+      color: #ea580c;
+      font-weight: 600;
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #fed7aa;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .line-items-table th.text-center {
+      text-align: center;
+    }
+    
+    .line-items-table th.text-right {
+      text-align: right;
+    }
+    
+    .line-items-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 14px;
+      background-color: white;
+    }
+    
+    .line-items-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .item-name {
+      font-weight: 500;
+      color: #7e2a0c;
+    }
+    
+    .item-description {
+      color: #ea580c;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+    
+    .item-details {
+      color: #ea580c;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+    
+    .item-details-header {
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    
+    .item-details-list {
+      margin-left: 8px;
+    }
+    
+    .item-price {
+      text-align: center;
+      color: #ea580c;
+    }
+    
+    .item-price-right {
+      text-align: right;
+      color: #ea580c;
+    }
+    
+    .table-footer {
+      background-color: #fff7ed;
+    }
+    
+    .table-footer td {
+      font-weight: 600;
+      color: #7e2a0c;
+      border-bottom: none;
+    }
+    
+    /* Admin Button - matching admin-btn-primary with correct hover */
+    .admin-btn-primary {
+      display: inline-block;
+      background-color: #f54900;
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      text-align: center;
+      transition: background-color 0.15s ease-in-out;
+      border: 1px solid transparent;
+    }
+    
+    .admin-btn-primary:hover {
+      background-color: #ca3500;
+    }
+    
+    .btn-container {
+      text-align: center;
+      margin: 24px 0;
+    }
+    
+    /* Status Badge */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      background-color: #dbeafe;
+      color: #1d4ed8;
+    }
+    
+    .footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 14px;
+      color: #6b7280;
+    }
+    
+    .signature {
+      margin-top: 24px;
+      font-weight: 500;
+      color: #374151;
+    }
+    
+    .signature-name {
+      color: #7e2a0c;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-wrapper">
+    <div class="admin-container">
+      <div class="admin-container-header">
+        <div class="brand-logo">Mang Crinkle</div>
+        <h1 class="admin-container-title">New Order #<%= @order.id %></h1>
+        <p class="admin-container-subtitle">Order received from <%= @customer_name %></p>
+      </div>
+
+      <div class="admin-container-content">
+        <div class="content-section">
+          <p>Hello <%= @admin_user.display_name %>,</p>
+          
+          <p>A new order has been received and is ready for processing.</p>
+          
+          <div class="order-summary">
+            <div class="order-summary-title">Order Summary</div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Order ID:</span>
+              <span class="order-detail-value">#<%= @order.id %></span>
+            </div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Customer:</span>
+              <span class="order-detail-value"><%= @customer_name %></span>
+            </div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Email:</span>
+              <span class="order-detail-value"><%= @order.email %></span>
+            </div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Phone:</span>
+              <span class="order-detail-value"><%= @order.phone %></span>
+            </div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Status:</span>
+              <span class="order-detail-value">
+                <span class="status-badge"><%= @order.status.humanize %></span>
+              </span>
+            </div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Order Total:</span>
+              <span class="order-detail-value"><strong>$<%= sprintf('%.2f', @order.total_price) %></strong></span>
+            </div>
+          </div>
+          
+          <% if @order.line_items.any? %>
+            <div class="content-section">
+              <h3 style="color: #7e2a0c; margin-bottom: 12px; font-size: 16px; font-weight: 600;">Items Ordered</h3>
+              
+              <table class="line-items-table">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th class="text-center">Qty</th>
+                    <th class="text-center">Price</th>
+                    <th class="text-right">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @order.line_items.each do |item| %>
+                    <tr>
+                      <td>
+                        <div class="item-name"><%= item.purchasable.name %></div>
+                        <% if item.description.present? %>
+                          <div class="item-description"><%= item.description %></div>
+                        <% end %>
+                        <% if item.purchasable.is_a?(CrinklePackage) && item.selected_products.any? %>
+                          <div class="item-details">
+                            <div class="item-details-header">Selected items:</div>
+                            <% item.selected_products.each do |selected| %>
+                              <div class="item-details-list">• <%= selected[:quantity] %>x <%= selected[:product].name %></div>
+                            <% end %>
+                          </div>
+                        <% end %>
+                      </td>
+                      <td class="item-price"><%= item.quantity %></td>
+                      <td class="item-price">$<%= sprintf('%.2f', item.price) %></td>
+                      <td class="item-price-right">$<%= sprintf('%.2f', item.quantity * item.price) %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+                <tfoot class="table-footer">
+                  <tr>
+                    <td colspan="3" style="text-align: right;">Total:</td>
+                    <td style="text-align: right;">$<%= sprintf('%.2f', @order.total_price) %></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          <% end %>
+          
+          <% if @order.address.present? %>
+            <div class="content-section">
+              <h3 style="color: #7e2a0c; margin-bottom: 12px; font-size: 16px; font-weight: 600;">Delivery Address</h3>
+              <div style="background-color: #fff7ed; padding: 12px; border-radius: 6px; border: 1px solid #fed7aa; margin: 0;">
+                <%= simple_format(@order.address) %>
+              </div>
+            </div>
+          <% end %>
+          
+          <div class="btn-container">
+            <a href="<%= Rails.application.routes.url_helpers.admin_order_url(@order, host: Rails.application.config.action_mailer.default_url_options[:host]) %>" class="admin-btn-primary">View Order Details</a>
+          </div>
+        </div>
+
+        <div class="footer">
+          <p>Order placed at: <%= @order.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+          <p>This notification was sent to: <%= @admin_user.email %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html> 

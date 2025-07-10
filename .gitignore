@@ -38,3 +38,28 @@
 !/app/assets/builds/.keep
 
 /node_modules
+
+# macOS system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor and IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary test files
+test_email.rb
+temp_*.rb
+test_*.rb
+
+# Documentation files (optional - uncomment if you don't want to commit them)
+# EMAIL_SETUP.md
+# RECAPTCHA_SETUP.md

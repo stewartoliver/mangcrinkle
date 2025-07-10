@@ -2,9 +2,18 @@ class ContactMessagesController < ApplicationController
   before_action :find_or_create_user, only: [:create]
 
   def create
+    # Verify reCAPTCHA first
+    unless verify_recaptcha_if_needed
+      redirect_to contact_path, alert: 'Please complete the reCAPTCHA verification.'
+      return
+    end
+    
     @contact_message = @user.contact_messages.build(contact_message_params)
     
     if @contact_message.save
+      # Send confirmation to customer
+      CustomerMailer.contact_confirmation(@contact_message).deliver_now
+      
       # Send notifications to admins who want contact form notifications
       notify_admins_of_new_contact
       
@@ -46,7 +55,7 @@ class ContactMessagesController < ApplicationController
     User.admins.includes(:admin_notification_preference).each do |admin|
       preferences = admin.notification_preferences
       if preferences.contact_form_notifications?
-        AdminMailer.new_contact_message(@contact_message, admin).deliver_later
+        AdminMailer.new_contact_message(@contact_message, admin).deliver_now
       end
     end
   end

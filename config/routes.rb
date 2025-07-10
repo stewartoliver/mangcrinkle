@@ -8,6 +8,17 @@ Rails.application.routes.draw do
   # Simple backup health endpoint
   get "health" => proc { [200, {}, ["OK"]] }
 
+  # Error pages
+  get "/404", to: "errors#not_found"
+  get "/422", to: "errors#unprocessable_entity"
+  get "/500", to: "errors#internal_server_error"
+
+  # Test routes for error pages (development only)
+  if Rails.env.development?
+    get "/test-404", to: "errors#test_404"
+    get "/test-500", to: "errors#test_500"
+  end
+
   # Public routes
   root 'pages#home'
   get 'about', to: 'pages#about'
@@ -52,6 +63,7 @@ Rails.application.routes.draw do
       end
     end
     resources 'crinkle-packages', controller: 'crinkle_packages', as: 'crinkle_packages'
+    resources :companies
     
     resources :orders, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
       collection do
@@ -102,28 +114,17 @@ Rails.application.routes.draw do
     # Content Management
     resources 'content-blocks', controller: 'content_blocks', as: 'content_blocks'
     
-    # Company Management
-    resources :companies
-    
     # Reviews Management
-    resources :reviews, except: [:new, :create] do
+    resources :reviews, only: [:index, :show, :edit, :update, :destroy] do
       member do
         patch :approve
         patch :unapprove
         patch :toggle_featured
       end
-      
-      collection do
-        patch :bulk_approve
-        patch :bulk_unapprove
-        patch :bulk_feature
-        patch :bulk_unfeature
-        delete :bulk_destroy
-      end
     end
     
     # Review Invites Management
-    resources 'review-invites', except: [:edit, :update], controller: 'review_invites', as: 'review_invites' do
+    resources 'review-invites', controller: 'review_invites', as: 'review_invites' do
       member do
         patch :resend
       end
@@ -135,4 +136,15 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  # Catch-all route for 404 errors - MUST be last
+  # Exclude assets, packs, and other static files
+  match '*path', to: 'errors#not_found', via: :all, constraints: lambda { |req|
+    !req.path.start_with?('/assets/') && 
+    !req.path.start_with?('/packs/') && 
+    !req.path.start_with?('/images/') && 
+    !req.path.start_with?('/javascripts/') && 
+    !req.path.start_with?('/stylesheets/') &&
+    !req.path.match(/\.(png|jpg|jpeg|gif|svg|css|js|ico|woff|woff2|ttf|eot|webp)$/i)
+  }
 end

@@ -1,5 +1,11 @@
 class NewsletterSubscriptionsController < ApplicationController
   def create
+    # Verify reCAPTCHA first
+    unless verify_recaptcha_if_needed
+      redirect_to root_path, alert: 'Please complete the reCAPTCHA verification.'
+      return
+    end
+    
     email = params[:email]&.downcase&.strip
     
     if email.blank?

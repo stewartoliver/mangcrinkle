@@ -1,0 +1,44 @@
+Mang Crinkle - New Order Notification
+
+New Order #<%= @order.id %>
+============================
+
+Hello <%= @admin_user.display_name %>,
+
+A new order has been received and is ready for processing.
+
+ORDER SUMMARY
+-------------
+Order ID: #<%= @order.id %>
+Customer: <%= @customer_name %>
+Email: <%= @order.email %>
+Phone: <%= @order.phone %>
+Status: <%= @order.status.humanize %>
+Order Total: $<%= sprintf('%.2f', @order.total_price) %>
+
+<% if @order.line_items.any? %>
+ITEMS ORDERED
+-------------
+<% @order.line_items.each do |item| %>
+- <%= item.purchasable.name %>
+  Quantity: <%= item.quantity %>
+  Price: $<%= sprintf('%.2f', item.price) %>
+  Total: $<%= sprintf('%.2f', item.quantity * item.price) %>
+<% end %>
+<% end %>
+
+<% if @order.address.present? %>
+DELIVERY ADDRESS
+----------------
+<%= @order.address %>
+<% end %>
+
+View full order details in the admin panel:
+<%= Rails.application.routes.url_helpers.admin_order_url(@order, host: Rails.application.config.action_mailer.default_url_options[:host]) %>
+
+Order placed at: <%= @order.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+
+This notification was sent to: <%= @admin_user.email %>
+
+--
+The Mang Crinkle Team 

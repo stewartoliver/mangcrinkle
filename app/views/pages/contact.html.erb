@@ -1,7 +1,10 @@
 <!-- Contact Header -->
 <div class="customer-page-header">
   <div class="customer-page-header-container">
-    <h1 class="customer-page-title">Contact Us</h1>
+    <div class="customer-logo-container">
+      <%= image_tag "Mang-logo.svg", alt: "MangCrinkle Logo", class: "h-20 w-auto" %>
+    </div>
+    <h1 class="customer-page-title company-name-font">Contact Us</h1>
     <p class="customer-page-subtitle">
       Have questions about our delicious crinkles? We'd love to hear from you!
     </p>
@@ -73,6 +76,12 @@
               <%= form.text_area :message, rows: 4, required: true, class: "form-textarea" %>
             </div>
           </div>
+
+          <% if show_recaptcha? %>
+            <div>
+              <%= recaptcha_tags %>
+            </div>
+          <% end %>
 
           <div>
             <%= form.submit "Send Message", class: "form-btn-primary customer-transition" %>

@@ -6,6 +6,13 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <!-- Prevent search engines from indexing admin pages -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+    <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+
+    <!-- Admin Favicon -->
+    <%= render 'application/admin_favicon' %>
+
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -15,7 +22,7 @@
     <div class="max-w-md w-full space-y-8">
       <div class="text-center">
         <%= link_to root_path, class: "inline-block" do %>
-          <h1 class="text-3xl font-bold text-orange-950">Mang Crinkle</h1>
+          <h1 class="text-3xl font-bold text-orange-950 company-name-font">Mang Crinkle</h1>
         <% end %>
         <h2 class="mt-6 text-xl text-orange-700">Admin Portal</h2>
       </div>

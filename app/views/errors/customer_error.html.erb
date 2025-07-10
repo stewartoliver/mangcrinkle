@@ -1,0 +1,48 @@
+<!-- Error Header -->
+<div class="customer-page-header">
+  <div class="customer-page-header-container">
+    <div class="customer-logo-container">
+      <%= image_tag "Mang-logo.svg", alt: "MangCrinkle Logo", class: "h-20 w-auto" %>
+    </div>
+    <h1 class="customer-page-title company-name-font">
+      Oops! <%= @error_code %>
+    </h1>
+    <p class="customer-page-subtitle">
+      <%= @error_title %>
+    </p>
+  </div>
+</div>
+
+<!-- Error Content -->
+<div class="customer-content-section">
+  <div class="customer-container">
+    <div class="text-center max-w-2xl mx-auto">
+      <div class="mb-8">
+        <h2 class="customer-section-title mb-4">
+          <%= @error_title %>
+        </h2>
+        
+        <p class="customer-body-text text-gray-600 mb-8">
+          <%= @error_message %>
+        </p>
+        
+        <% if @error_code == '404' %>
+          <p class="customer-body-text text-gray-500 mb-8">
+            The page you're looking for might have been moved, deleted, or never existed in the first place.
+          </p>
+        <% else %>
+          <p class="customer-body-text text-gray-500 mb-8">
+            Don't worry, our team has been notified and we're working on fixing this issue.
+          </p>
+        <% end %>
+      </div>
+      
+      <!-- Centered Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <%= link_to "Back to Home", root_path, class: "customer-btn-primary w-full sm:w-auto" %>
+        <%= link_to "View Products", products_path, class: "customer-btn-secondary w-full sm:w-auto" %>
+        <%= link_to "Contact Us", contact_path, class: "customer-btn-secondary w-full sm:w-auto" %>
+      </div>
+    </div>
+  </div>
+</div> 

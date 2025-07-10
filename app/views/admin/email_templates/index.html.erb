@@ -46,14 +46,14 @@
 
   <div class="admin-stats-card">
     <div class="flex items-center">
-      <div class="admin-stats-icon admin-stats-icon-purple">
+      <div class="admin-stats-icon admin-stats-icon-orange">
         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
         </svg>
       </div>
       <div class="admin-stats-content">
         <h2 class="admin-stats-label">Hardcoded Templates</h2>
-        <p class="admin-stats-value admin-stats-value-purple"><%= @hardcoded_templates.count %></p>
+        <p class="admin-stats-value admin-stats-value-orange"><%= @hardcoded_templates.count %></p>
       </div>
     </div>
   </div>
@@ -206,28 +206,57 @@
           <span class="text-sm text-orange-600">Read-only templates built into the application</span>
         </div>
         
-        <% @hardcoded_templates.group_by { |t| t[:template_type] }.each do |template_type, templates| %>
-          <div class="bg-white rounded-lg shadow-sm border border-purple-200">
-            <div class="px-6 py-4 border-b border-purple-200 bg-purple-50">
-              <h4 class="text-lg font-medium text-purple-950 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        <% 
+          # Define group display information
+          group_info = {
+            'customer_communications' => {
+              title: 'Customer Communications',
+              description: 'Welcome messages, newsletters, and contact responses',
+              icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z'
+            },
+            'order_management' => {
+              title: 'Order Management',
+              description: 'Order confirmations and shipping notifications',
+              icon: 'M9 5H7a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2V11a2 2 0 00-2-2h-5m-3-4h6m-6 0V7m6-4v4m-6 0l6 0'
+            },
+            'customer_reviews' => {
+              title: 'Customer Reviews',
+              description: 'Review invitations and review notifications',
+              icon: 'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z'
+            },
+            'admin_system' => {
+              title: 'Admin System',
+              description: 'Admin activation and password reset emails',
+              icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z'
+            }
+          }
+        %>
+        
+        <% @hardcoded_templates.group_by { |t| t[:group] }.sort_by { |group, _| group }.each do |group, templates| %>
+          <% group_data = group_info[group] || { title: group.titleize, description: 'Email templates', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' } %>
+          
+          <div class="bg-white rounded-lg shadow-sm border border-orange-200">
+            <div class="px-6 py-4 border-b border-orange-200 bg-orange-50">
+              <h4 class="text-lg font-medium text-orange-950 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<%= group_data[:icon] %>" />
                 </svg>
-                <%= template_type.titleize %> Templates
-                <span class="ml-2 text-sm text-purple-600">(<%= templates.count %>)</span>
-                <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                <%= group_data[:title] %>
+                <span class="ml-2 text-sm text-orange-600">(<%= templates.count %>)</span>
+                <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                   Hardcoded
                 </span>
               </h4>
+              <p class="text-sm text-orange-600 mt-1"><%= group_data[:description] %></p>
             </div>
             
-            <div class="divide-y divide-purple-200">
+            <div class="divide-y divide-orange-200">
               <% templates.each do |template| %>
-                <div class="px-6 py-4 hover:bg-purple-50 transition-colors duration-200">
+                <div class="px-6 py-4 hover:bg-orange-50 transition-colors duration-200">
                   <div class="flex items-center justify-between">
                     <div class="flex-1 min-w-0">
                       <div class="flex items-center space-x-3">
-                        <h5 class="text-sm font-medium text-purple-950 truncate">
+                        <h5 class="text-sm font-medium text-orange-950 truncate">
                           <%= template[:name] %>
                         </h5>
                         <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
@@ -238,7 +267,7 @@
                           Read-only
                         </span>
                       </div>
-                      <p class="text-sm text-purple-600 mt-1 truncate">
+                      <p class="text-sm text-orange-600 mt-1 truncate">
                         Subject: <%= template[:subject] %>
                       </p>
                       <p class="text-xs text-gray-500 mt-1 truncate">
@@ -249,9 +278,9 @@
                       </p>
                       <% if template[:variables].present? %>
                         <div class="mt-2 flex flex-wrap gap-1">
-                          <span class="text-xs text-purple-500">Variables:</span>
+                          <span class="text-xs text-orange-500">Variables:</span>
                           <% template[:variables].each do |var| %>
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">
                               <%= var %>
                             </span>
                           <% end %>

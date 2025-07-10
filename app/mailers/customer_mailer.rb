@@ -29,7 +29,7 @@ class CustomerMailer < ApplicationMailer
       rendered = template.render_with_variables(
         customer_name: @customer_name,
         order_number: @order.id,
-        order_total: number_to_currency(@order.total_price),
+        order_total: "$#{format('%.2f', @order.total_price)}",
         order_items: order_items_summary(@order),
         customer_email: @order.email
       )
@@ -62,6 +62,28 @@ class CustomerMailer < ApplicationMailer
     else
       @subject = "Re: #{@contact_message.subject}"
       @body = "Hi #{@customer_name},\n\nThanks for reaching out to us! Here's our response:\n\n#{@admin_response.response}"
+    end
+    
+    mail(to: @user.email, subject: @subject)
+  end
+
+  def contact_confirmation(contact_message)
+    @contact_message = contact_message
+    @user = contact_message.user
+    @customer_name = @user.display_name
+    
+    template = EmailTemplate.active.by_type('contact_confirmation').first
+    if template
+      rendered = template.render_with_variables(
+        customer_name: @customer_name,
+        subject: @contact_message.subject,
+        priority: @contact_message.priority.humanize
+      )
+      @subject = rendered[:subject]
+      @body = rendered[:body]
+    else
+      @subject = "We've received your message - #{@contact_message.subject}"
+      @body = "Hi #{@customer_name},\n\nThank you for contacting us! We've received your message and will get back to you soon."
     end
     
     mail(to: @user.email, subject: @subject)
@@ -192,7 +214,7 @@ class CustomerMailer < ApplicationMailer
 
   # Helper method to ensure company_name is available in mailer context
   def company_name
-    @company_name ||= Company.main.name.presence || 'Mang Crinkle Cookies'
+    @company_name ||= Company.main.name.presence || 'Mang Crinkle'
   end
   helper_method :company_name
 

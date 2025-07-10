@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New Review Submitted - <%= company_name %></title>
+  <title>New Review Received - Mang Crinkle</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -37,7 +37,7 @@
     .admin-container-title {
       font-size: 20px;
       font-weight: 600;
-      color: #9a3412;
+      color: #7e2a0c;
       margin: 0 0 4px 0;
       line-height: 1.4;
     }
@@ -56,7 +56,7 @@
     .brand-logo {
       font-size: 24px;
       font-weight: 700;
-      color: #ea580c;
+      color: #7e2a0c;
       margin-bottom: 8px;
       text-align: center;
     }
@@ -71,93 +71,108 @@
       line-height: 1.6;
     }
     
-    .content-section ul {
-      margin: 16px 0;
-      padding-left: 20px;
-      color: #374151;
-    }
-    
-    .content-section li {
-      margin-bottom: 8px;
-    }
-    
-    /* Review Details Card */
-    .review-details {
-      background-color: #fef3c7;
-      border: 1px solid #f59e0b;
-      padding: 20px;
-      border-radius: 8px;
+    /* Review Details Styling */
+    .review-summary {
+      background-color: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 6px;
+      padding: 16px;
       margin: 20px 0;
     }
     
-    .review-details h3 {
-      color: #92400e;
-      font-size: 18px;
+    .review-summary-title {
       font-weight: 600;
-      margin: 0 0 16px 0;
+      color: #7e2a0c;
+      margin-bottom: 12px;
+      font-size: 16px;
     }
     
-    .review-details p {
-      margin: 8px 0;
-      color: #b45309;
+    .review-detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #fed7aa;
     }
     
-    .review-details strong {
-      color: #92400e;
+    .review-detail-row:last-child {
+      border-bottom: none;
+    }
+    
+    .review-detail-label {
+      color: #ea580c;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .review-detail-value {
+      color: #7e2a0c;
+      font-weight: 500;
+      text-align: right;
+    }
+    
+    .star-rating {
+      color: #f59e0b;
+      font-size: 18px;
     }
     
     .review-content {
-      background-color: #fffbeb;
-      border: 1px solid #fbbf24;
-      padding: 16px;
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
       border-radius: 6px;
+      padding: 16px;
       margin: 16px 0;
+      white-space: pre-wrap;
+      color: #374151;
       font-style: italic;
     }
     
-    .review-content p {
-      margin: 0;
-      color: #b45309;
-    }
-    
-    .rating-display {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 8px 0;
-    }
-    
-    .stars {
-      color: #fbbf24;
-      font-size: 18px;
-    }
-    
-    .rating-text {
-      color: #b45309;
-      font-weight: 600;
-    }
-    
-    /* Admin Action Buttons */
-    .admin-actions {
-      background-color: #f0f9ff;
-      border: 1px solid #60a5fa;
-      padding: 20px;
-      border-radius: 8px;
+    /* Order Details */
+    .order-details {
+      background-color: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 6px;
+      padding: 16px;
       margin: 20px 0;
     }
     
-    .admin-actions h3 {
-      color: #1e40af;
-      font-size: 18px;
+    .order-details-title {
       font-weight: 600;
-      margin: 0 0 16px 0;
+      color: #7e2a0c;
+      margin-bottom: 12px;
+      font-size: 16px;
     }
     
+    .order-detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #fed7aa;
+    }
+    
+    .order-detail-row:last-child {
+      border-bottom: none;
+    }
+    
+    .order-detail-label {
+      color: #ea580c;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .order-detail-value {
+      color: #7e2a0c;
+      font-weight: 500;
+      text-align: right;
+    }
+    
+    /* Admin Button - matching admin-btn-primary with correct hover */
     .admin-btn-primary {
       display: inline-block;
-      background-color: #ea580c;
+      background-color: #f54900;
       color: white;
-      padding: 10px 20px;
+      padding: 12px 24px;
       text-decoration: none;
       border-radius: 6px;
       font-weight: 500;
@@ -165,57 +180,15 @@
       text-align: center;
       transition: background-color 0.15s ease-in-out;
       border: 1px solid transparent;
-      margin-right: 8px;
-      margin-bottom: 8px;
     }
     
     .admin-btn-primary:hover {
-      background-color: #dc2626;
+      background-color: #ca3500;
     }
     
-    .admin-btn-secondary {
-      display: inline-block;
-      background-color: #6b7280;
-      color: white;
-      padding: 10px 20px;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: 500;
-      font-size: 14px;
+    .btn-container {
       text-align: center;
-      transition: background-color 0.15s ease-in-out;
-      border: 1px solid transparent;
-      margin-right: 8px;
-      margin-bottom: 8px;
-    }
-    
-    .admin-btn-secondary:hover {
-      background-color: #374151;
-    }
-    
-    .next-steps {
-      background-color: #f0fdf4;
-      border: 1px solid #22c55e;
-      padding: 20px;
-      border-radius: 8px;
-      margin: 20px 0;
-    }
-    
-    .next-steps h3 {
-      color: #15803d;
-      font-size: 18px;
-      font-weight: 600;
-      margin: 0 0 16px 0;
-    }
-    
-    .next-steps ul {
-      margin: 0;
-      padding-left: 20px;
-    }
-    
-    .next-steps li {
-      margin-bottom: 8px;
-      color: #166534;
+      margin: 24px 0;
     }
     
     .footer {
@@ -233,30 +206,8 @@
     }
     
     .signature-name {
-      color: #ea580c;
+      color: #7e2a0c;
       font-weight: 600;
-    }
-    
-    .verified-badge {
-      background-color: #d1fae5;
-      color: #065f46;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .unverified-badge {
-      background-color: #fee2e2;
-      color: #dc2626;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
   </style>
 </head>
@@ -264,79 +215,94 @@
   <div class="email-wrapper">
     <div class="admin-container">
       <div class="admin-container-header">
-        <div class="brand-logo">🍪 <%= company_name %></div>
-        <h1 class="admin-container-title">New Review Submitted</h1>
-        <p class="admin-container-subtitle">A customer has shared their experience with your cookies</p>
+        <div class="brand-logo">Mang Crinkle</div>
+        <h1 class="admin-container-title">New Review Received</h1>
+        <p class="admin-container-subtitle">A customer has left a review for order #<%= @review.order.id %></p>
       </div>
 
       <div class="admin-container-content">
         <div class="content-section">
-          <p>Hello Admin,</p>
+          <p>Hello <%= @admin_user.display_name %>,</p>
           
-          <p>Great news! A customer has just submitted a review for <%= company_name %> cookies. Here are the details:</p>
+          <p>A new customer review has been submitted and is now live on the website. Here are the details:</p>
           
-          <div class="review-details">
-            <h3>📝 Review Details</h3>
-            <p><strong>Customer:</strong> <%= @review.customer_display_name %></p>
-            <p><strong>Email:</strong> <%= @review.email %></p>
-            <div class="rating-display">
-              <strong>Rating:</strong>
-              <span class="stars"><%= '★' * @review.rating %><%= '☆' * (5 - @review.rating) %></span>
-              <span class="rating-text"><%= @review.rating %>/5 stars</span>
-            </div>
-            <% if @review.title.present? %>
-              <p><strong>Title:</strong> "<%= @review.title %>"</p>
-            <% end %>
-            <% if @review.verified_purchase? %>
-              <p><strong>Purchase Status:</strong> 
-                <span class="verified-badge">Verified Purchase</span>
-                (Order #<%= @review.order.id %>)
-              </p>
-            <% else %>
-              <p><strong>Purchase Status:</strong> 
-                <span class="unverified-badge">Unverified</span>
-              </p>
-            <% end %>
-            <p><strong>Submitted:</strong> <%= @review.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+          <div class="review-summary">
+            <div class="review-summary-title">Review Details</div>
             
-            <% if @review.content.present? %>
-              <div class="review-content">
-                <p>"<%= @review.content %>"</p>
-              </div>
-            <% end %>
+            <div class="review-detail-row">
+              <span class="review-detail-label">Customer:</span>
+              <span class="review-detail-value"><%= @review.customer_name %></span>
+            </div>
+            
+            <div class="review-detail-row">
+              <span class="review-detail-label">Rating:</span>
+              <span class="review-detail-value">
+                <span class="star-rating">
+                  <% @review.rating.times do %>★<% end %>
+                  <% (5 - @review.rating).times do %>☆<% end %>
+                </span>
+                (<%= @review.rating %>/5)
+              </span>
+            </div>
+            
+            <div class="review-detail-row">
+              <span class="review-detail-label">Email:</span>
+              <span class="review-detail-value"><%= @review.email %></span>
+            </div>
+            
+            <div class="review-detail-row">
+              <span class="review-detail-label">Submitted:</span>
+              <span class="review-detail-value"><%= @review.created_at.strftime("%B %d, %Y at %I:%M %p") %></span>
+            </div>
           </div>
           
-          <div class="admin-actions">
-            <h3>🛠️ Quick Actions</h3>
-            <a href="<%= admin_review_url(@review) %>" class="admin-btn-primary">View in Admin Panel</a>
-            <a href="<%= approve_admin_review_url(@review) %>" class="admin-btn-primary">Quick Approve</a>
-            <a href="<%= admin_reviews_url %>" class="admin-btn-secondary">All Reviews</a>
+          <% if @review.comment.present? %>
+            <div class="content-section">
+              <h3 style="color: #7e2a0c; margin-bottom: 12px; font-size: 16px; font-weight: 600;">Customer Comment:</h3>
+              <div class="review-content"><%= @review.comment %></div>
+            </div>
+          <% end %>
+          
+          <div class="order-details">
+            <div class="order-details-title">Related Order Information</div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Order ID:</span>
+              <span class="order-detail-value">#<%= @review.order.id %></span>
+            </div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Order Date:</span>
+              <span class="order-detail-value"><%= @review.order.created_at.strftime("%B %d, %Y") %></span>
+            </div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Order Total:</span>
+              <span class="order-detail-value">$<%= sprintf('%.2f', @review.order.total_price) %></span>
+            </div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Items Count:</span>
+              <span class="review-detail-value"><%= @review.order.line_items.count %> item<%= @review.order.line_items.count == 1 ? '' : 's' %></span>
+            </div>
           </div>
           
-          <div class="next-steps">
-            <h3>📋 Recommended Next Steps</h3>
-            <ul>
-              <li>Review the content for appropriateness and authenticity</li>
-              <li>Approve the review to make it visible to customers</li>
-              <li>Consider featuring high-quality reviews on your homepage</li>
-              <li>Respond to any concerns or questions if needed</li>
-              <li>Thank the customer for their feedback</li>
-            </ul>
+          <div class="content-section">
+            <p>The review is now live on the website and visible to customers. <% if @review.rating >= 4 %>This is a positive review that will help showcase our quality to potential customers!<% elsif @review.rating == 3 %>This review provides valuable feedback for improvement.<% else %>This review may require follow-up to address any concerns raised.<% end %></p>
           </div>
           
-          <p>Customer reviews are valuable social proof that help build trust with potential customers. Take action on this review to maintain your excellent reputation!</p>
-          
-          <div class="signature">
-            <p>Happy reviewing!</p>
-            <p class="signature-name">Your <%= company_name %> Review System</p>
+          <div class="btn-container">
+            <a href="<%= Rails.application.routes.url_helpers.admin_reviews_url(host: Rails.application.config.action_mailer.default_url_options[:host]) %>" class="admin-btn-primary">View All Reviews</a>
           </div>
         </div>
 
         <div class="footer">
-          <p>This is an automated notification from your <%= company_name %> review system.</p>
-          <p style="margin-top: 20px;">
-            &copy; <%= Date.current.year %> <%= company_name %>. All rights reserved.
-          </p>
+          <p>Review submitted on: <%= @review.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+          <p>Admin notification sent to: <%= @admin_user.email %></p>
+          
+          <div class="signature">
+            <p>Mang Crinkle Admin System</p>
+          </div>
         </div>
       </div>
     </div>

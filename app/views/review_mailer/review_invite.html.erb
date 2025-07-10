@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Share Your <%= company_name %> Experience</title>
+  <title>Share Your Mang Crinkle Experience</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -19,8 +19,8 @@
       background-color: #f9fafb;
     }
     
-    /* Main Container */
-    .main-container {
+    /* Admin Container - matching admin design system */
+    .admin-container {
       background-color: white;
       border-radius: 8px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -28,35 +28,35 @@
       overflow: hidden;
     }
     
-    .container-header {
+    .admin-container-header {
       padding: 20px 24px;
       border-bottom: 1px solid #fed7aa;
       background-color: #fff7ed;
     }
     
-    .container-title {
+    .admin-container-title {
       font-size: 20px;
       font-weight: 600;
-      color: #9a3412;
+      color: #7e2a0c;
       margin: 0 0 4px 0;
       line-height: 1.4;
     }
     
-    .container-subtitle {
+    .admin-container-subtitle {
       font-size: 14px;
       color: #ea580c;
       margin: 0;
       font-weight: 400;
     }
     
-    .container-content {
+    .admin-container-content {
       padding: 24px;
     }
     
     .brand-logo {
       font-size: 24px;
       font-weight: 700;
-      color: #ea580c;
+      color: #7e2a0c;
       margin-bottom: 8px;
       text-align: center;
     }
@@ -71,76 +71,57 @@
       line-height: 1.6;
     }
     
-    .content-section ul {
-      margin: 16px 0;
-      padding-left: 20px;
-      color: #374151;
-    }
-    
-    .content-section li {
-      margin-bottom: 8px;
-    }
-    
-    /* Order Info Card */
-    .order-info {
-      background-color: #fef3c7;
-      border: 1px solid #f59e0b;
-      padding: 20px;
-      border-radius: 8px;
+    /* Order Details */
+    .order-details {
+      background-color: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 6px;
+      padding: 16px;
       margin: 20px 0;
     }
     
-    .order-info h3 {
-      color: #92400e;
-      font-size: 18px;
+    .order-details-title {
       font-weight: 600;
-      margin: 0 0 16px 0;
-    }
-    
-    .order-info p {
-      margin: 8px 0;
-      color: #b45309;
-    }
-    
-    .order-info strong {
-      color: #92400e;
-    }
-    
-    /* CTA Button */
-    .btn-container {
-      text-align: center;
-      margin: 30px 0;
-    }
-    
-    .btn-primary {
-      display: inline-block;
-      background-color: #ea580c;
-      color: white;
-      padding: 15px 30px;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: 600;
+      color: #7e2a0c;
+      margin-bottom: 12px;
       font-size: 16px;
-      text-align: center;
-      transition: background-color 0.15s ease-in-out;
-      border: 1px solid transparent;
     }
     
-    .btn-primary:hover {
-      background-color: #dc2626;
+    .order-detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #fed7aa;
     }
     
-    /* Why Review Matters */
+    .order-detail-row:last-child {
+      border-bottom: none;
+    }
+    
+    .order-detail-label {
+      color: #ea580c;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .order-detail-value {
+      color: #7e2a0c;
+      font-weight: 500;
+      text-align: right;
+    }
+    
+    /* Review Benefits */
     .review-benefits {
-      background-color: #f0f9ff;
-      border: 1px solid #60a5fa;
+      background-color: #fff7ed;
+      border: 1px solid #fed7aa;
       padding: 20px;
       border-radius: 8px;
       margin: 20px 0;
     }
     
     .review-benefits h3 {
-      color: #1e40af;
+      color: #7e2a0c;
       font-size: 18px;
       font-weight: 600;
       margin: 0 0 16px 0;
@@ -153,7 +134,31 @@
     
     .review-benefits li {
       margin-bottom: 8px;
-      color: #1e3a8a;
+      color: #ea580c;
+    }
+    
+    /* Admin Button - matching admin-btn-primary with correct hover */
+    .admin-btn-primary {
+      display: inline-block;
+      background-color: #f54900;
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      text-align: center;
+      transition: background-color 0.15s ease-in-out;
+      border: 1px solid transparent;
+    }
+    
+    .admin-btn-primary:hover {
+      background-color: #ca3500;
+    }
+    
+    .btn-container {
+      text-align: center;
+      margin: 24px 0;
     }
     
     .footer {
@@ -171,86 +176,81 @@
     }
     
     .signature-name {
-      color: #ea580c;
+      color: #7e2a0c;
       font-weight: 600;
-    }
-    
-    .expiry-notice {
-      background-color: #fef3c7;
-      border: 1px solid #f59e0b;
-      padding: 12px;
-      border-radius: 6px;
-      margin: 20px 0;
-      text-align: center;
-    }
-    
-    .expiry-notice p {
-      margin: 0;
-      color: #b45309;
-      font-size: 14px;
     }
   </style>
 </head>
 <body>
   <div class="email-wrapper">
-    <div class="main-container">
-      <div class="container-header">
-        <div class="brand-logo">🍪 <%= company_name %></div>
-        <h1 class="container-title">We'd Love Your Feedback!</h1>
-        <p class="container-subtitle">Help us bake even better cookies for everyone</p>
+    <div class="admin-container">
+      <div class="admin-container-header">
+        <div class="brand-logo">Mang Crinkle</div>
+        <h1 class="admin-container-title">How Was Your Experience?</h1>
+        <p class="admin-container-subtitle">We'd love to hear your thoughts, <%= @customer_name %>!</p>
       </div>
 
-      <div class="container-content">
+      <div class="admin-container-content">
         <div class="content-section">
-          <p>Hi <%= @customer_name %>!</p>
+          <p>Hello <%= @customer_name %>,</p>
           
-          <p>Thank you for choosing <%= company_name %>! We hope you absolutely loved your delicious Filipino crinkle cookies.</p>
+          <p>We hope you've had a chance to enjoy your recent Mang Crinkle order! Your experience matters deeply to us, and we'd love to hear about it.</p>
           
-          <% if @order %>
-            <div class="order-info">
-              <h3>📦 Your Order Details:</h3>
-              <p><strong>Order #:</strong> <%= @order.id %></p>
-              <p><strong>Date:</strong> <%= @order.created_at.strftime("%B %d, %Y") %></p>
-              <p><strong>Total:</strong> $<%= number_with_precision(@order.total_price, precision: 2) %></p>
+          <div class="order-details">
+            <div class="order-details-title">Your Recent Order</div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Order Number:</span>
+              <span class="order-detail-value">#<%= @order.id %></span>
             </div>
-          <% end %>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Order Date:</span>
+              <span class="order-detail-value"><%= @order.created_at.strftime("%B %d, %Y") %></span>
+            </div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Items:</span>
+              <span class="order-detail-value"><%= @order.line_items.count %> item<%= @order.line_items.count == 1 ? '' : 's' %></span>
+            </div>
+          </div>
           
-          <p>Your experience matters to us! Would you take a moment to share your thoughts? Your review helps other cookie lovers discover our traditional Filipino treats and helps us continue improving our recipes.</p>
-          
-          <div class="btn-container">
-            <a href="<%= @review_url %>" class="btn-primary">✍️ Write Your Review</a>
+          <div class="content-section">
+            <p>As a small family business, every review helps us improve and helps other Filipino food lovers discover our authentic treats. Whether you loved your order or have suggestions for us, we genuinely value your feedback.</p>
           </div>
           
           <div class="review-benefits">
-            <h3>🌟 Why your review matters:</h3>
+            <h3>Why Your Review Matters:</h3>
             <ul>
-              <li>Help fellow cookie lovers discover authentic Filipino treats</li>
-              <li>Support our family-owned small business</li>
-              <li>Help us improve our recipes and service</li>
-              <li>Share the joy of traditional Filipino baking</li>
-              <li>Build a community of crinkle cookie enthusiasts</li>
+              <li>Helps us maintain our quality standards</li>
+              <li>Guides other customers in their choices</li>
+              <li>Supports our small family business</li>
+              <li>Helps us improve our recipes and service</li>
+              <li>Builds our community of Filipino food lovers</li>
             </ul>
           </div>
           
-          <p>It only takes a minute, and your honest feedback is incredibly valuable to us. Whether you share what you loved most or suggestions for improvement, every review helps us serve you better.</p>
-          
-          <div class="expiry-notice">
-            <p>⏰ This review invitation expires in 30 days.</p>
+          <div class="content-section">
+            <p>It only takes a few minutes to share your experience, and it means the world to us. Click below to leave your review:</p>
           </div>
           
-          <p>If you have any questions or concerns, please don't hesitate to contact us at <strong><%= company_email %></strong>.</p>
+          <div class="btn-container">
+            <a href="<%= Rails.application.routes.url_helpers.new_order_review_url(@order, host: Rails.application.config.action_mailer.default_url_options[:host]) %>" class="admin-btn-primary">Leave a Review</a>
+          </div>
           
-          <div class="signature">
-            <p>Salamat (thank you) for being part of our family!</p>
-            <p class="signature-name">The <%= company_name %> Team</p>
+          <div class="content-section">
+            <p>Thank you for choosing Mang Crinkle and for being part of our family. We're grateful for customers like you who help us share the joy of authentic Filipino treats!</p>
           </div>
         </div>
 
         <div class="footer">
-          <p>This review invitation was sent to <%= @review_invite&.email || 'your email' %> because you recently placed an order with us.</p>
-          <p style="margin-top: 20px;">
-            &copy; <%= Date.current.year %> <%= company_name %>. All rights reserved.
-          </p>
+          <p>This review invitation was sent for order #<%= @order.id %></p>
+          <p>Questions? Reply to this email or contact us at <%= company_email %></p>
+          
+          <div class="signature">
+            <p>With love and fresh-baked goodness,<br>
+            <span class="signature-name">The Mang Crinkle Team</span></p>
+          </div>
         </div>
       </div>
     </div>

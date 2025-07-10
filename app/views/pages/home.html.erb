@@ -8,8 +8,8 @@
       <div class="customer-logo-container">
         <%= image_tag "Mang-logo.svg", alt: "MangCrinkle Logo", class: "h-48 w-auto sm:h-64 md:h-72 lg:h-96" %>
       </div>
-      <h1 class="customer-page-title customer-hover-scale">
-        Mang Crinkle Cookies
+      <h1 class="customer-page-title customer-hover-scale company-name-font text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
+        Mang Crinkle
       </h1>
       <p class="customer-page-subtitle">
         Handcrafted Filipino-style crinkle cookies, baked with love and a touch of kilig!
@@ -107,6 +107,13 @@
               placeholder: "Enter your email address", 
               required: true, 
               class: "customer-newsletter-input" %>
+        
+        <% if show_recaptcha? %>
+          <div class="w-full mt-2">
+            <%= recaptcha_tags %>
+          </div>
+        <% end %>
+        
         <%= form.submit "Subscribe", 
               class: "customer-newsletter-submit" %>
       <% end %>

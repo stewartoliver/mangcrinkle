@@ -19,8 +19,8 @@
       background-color: #f9fafb;
     }
     
-    /* Main Container */
-    .main-container {
+    /* Admin Container - matching admin design system */
+    .admin-container {
       background-color: white;
       border-radius: 8px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -28,35 +28,35 @@
       overflow: hidden;
     }
     
-    .container-header {
+    .admin-container-header {
       padding: 20px 24px;
       border-bottom: 1px solid #fed7aa;
       background-color: #fff7ed;
     }
     
-    .container-title {
+    .admin-container-title {
       font-size: 20px;
       font-weight: 600;
-      color: #9a3412;
+      color: #7e2a0c;
       margin: 0 0 4px 0;
       line-height: 1.4;
     }
     
-    .container-subtitle {
+    .admin-container-subtitle {
       font-size: 14px;
       color: #ea580c;
       margin: 0;
       font-weight: 400;
     }
     
-    .container-content {
+    .admin-container-content {
       padding: 24px;
     }
     
     .brand-logo {
       font-size: 24px;
       font-weight: 700;
-      color: #ea580c;
+      color: #7e2a0c;
       margin-bottom: 8px;
       text-align: center;
     }
@@ -71,90 +71,172 @@
       line-height: 1.6;
     }
     
-    .content-section h3 {
-      color: #9a3412;
-      font-size: 18px;
-      font-weight: 600;
-      margin: 0 0 12px 0;
-    }
-    
-    .content-section h4 {
-      color: #ea580c;
-      font-size: 16px;
-      font-weight: 600;
-      margin: 16px 0 8px 0;
-    }
-    
-    .content-section ul {
-      margin: 16px 0;
-      padding-left: 20px;
-      color: #374151;
-    }
-    
-    .content-section li {
-      margin-bottom: 8px;
-    }
-    
-    /* Order Details Card */
-    .order-details {
-      background-color: #fef3c7;
-      border: 1px solid #f59e0b;
-      padding: 20px;
-      border-radius: 8px;
+    /* Order Details Styling */
+    .order-summary {
+      background-color: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 6px;
+      padding: 16px;
       margin: 20px 0;
     }
     
-    .order-details h3 {
-      color: #92400e;
-      font-size: 18px;
+    .order-summary-title {
       font-weight: 600;
-      margin: 0 0 16px 0;
+      color: #7e2a0c;
+      margin-bottom: 12px;
+      font-size: 16px;
     }
     
-    .order-details p {
-      margin: 8px 0;
-      color: #b45309;
+    .order-detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #fed7aa;
     }
     
-    .order-details strong {
-      color: #92400e;
+    .order-detail-row:last-child {
+      border-bottom: none;
+      font-weight: 600;
+      color: #7e2a0c;
     }
     
-    .order-items {
-      background-color: #fffbeb;
-      border: 1px solid #fbbf24;
-      padding: 16px;
-      border-radius: 6px;
+    .order-detail-label {
+      color: #ea580c;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .order-detail-value {
+      color: #7e2a0c;
+      font-weight: 500;
+      text-align: right;
+    }
+    
+    /* Line Items Table - matching admin-table styling */
+    .line-items-table {
+      width: 100%;
+      border-collapse: collapse;
       margin: 16px 0;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
     }
     
-    .order-items ul {
-      margin: 0;
-      padding-left: 20px;
+    .line-items-table thead {
+      background-color: #fff7ed;
     }
     
-    .order-items li {
-      margin-bottom: 6px;
-      color: #b45309;
+    .line-items-table th {
+      color: #ea580c;
+      font-weight: 600;
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #fed7aa;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
     
-    .address-section {
-      background-color: #f0f9ff;
-      border: 1px solid #60a5fa;
-      padding: 16px;
+    .line-items-table th.text-center {
+      text-align: center;
+    }
+    
+    .line-items-table th.text-right {
+      text-align: right;
+    }
+    
+    .line-items-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 14px;
+      background-color: white;
+    }
+    
+    .line-items-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .item-name {
+      font-weight: 500;
+      color: #7e2a0c;
+    }
+    
+    .item-description {
+      color: #ea580c;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+    
+    .item-details {
+      color: #ea580c;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+    
+    .item-details-header {
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    
+    .item-details-list {
+      margin-left: 8px;
+    }
+    
+    .item-price {
+      text-align: center;
+      color: #ea580c;
+    }
+    
+    .item-price-right {
+      text-align: right;
+      color: #ea580c;
+    }
+    
+    .table-footer {
+      background-color: #fff7ed;
+    }
+    
+    .table-footer td {
+      font-weight: 600;
+      color: #7e2a0c;
+      border-bottom: none;
+    }
+    
+    /* Admin Button - matching admin-btn-primary with correct hover */
+    .admin-btn-primary {
+      display: inline-block;
+      background-color: #f54900;
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
       border-radius: 6px;
-      margin: 16px 0;
+      font-weight: 500;
+      font-size: 14px;
+      text-align: center;
+      transition: background-color 0.15s ease-in-out;
+      border: 1px solid transparent;
     }
     
-    .address-section h4 {
-      color: #1e40af;
-      margin: 0 0 8px 0;
+    .admin-btn-primary:hover {
+      background-color: #ca3500;
     }
     
-    .address-section p {
-      color: #1e3a8a;
-      margin: 0;
-      white-space: pre-line;
+    .btn-container {
+      text-align: center;
+      margin: 24px 0;
+    }
+    
+    /* Status Badge */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      background-color: #dbeafe;
+      color: #1d4ed8;
     }
     
     .footer {
@@ -172,104 +254,126 @@
     }
     
     .signature-name {
-      color: #ea580c;
+      color: #7e2a0c;
       font-weight: 600;
-    }
-    
-    .status-badge {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .status-confirmed {
-      background-color: #d1fae5;
-      color: #065f46;
-    }
-    
-    .status-processing {
-      background-color: #fef3c7;
-      color: #92400e;
-    }
-    
-    .status-shipped {
-      background-color: #dbeafe;
-      color: #1e40af;
     }
   </style>
 </head>
 <body>
   <div class="email-wrapper">
-    <div class="main-container">
-      <div class="container-header">
-        <div class="brand-logo">🍪 <%= company_name %></div>
-        <h1 class="container-title">Order Confirmation</h1>
-        <p class="container-subtitle">Your delicious cookies are on their way!</p>
+    <div class="admin-container">
+      <div class="admin-container-header">
+        <div class="brand-logo">Mang Crinkle</div>
+        <h1 class="admin-container-title">Order Confirmed #<%= @order.id %></h1>
+        <p class="admin-container-subtitle">Thank you for your order, <%= @customer_name %>!</p>
       </div>
 
-      <div class="container-content">
+      <div class="admin-container-content">
         <div class="content-section">
-          <% if @order %>
-            <p>Hello <%= @order.user&.display_name || @order.customer_name %>,</p>
-          <% else %>
-            <p>Hello valued customer,</p>
+          <p>Hello <%= @customer_name %>,</p>
+          
+          <p>Thank you for your order! We're excited to prepare your delicious Mang Crinkle treats and get them to you as soon as possible.</p>
+          
+          <div class="order-summary">
+            <div class="order-summary-title">Order Summary</div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Order ID:</span>
+              <span class="order-detail-value">#<%= @order.id %></span>
+            </div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Order Date:</span>
+              <span class="order-detail-value"><%= @order.created_at.strftime("%B %d, %Y at %I:%M %p") %></span>
+            </div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Status:</span>
+              <span class="order-detail-value">
+                <span class="status-badge"><%= @order.status.humanize %></span>
+              </span>
+            </div>
+            
+            <div class="order-detail-row">
+              <span class="order-detail-label">Order Total:</span>
+              <span class="order-detail-value"><strong>$<%= sprintf('%.2f', @order.total_price) %></strong></span>
+            </div>
+          </div>
+          
+          <% if @order.line_items.any? %>
+            <div class="content-section">
+              <h3 style="color: #7e2a0c; margin-bottom: 12px; font-size: 16px; font-weight: 600;">Items Ordered</h3>
+              
+              <table class="line-items-table">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th class="text-center">Qty</th>
+                    <th class="text-center">Price</th>
+                    <th class="text-right">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @order.line_items.each do |item| %>
+                    <tr>
+                      <td>
+                        <div class="item-name"><%= item.purchasable.name %></div>
+                        <% if item.description.present? %>
+                          <div class="item-description"><%= item.description %></div>
+                        <% end %>
+                        <% if item.purchasable.is_a?(CrinklePackage) && item.selected_products.any? %>
+                          <div class="item-details">
+                            <div class="item-details-header">Selected items:</div>
+                            <% item.selected_products.each do |selected| %>
+                              <div class="item-details-list">• <%= selected[:quantity] %>x <%= selected[:product].name %></div>
+                            <% end %>
+                          </div>
+                        <% end %>
+                      </td>
+                      <td class="item-price"><%= item.quantity %></td>
+                      <td class="item-price">$<%= sprintf('%.2f', item.price) %></td>
+                      <td class="item-price-right">$<%= sprintf('%.2f', item.quantity * item.price) %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+                <tfoot class="table-footer">
+                  <tr>
+                    <td colspan="3" style="text-align: right;">Total:</td>
+                    <td style="text-align: right;">$<%= sprintf('%.2f', @order.total_price) %></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
           <% end %>
           
-          <p><%= simple_format(@body) %></p>
-          
-          <% if @order %>
-            <div class="order-details">
-              <h3>📋 Order Summary</h3>
-              <p><strong>Order Number:</strong> #<%= @order.id %></p>
-              <p><strong>Order Date:</strong> <%= @order.created_at.strftime('%B %d, %Y at %I:%M %p') %></p>
-              <p><strong>Total:</strong> $<%= number_with_precision(@order.total_price, precision: 2) %></p>
-              <p><strong>Status:</strong> 
-                <span class="status-badge status-<%= @order.status %>">
-                  <%= @order.status.titleize %>
-                </span>
-              </p>
-              
-              <div class="order-items">
-                <h4>🍪 Items Ordered:</h4>
-                <ul>
-                  <% @order.line_items.each do |item| %>
-                    <li><%= item.quantity %>x <%= item.purchasable.name %> - $<%= number_with_precision(item.price, precision: 2) %></li>
-                  <% end %>
-                </ul>
-              </div>
-              
-              <div class="address-section">
-                <h4>📍 Delivery Address:</h4>
-                <p><%= @order.address %></p>
+          <% if @order.address.present? %>
+            <div class="content-section">
+              <h3 style="color: #7e2a0c; margin-bottom: 12px; font-size: 16px; font-weight: 600;">Delivery Address</h3>
+              <div style="background-color: #fff7ed; padding: 12px; border-radius: 6px; border: 1px solid #fed7aa; margin: 0;">
+                <%= simple_format(@order.address) %>
               </div>
             </div>
           <% end %>
           
-          <p><strong>What happens next?</strong></p>
-          <ul>
-            <li>We'll start preparing your order fresh in our kitchen</li>
-            <li>You'll receive a shipping confirmation when your cookies are on their way</li>
-            <li>Your order will be delivered within 3-5 business days</li>
-            <li>Enjoy your delicious <%= company_name %> cookies!</li>
-          </ul>
+          <div class="content-section">
+            <h3 style="color: #7e2a0c; margin-bottom: 12px; font-size: 16px; font-weight: 600;">What's Next?</h3>
+            <p>We'll start preparing your order right away! You'll receive another email with tracking information once your order ships.</p>
+            <p>If you have any questions about your order, please don't hesitate to contact us.</p>
+          </div>
           
-          <p>If you have any questions about your order, please don't hesitate to reach out to us at <strong><%= company_email %></strong>.</p>
-          
-          <div class="signature">
-            <p>Thank you for choosing <%= company_name %>!</p>
-            <p class="signature-name">The <%= company_name %> Team</p>
+          <div class="btn-container">
+            <a href="<%= Rails.application.routes.url_helpers.order_url(@order, host: Rails.application.config.action_mailer.default_url_options[:host]) %>" class="admin-btn-primary">View Order Details</a>
           </div>
         </div>
 
         <div class="footer">
-          <p>This email was sent to <%= @order&.email || 'your email' %> because you placed an order with <%= company_name %>.</p>
-          <p style="margin-top: 20px;">
-            &copy; <%= Date.current.year %> <%= company_name %>. All rights reserved.
-          </p>
+          <p>Order placed at: <%= @order.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+          <p>Questions? Reply to this email or contact us at <%= company_email %></p>
+          
+          <div class="signature">
+            <p>With love and fresh-baked goodness,<br>
+            <span class="signature-name">The Mang Crinkle Team</span></p>
+          </div>
         </div>
       </div>
     </div>

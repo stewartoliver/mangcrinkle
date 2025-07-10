@@ -53,20 +53,8 @@ class Admin::UsersController < Admin::BaseController
   def create
     @user = User.new(user_params)
     
-    # For admin users created without passwords, skip password validation
-    if @user.admin? && user_params[:password].blank?
-      @user.skip_password_validation = true
-    elsif @user.admin? && user_params[:password].present?
-      # If admin is created with a password, mark as activated
-      @user.activated_at = Time.current
-    end
-    
     if @user.save
-      if @user.admin? && @user.pending_activation?
-        redirect_to admin_user_path(@user), notice: 'Admin user created successfully. Use the "Send Activation Email" button to allow them to set up their password.'
-      else
-        redirect_to admin_user_path(@user), notice: 'User created successfully.'
-      end
+      redirect_to admin_user_path(@user), notice: 'Customer created successfully.'
     else
       render :new, status: :unprocessable_entity
     end
@@ -98,8 +86,15 @@ class Admin::UsersController < Admin::BaseController
   def update
     @user = User.find(params[:id])
     
+    # Check if user type is changing from customer to admin
+    changing_to_admin = @user.customer? && user_params[:user_type] == 'admin'
+    
     if @user.update(user_params)
-      redirect_to admin_user_path(@user), notice: 'User updated successfully.'
+      if changing_to_admin
+        redirect_to admin_user_path(@user), notice: 'User updated successfully and changed to admin. Use the "Send Activation Email" button to allow them to set up their password.'
+      else
+        redirect_to admin_user_path(@user), notice: 'User updated successfully.'
+      end
     else
       render :edit, status: :unprocessable_entity
     end

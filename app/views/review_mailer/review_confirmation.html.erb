@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thank you for your review! - <%= company_name %></title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    .email-wrapper {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    .brand-logo {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .header p {
+      margin: 10px 0 0 0;
+      font-size: 16px;
+      opacity: 0.9;
+    }
+    .content {
+      padding: 40px 30px;
+    }
+    .content h2 {
+      color: #ea580c;
+      margin-top: 0;
+      font-size: 24px;
+    }
+    .content p {
+      margin-bottom: 16px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .review-summary {
+      background-color: #fff7ed;
+      border-left: 4px solid #f97316;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .review-summary h3 {
+      margin-top: 0;
+      color: #ea580c;
+      font-size: 18px;
+    }
+    .stars {
+      color: #fbbf24;
+      font-size: 20px;
+      margin: 5px 0;
+    }
+    .review-content {
+      font-style: italic;
+      color: #6b7280;
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #f9fafb;
+      border-radius: 4px;
+    }
+    .cta-section {
+      background-color: #f0f9ff;
+      border: 1px solid #e0f2fe;
+      padding: 25px;
+      margin: 25px 0;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .cta-button {
+      display: inline-block;
+      background-color: #f97316;
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .footer {
+      background-color: #f3f4f6;
+      padding: 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #6b7280;
+    }
+    .social-links {
+      margin: 15px 0;
+    }
+    .social-links a {
+      color: #f97316;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    .next-steps {
+      background-color: #ecfdf5;
+      border: 1px solid #d1fae5;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+    .next-steps h3 {
+      color: #065f46;
+      margin-top: 0;
+      font-size: 18px;
+    }
+    .next-steps ul {
+      color: #047857;
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+    .next-steps li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-wrapper">
+    <div class="header">
+      <div class="brand-logo">🍪 <%= company_name %></div>
+      <h1>Thank You for Your Review!</h1>
+      <p>Your feedback means the world to us</p>
+    </div>
+
+    <div class="content">
+      <h2>Salamat, <%= @customer_name %>!</h2>
+      
+      <p>Thank you so much for taking the time to share your experience with our crinkle cookies! Your review has been received and is now being reviewed by our team.</p>
+      
+      <div class="review-summary">
+        <h3>📝 Your Review Summary</h3>
+        <div class="stars"><%= '★' * @review.rating %><%= '☆' * (5 - @review.rating) %></div>
+        <p><strong>Rating:</strong> <%= @review.rating %>/5 stars</p>
+        <% if @review.title.present? %>
+          <p><strong>Title:</strong> "<%= @review.title %>"</p>
+        <% end %>
+        <% if @review.verified_purchase? %>
+          <p><strong>Purchase Status:</strong> ✅ Verified Purchase (Order #<%= @review.order.id %>)</p>
+        <% end %>
+        <% if @review.content.present? %>
+          <div class="review-content">
+            "<%= @review.content %>"
+          </div>
+        <% end %>
+      </div>
+
+      <div class="next-steps">
+        <h3>🔍 What Happens Next?</h3>
+        <ul>
+          <li><strong>Review Process:</strong> Our team will review your submission within 1-2 business days</li>
+          <li><strong>Publication:</strong> Once approved, your review will appear on our website</li>
+          <li><strong>Community Impact:</strong> Your honest feedback helps other cookie lovers discover our treats</li>
+          <li><strong>Continuous Improvement:</strong> We use your feedback to make our cookies even better</li>
+        </ul>
+      </div>
+
+      <div class="cta-section">
+        <h3>🍪 Love Our Cookies?</h3>
+        <p>Share the joy with friends and family!</p>
+        <a href="<%= root_url %>" class="cta-button">Order More Cookies</a>
+        <a href="<%= products_url %>" class="cta-button">Browse Our Flavors</a>
+      </div>
+
+      <p>Your review is incredibly valuable to us as a small family business. It helps us grow, improve, and reach more people who love authentic Filipino treats.</p>
+      
+      <p>If you have any questions about your review or need to make changes, please don't hesitate to contact us.</p>
+      
+      <p>Maraming salamat (thank you very much)!</p>
+      <p><strong>The <%= company_name %> Family</strong></p>
+    </div>
+
+    <div class="footer">
+      <p>This email was sent to <%= @review.email %> because you submitted a review on our website.</p>
+      <div class="social-links">
+        <a href="mailto:<%= company_email %>">Contact Us</a> |
+        <a href="<%= root_url %>">Visit Our Website</a> |
+        <a href="<%= reviews_url %>">View All Reviews</a>
+      </div>
+      <p>&copy; <%= Date.current.year %> <%= company_name %>. Made with ❤️ in New Zealand.</p>
+    </div>
+  </div>
+</body>
+</html> 

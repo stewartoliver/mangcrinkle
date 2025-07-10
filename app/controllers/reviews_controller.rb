@@ -34,6 +34,15 @@ class ReviewsController < ApplicationController
   end
 
   def create
+    # Verify reCAPTCHA first
+    unless verify_recaptcha_if_needed
+      @order = current_user&.orders&.find(params[:order_id]) if params[:order_id]
+      @review_invite = @current_review_invite if @current_review_invite
+      flash.now[:alert] = 'Please complete the reCAPTCHA verification.'
+      render :new, status: :unprocessable_entity
+      return
+    end
+    
     @review = Review.new(review_params)
     @review_invite = @current_review_invite if @current_review_invite
     
@@ -75,6 +84,9 @@ class ReviewsController < ApplicationController
       
       # Send notification to admin
       ReviewMailer.new_review_notification(@review).deliver_later
+      
+      # Send confirmation to customer
+      ReviewMailer.review_confirmation(@review).deliver_later
       
       redirect_to reviews_path, notice: 'Thank you for your review! It will be published after approval.'
     else

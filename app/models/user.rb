@@ -16,8 +16,8 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :user_type, presence: true, inclusion: { in: %w[admin customer] }
   
-  # Password validation only for admin users or when password is being set
-  validates :password, length: { minimum: 6 }, if: -> { admin? && password.present? && !skip_password_validation }
+  # Improved password validation for admin users
+  validates :password, length: { minimum: 6 }, if: :password_validation_required?
   
   # Customer-specific validations
   validates :first_name, presence: true, if: :customer?
@@ -68,21 +68,39 @@ class User < ApplicationRecord
     save!
   end
 
-  # Override Devise's password requirement for customers
+  # Override Devise's password requirement for different user types
   def password_required?
+    # Skip password validation if explicitly set
     return false if skip_password_validation
     
     if admin?
-      # Admin users need password only if they're activated or setting a password
-      activated? && (new_record? || password.present? || password_confirmation.present?)
+      # Admin users need password only when:
+      # 1. They are activated AND
+      # 2. They are setting a password (new record with password, or updating with password)
+      activated? && (password.present? || password_confirmation.present?)
     else
-      # Customers don't need passwords
+      # Customers don't need passwords in this system
       false
     end
   end
 
-  # Override Devise's email confirmation requirement for customers
+  # Override Devise's email confirmation requirement
   def email_required?
     true
+  end
+
+  private
+
+  # Helper method to determine if password validation is required
+  def password_validation_required?
+    return false if skip_password_validation
+    
+    if admin?
+      # For admin users, validate password only if they're setting one
+      password.present? || password_confirmation.present?
+    else
+      # Customers don't need passwords
+      false
+    end
   end
 end

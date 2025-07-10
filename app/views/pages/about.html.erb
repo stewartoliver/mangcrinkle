@@ -1,17 +1,15 @@
 <!-- Hero Section -->
-<div class="customer-cta-section">
-  <div class="customer-container py-16">
-    <div class="text-center">
-      <div class="customer-logo-container">
-        <%= image_tag "Mang-logo.svg", alt: "MangCrinkle Logo", class: "h-20 w-auto" %>
-      </div>
-      <h1 class="customer-page-title">
-        <%= content_block_with_default('about_hero_title', 'Our Story') %>
-      </h1>
-      <p class="customer-page-subtitle">
-        <%= content_block_with_default('about_hero_subtitle', 'From a small kitchen in Manila to your doorstep, discover the journey of Mang Crinkle Cookies.') %>
-      </p>
+<div class="customer-page-header">
+  <div class="customer-page-header-container">
+    <div class="customer-logo-container">
+      <%= image_tag "Mang-logo.svg", alt: "MangCrinkle Logo", class: "h-20 w-auto" %>
     </div>
+    <h1 class="customer-page-title company-name-font">
+      <%= content_block_with_default('about_hero_title', 'Our Story') %>
+    </h1>
+    <p class="customer-page-subtitle">
+      <%= content_block_with_default('about_hero_subtitle', 'From a kitchen in Auckland to your doorstep, discover the journey of Mang Crinkle.') %>
+    </p>
   </div>
 </div>
 

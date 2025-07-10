@@ -1,0 +1,32 @@
+/* Custom Fonts */
+@font-face {
+    font-family: 'Munky';
+    src: url('Munky-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Company Name Font Classes */
+.company-name-font {
+    font-family: 'Munky', 'Cooper Black', serif;
+    font-weight: bold;
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto;
+    text-rendering: geometricPrecision;
+    font-feature-settings: "liga" 1, "kern" 1;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+    letter-spacing: 0.01em;
+}
+
+/* Image Rendering Optimization */
+.image-render-crisp {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}

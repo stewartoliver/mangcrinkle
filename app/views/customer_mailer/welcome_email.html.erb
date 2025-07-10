@@ -19,8 +19,8 @@
       background-color: #f9fafb;
     }
     
-    /* Main Container */
-    .main-container {
+    /* Admin Container - matching admin design system */
+    .admin-container {
       background-color: white;
       border-radius: 8px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -28,35 +28,35 @@
       overflow: hidden;
     }
     
-    .container-header {
+    .admin-container-header {
       padding: 20px 24px;
       border-bottom: 1px solid #fed7aa;
       background-color: #fff7ed;
     }
     
-    .container-title {
+    .admin-container-title {
       font-size: 20px;
       font-weight: 600;
-      color: #9a3412;
+      color: #7e2a0c;
       margin: 0 0 4px 0;
       line-height: 1.4;
     }
     
-    .container-subtitle {
+    .admin-container-subtitle {
       font-size: 14px;
       color: #ea580c;
       margin: 0;
       font-weight: 400;
     }
     
-    .container-content {
+    .admin-container-content {
       padding: 24px;
     }
     
     .brand-logo {
       font-size: 24px;
       font-weight: 700;
-      color: #ea580c;
+      color: #7e2a0c;
       margin-bottom: 8px;
       text-align: center;
     }
@@ -83,15 +83,15 @@
     
     /* Welcome Benefits */
     .welcome-benefits {
-      background-color: #fef3c7;
-      border: 1px solid #f59e0b;
+      background-color: #fff7ed;
+      border: 1px solid #fed7aa;
       padding: 20px;
       border-radius: 8px;
       margin: 20px 0;
     }
     
     .welcome-benefits h3 {
-      color: #92400e;
+      color: #7e2a0c;
       font-size: 18px;
       font-weight: 600;
       margin: 0 0 16px 0;
@@ -104,7 +104,7 @@
     
     .welcome-benefits li {
       margin-bottom: 8px;
-      color: #b45309;
+      color: #ea580c;
     }
     
     /* CTA Button */
@@ -113,9 +113,9 @@
       margin: 24px 0;
     }
     
-    .btn-primary {
+    .admin-btn-primary {
       display: inline-block;
-      background-color: #ea580c;
+      background-color: #f54900;
       color: white;
       padding: 12px 24px;
       text-decoration: none;
@@ -127,8 +127,8 @@
       border: 1px solid transparent;
     }
     
-    .btn-primary:hover {
-      background-color: #dc2626;
+    .admin-btn-primary:hover {
+      background-color: #ca3500;
     }
     
     .footer {
@@ -145,7 +145,7 @@
     }
     
     .footer-link:hover {
-      color: #dc2626;
+      color: #ca3500;
     }
     
     .signature {
@@ -155,20 +155,20 @@
     }
     
     .signature-name {
-      color: #ea580c;
+      color: #7e2a0c;
       font-weight: 600;
     }
     
     .newsletter-info {
-      background-color: #f0f9ff;
-      border: 1px solid #60a5fa;
+      background-color: #fff7ed;
+      border: 1px solid #fed7aa;
       padding: 16px;
       border-radius: 6px;
       margin: 20px 0;
     }
     
     .newsletter-info p {
-      color: #1e3a8a;
+      color: #ea580c;
       margin: 0;
       font-size: 14px;
     }
@@ -176,21 +176,27 @@
 </head>
 <body>
   <div class="email-wrapper">
-    <div class="main-container">
-      <div class="container-header">
-        <div class="brand-logo">🍪 <%= company_name %></div>
-        <h1 class="container-title">Welcome to the Family!</h1>
-        <p class="container-subtitle">Get ready for the most delicious Filipino treats</p>
+    <div class="admin-container">
+      <div class="admin-container-header">
+        <div class="brand-logo">Mang Crinkle</div>
+        <h1 class="admin-container-title">Welcome to the Family!</h1>
+        <p class="admin-container-subtitle">Get ready for the most delicious Filipino treats</p>
       </div>
 
-      <div class="container-content">
+      <div class="admin-container-content">
         <div class="content-section">
           <p>Hello <%= @customer_name %>,</p>
           
-          <p><%= simple_format(@body) %></p>
+          <% if @body %>
+            <p><%= simple_format(@body) %></p>
+          <% else %>
+            <p>Welcome to the Mang Crinkle family! We're thrilled to have you join our community of Filipino food lovers and dessert enthusiasts.</p>
+            
+            <p>Get ready to experience the authentic taste of traditional Filipino crinkle cookies, made with love using time-honored recipes passed down through generations.</p>
+          <% end %>
           
           <div class="welcome-benefits">
-            <h3>🎉 As a <%= company_name %> family member, you'll enjoy:</h3>
+            <h3>As a Mang Crinkle family member, you'll enjoy:</h3>
             <ul>
               <li>Early access to new flavors and seasonal treats</li>
               <li>Exclusive discounts and special offers</li>
@@ -200,32 +206,29 @@
             </ul>
           </div>
           
-          <p>Ready to try our signature crinkle cookies? Browse our collection of authentic Filipino treats made with love and traditional recipes passed down through generations.</p>
+          <div class="content-section">
+            <h3 style="color: #7e2a0c; margin-bottom: 12px; font-size: 16px; font-weight: 600;">What's Next?</h3>
+            <p>Start exploring our delicious selection of authentic Filipino crinkle cookies, from classic favorites to exciting seasonal varieties.</p>
+            <p>Keep an eye on your inbox for special offers, new flavor announcements, and exclusive content just for our family members!</p>
+          </div>
           
           <div class="btn-container">
-            <a href="<%= root_url %>" class="btn-primary">Shop Our Cookies</a>
+            <a href="<%= Rails.application.routes.url_helpers.products_url(host: Rails.application.config.action_mailer.default_url_options[:host]) %>" class="admin-btn-primary">Start Shopping</a>
           </div>
           
           <div class="newsletter-info">
-            <p>📧 You're now subscribed to our newsletter and will receive updates about new products, special offers, and baking tips. You can unsubscribe at any time.</p>
-          </div>
-          
-          <p>If you have any questions or need assistance, please don't hesitate to reach out to us at <strong><%= company_email %></strong>.</p>
-          
-          <div class="signature">
-            <p>Welcome to the sweetest family!</p>
-            <p class="signature-name">The <%= company_name %> Team</p>
+            <p><strong>Stay Connected:</strong> Follow us on social media for daily updates, behind-the-scenes content, and mouth-watering photos of our latest creations!</p>
           </div>
         </div>
 
         <div class="footer">
-          <p>This email was sent to <%= @user&.email || 'your email' %> because you subscribed to our newsletter or created an account.</p>
-          <p style="margin-top: 20px;">
-            If you no longer wish to receive these emails, you can <a href="#" class="footer-link">unsubscribe at any time</a>.
-          </p>
-          <p style="margin-top: 20px;">
-            &copy; <%= Date.current.year %> <%= company_name %>. All rights reserved.
-          </p>
+          <p>This welcome email was sent to: <%= @user.email %></p>
+          <p>Questions? Reply to this email or contact us at <%= company_email %></p>
+          
+          <div class="signature">
+            <p>With love and fresh-baked goodness,<br>
+            <span class="signature-name">The Mang Crinkle Team</span></p>
+          </div>
         </div>
       </div>
     </div>

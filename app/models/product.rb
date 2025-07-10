@@ -37,21 +37,65 @@ class Product < ApplicationRecord
     primary_image
   end
 
-  # Helper method to get all images
+  # Helper method to get all images with primary first
   def all_images
-    images.attached? ? images.to_a : []
+    return [] unless images.attached?
+    
+    images_array = images.to_a
+    
+    # If no primary image is set, return images in original order
+    return images_array unless primary_image_id.present?
+    
+    # Find the primary image
+    primary_img = images_array.find { |img| img.id.to_s == primary_image_id }
+    
+    # If primary image exists, put it first
+    if primary_img
+      other_images = images_array.reject { |img| img.id.to_s == primary_image_id }
+      [primary_img] + other_images
+    else
+      # Primary image ID is set but image doesn't exist, clear it and return original order
+      update_column(:primary_image_id, nil)
+      images_array
+    end
   end
 
-  # Helper method to get all images with primary status
+  # Helper method to get all images with primary status (for admin interface)
   def all_images_with_primary_status
     return [] unless images.attached?
     
-    images.map do |img|
+    ordered_images = all_images
+    
+    ordered_images.map do |img|
       {
         image: img,
-        is_primary: primary_image_id.present? ? img.id.to_s == primary_image_id : img == images.first
+        is_primary: primary_image_id.present? ? img.id.to_s == primary_image_id : img == ordered_images.first
       }
     end
+  end
+
+  # Ensure we always have a primary image if images exist
+  def ensure_primary_image
+    Rails.logger.debug "=== ENSURE PRIMARY IMAGE START ===" if Rails.env.development?
+    Rails.logger.debug "Images attached: #{images.attached?}" if Rails.env.development?
+    Rails.logger.debug "Images count: #{images.attached? ? images.count : 0}" if Rails.env.development?
+    Rails.logger.debug "Current primary_image_id: #{primary_image_id}" if Rails.env.development?
+    
+    if images.attached? && images.any? && primary_image_id.blank?
+      first_image_id = images.first.id.to_s
+      Rails.logger.debug "Setting primary image to first image: #{first_image_id}" if Rails.env.development?
+      
+      self.primary_image_id = first_image_id
+      if save
+        Rails.logger.debug "Successfully set primary image to: #{primary_image_id}" if Rails.env.development?
+      else
+        Rails.logger.error "Failed to save primary image: #{errors.full_messages}" if Rails.env.development?
+      end
+    else
+      Rails.logger.debug "No need to set primary image" if Rails.env.development?
+    end
+    
+    Rails.logger.debug "=== ENSURE PRIMARY IMAGE END ===" if Rails.env.development?
   end
 
   # Method to set primary image

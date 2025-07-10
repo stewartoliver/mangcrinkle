@@ -74,9 +74,35 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
-  # Ignore bad email addresses and do not raise email delivery errors.
-  # Set this to true and configure the email server for immediate delivery to raise delivery errors.
-  # config.action_mailer.raise_delivery_errors = false
+  # Configure Action Mailer for production
+  config.action_mailer.delivery_method = :smtp
+  
+  # Only enable email delivery if credentials are present
+  smtp_username = ENV.fetch('SMTP_USERNAME', nil)
+  smtp_password = ENV.fetch('SMTP_PASSWORD', nil)
+  
+  if smtp_username && smtp_password
+    config.action_mailer.perform_deliveries = true
+    config.action_mailer.raise_delivery_errors = true
+    puts "📧 Email delivery enabled with SMTP credentials"
+  else
+    config.action_mailer.perform_deliveries = false
+    config.action_mailer.raise_delivery_errors = false
+    puts "⚠️  Email delivery disabled - missing SMTP credentials"
+  end
+  
+  config.action_mailer.default_url_options = { host: ENV.fetch('APP_HOST', 'localhost') }
+  
+  # SMTP configuration - using environment variables for security
+  config.action_mailer.smtp_settings = {
+    address: ENV.fetch('SMTP_ADDRESS', 'smtp.gmail.com'),
+    port: ENV.fetch('SMTP_PORT', '587').to_i,
+    domain: ENV.fetch('SMTP_DOMAIN', 'gmail.com'),
+    user_name: smtp_username,
+    password: smtp_password,
+    authentication: 'plain',
+    enable_starttls_auto: true
+  }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
@@ -93,6 +119,6 @@ Rails.application.configure do
   #   "example.com",     # Allow requests from example.com
   #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
   # ]
-  # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  # Skip DNS rebinding protection for the default configuration.
+  # config.host_authorization = { exclude: ->(request) { request.path.include?('/rails/') } }
 end

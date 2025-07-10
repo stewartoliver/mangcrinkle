@@ -305,6 +305,7 @@ GEM
       execjs
       railties (>= 3.2)
       tilt
+    recaptcha (5.19.0)
     regexp_parser (2.10.0)
     reline (0.6.1)
       io-console (~> 0.5)
@@ -419,6 +420,7 @@ DEPENDENCIES
   pundit
   rails (~> 7.1.4, >= 7.1.4.2)
   react-rails
+  recaptcha
   rspec-rails
   selenium-webdriver
   simple_form

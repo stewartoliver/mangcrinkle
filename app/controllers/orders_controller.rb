@@ -13,6 +13,14 @@ class OrdersController < ApplicationController
   end
 
   def create
+    # Verify reCAPTCHA first
+    unless verify_recaptcha_if_needed
+      @cart_items = @cart.cart_items.includes(:product, :crinkle_package)
+      flash.now[:alert] = 'Please complete the reCAPTCHA verification.'
+      render :new, status: :unprocessable_entity
+      return
+    end
+    
     @order = Order.new(order_params)
     @cart_items = @cart.cart_items.includes(:product, :crinkle_package)
     
@@ -49,6 +57,30 @@ class OrdersController < ApplicationController
       # Recalculate total after all line items are created
       @order.calculate_total
       @order.save!
+      
+      # Send order confirmation email to customer
+      puts "🍪 DEBUG: Sending order confirmation email to: #{@order.email}"
+      CustomerMailer.order_confirmation(@order).deliver_now
+      puts "✅ DEBUG: Customer email sent successfully"
+      
+      # Send notification to admins who have new order notifications enabled
+      admin_users = User.admins
+      
+      puts "🍪 DEBUG: Found #{admin_users.count} total admin users"
+      
+      admin_users.find_each do |admin|
+        # Ensure admin has notification preferences (creates with defaults if missing)
+        prefs = admin.notification_preferences
+        puts "🍪 DEBUG: Admin #{admin.email} - new_order_notifications: #{prefs.new_order_notifications}"
+        
+        if prefs.new_order_notifications?
+          puts "🍪 DEBUG: Sending admin notification to: #{admin.email}"
+          AdminMailer.new_order_notification(@order, admin).deliver_now
+          puts "✅ DEBUG: Admin email sent successfully to #{admin.email}"
+        else
+          puts "⚠️  DEBUG: Admin #{admin.email} has notifications disabled"
+        end
+      end
       
       # Clear the cart after successful order
       @cart.cart_items.destroy_all

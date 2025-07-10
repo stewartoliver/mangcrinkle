@@ -15,38 +15,13 @@ class Admin::ProductsController < Admin::BaseController
   end
 
   def create
-    Rails.logger.debug "Creating product with images: #{params[:product][:images]&.length || 0}" if Rails.env.development?
+    @product = Product.new(product_params)
     
-    # Extract images from params to handle separately
-    new_images = params[:product][:images]
-    product_params_without_images = product_params.except(:images)
-    
-    @product = Product.new(product_params_without_images)
-
     if @product.save
-      # Handle images if provided
-      if new_images.present? && new_images.any? { |img| img.present? }
-        valid_images = new_images.select(&:present?)
-        
-        Rails.logger.debug "Valid new images: #{valid_images.length}" if Rails.env.development?
-        
-        # Check if images would exceed the limit
-        if valid_images.length > 3
-          @product.errors.add(:images, "Cannot upload #{valid_images.length} images. Maximum 3 images allowed")
-          @product.destroy # Clean up the created product
-          render :new, status: :unprocessable_entity
-          return
-        end
-        
-        # Attach images
-        @product.images.attach(valid_images)
-        Rails.logger.debug "Images attached. Total: #{@product.images.count}" if Rails.env.development?
-      end
-      
-      Rails.logger.debug "Product saved successfully with #{@product.images.count} images" if Rails.env.development?
+      # Ensure primary image is set if images were uploaded
+      @product.ensure_primary_image
       redirect_to admin_product_path(@product), notice: 'Product was successfully created.'
     else
-      Rails.logger.debug "Product save failed: #{@product.errors.full_messages}" if Rails.env.development?
       render :new, status: :unprocessable_entity
     end
   end
@@ -55,50 +30,48 @@ class Admin::ProductsController < Admin::BaseController
   end
 
   def update
-    # Handle primary image setting first if provided
-    primary_image_param = params[:primary_image_id]
+    Rails.logger.debug "=== UPDATE PRODUCT START ===" if Rails.env.development?
+    Rails.logger.debug "Images before update: #{@product.images.count}" if Rails.env.development?
+    Rails.logger.debug "Primary image ID before: #{@product.primary_image_id}" if Rails.env.development?
+    Rails.logger.debug "New images param: #{params[:product][:images]&.length || 0}" if Rails.env.development?
+    Rails.logger.debug "Primary image param: #{params[:primary_image_id]}" if Rails.env.development?
     
-    Rails.logger.debug "Updating product with images: #{params[:product][:images]&.length || 0}" if Rails.env.development?
-    Rails.logger.debug "Primary image param: #{primary_image_param}" if Rails.env.development?
-    Rails.logger.debug "Current images count: #{@product.images.count}" if Rails.env.development?
+    # Handle image uploads separately to avoid replacing existing images
+    new_images = params[:product][:images] if params[:product]
     
-    # Extract images from params to handle separately
-    new_images = params[:product][:images]
-    product_params_without_images = product_params.except(:images)
+    # Filter out empty/blank images
+    valid_new_images = new_images&.reject { |img| img.blank? || (img.respond_to?(:tempfile) && img.tempfile.nil?) }
     
-    # Update product attributes first (without images)
+    Rails.logger.debug "Valid new images count: #{valid_new_images&.length || 0}" if Rails.env.development?
+    
+    # Update product with other attributes (excluding images)
     if @product.update(product_params_without_images)
-      # Handle new images if provided
-      if new_images.present? && new_images.any? { |img| img.present? }
-        valid_images = new_images.select(&:present?)
-        current_count = @product.images.count
-        
-        Rails.logger.debug "Valid new images: #{valid_images.length}" if Rails.env.development?
-        Rails.logger.debug "Current count: #{current_count}" if Rails.env.development?
-        
-        # Check if adding new images would exceed the limit
-        if current_count + valid_images.length > 3
-          @product.errors.add(:images, "Cannot add #{valid_images.length} more images. Maximum 3 images allowed (currently have #{current_count})")
-          render :edit, status: :unprocessable_entity
-          return
-        end
-        
-        # Attach new images (this appends to existing images)
-        @product.images.attach(valid_images)
-        Rails.logger.debug "Images attached. New total: #{@product.images.count}" if Rails.env.development?
+      Rails.logger.debug "Product updated successfully" if Rails.env.development?
+      
+      # Only attach new images if they exist and are valid
+      if valid_new_images&.any?
+        Rails.logger.debug "Attaching #{valid_new_images.count} new images" if Rails.env.development?
+        @product.images.attach(valid_new_images)
+        Rails.logger.debug "Images after attaching new ones: #{@product.images.count}" if Rails.env.development?
+      else
+        Rails.logger.debug "No valid new images to attach" if Rails.env.development?
       end
       
-      Rails.logger.debug "Product updated successfully with #{@product.images.count} images" if Rails.env.development?
-      
-      # Set primary image after successful update to avoid conflicts
-      if primary_image_param.present?
-        @product.update_column(:primary_image_id, primary_image_param)
-        Rails.logger.debug "Primary image set to: #{primary_image_param}" if Rails.env.development?
+      # Handle primary image setting
+      if params[:primary_image_id].present?
+        @product.update(primary_image_id: params[:primary_image_id])
+        Rails.logger.debug "Set primary image to: #{params[:primary_image_id]}" if Rails.env.development?
+      elsif @product.primary_image_id.blank? && @product.images.attached? && @product.images.any?
+        # Only ensure primary image if none is set and we have images
+        @product.ensure_primary_image
+        Rails.logger.debug "Ensured primary image: #{@product.primary_image_id}" if Rails.env.development?
       end
       
+      Rails.logger.debug "=== UPDATE PRODUCT SUCCESS ===" if Rails.env.development?
       redirect_to admin_product_path(@product), notice: 'Product was successfully updated.'
     else
-      Rails.logger.debug "Product update failed: #{@product.errors.full_messages}" if Rails.env.development?
+      Rails.logger.debug "=== UPDATE PRODUCT FAILED ===" if Rails.env.development?
+      Rails.logger.debug "Errors: #{@product.errors.full_messages}" if Rails.env.development?
       render :edit, status: :unprocessable_entity
     end
   end
@@ -112,20 +85,26 @@ class Admin::ProductsController < Admin::BaseController
     @product = Product.find(params[:id])
     image_id = params[:image_id]
     
+    Rails.logger.debug "Removing image with ID: #{image_id}" if Rails.env.development?
+    Rails.logger.debug "Current primary image ID: #{@product.primary_image_id}" if Rails.env.development?
+    
     # Find and remove the image
-    image_to_remove = @product.all_images.find { |img| img.id.to_s == image_id }
+    image_to_remove = @product.all_images.find { |img| img.id.to_s == image_id.to_s }
     
     if image_to_remove
       # Reset primary image if it was the removed image
-      if @product.primary_image_id == image_id
+      if @product.primary_image_id.to_s == image_id.to_s
         @product.update_column(:primary_image_id, nil)
+        Rails.logger.debug "Reset primary image ID to nil" if Rails.env.development?
       end
       
       # Remove the image
       image_to_remove.purge
+      Rails.logger.debug "Image purged successfully" if Rails.env.development?
       
       render json: { success: true, message: 'Image removed successfully' }
     else
+      Rails.logger.error "Image not found with ID: #{image_id}" if Rails.env.development?
       render json: { error: 'Image not found' }, status: :not_found
     end
   end
@@ -138,5 +117,9 @@ class Admin::ProductsController < Admin::BaseController
 
   def product_params
     params.require(:product).permit(:name, :price, :active, :description, :short_description, :category, :ingredients, :allergen_info, :storage_instructions, images: [])
+  end
+
+  def product_params_without_images
+    params.require(:product).permit(:name, :price, :active, :description, :short_description, :category, :ingredients, :allergen_info, :storage_instructions)
   end
 end 

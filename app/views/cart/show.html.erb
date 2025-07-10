@@ -144,15 +144,7 @@
             <%= link_to "Continue Shopping", products_path, class: "text-orange-600 hover:text-orange-950 text-center sm:text-left" %>
           </div>
           <div class="text-center sm:text-right">
-            <div class="mb-2 text-sm text-orange-700 font-medium">
-              🚧 Early Testing Phase - Ordering Currently Offline
-            </div>
-            <div class="text-xs text-orange-600 mb-3 max-w-xs">
-              We're keeping orders offline for now during testing. Please contact us directly to place an order!
-            </div>
-            <button disabled class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-400 bg-gray-200 cursor-not-allowed opacity-50">
-              Proceed to Checkout (Disabled)
-            </button>
+            <%= link_to "Proceed to Checkout", new_order_path, class: "w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors duration-200" %>
           </div>
         </div>
       </div>

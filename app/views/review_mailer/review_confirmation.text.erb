@@ -1,0 +1,45 @@
+THANK YOU FOR YOUR REVIEW! - <%= company_name %>
+
+Hi <%= @customer_name %>!
+
+Thank you so much for taking the time to share your experience with our crinkle cookies! Your review has been received and is now being reviewed by our team.
+
+YOUR REVIEW SUMMARY:
+Rating: <%= @review.rating %>/5 stars (<%= '★' * @review.rating %><%= '☆' * (5 - @review.rating) %>)
+<% if @review.title.present? %>
+Title: "<%= @review.title %>"
+<% end %>
+<% if @review.verified_purchase? %>
+Purchase Status: Verified Purchase (Order #<%= @review.order.id %>)
+<% else %>
+Purchase Status: Unverified
+<% end %>
+<% if @review.content.present? %>
+Your Review: "<%= @review.content %>"
+<% end %>
+
+WHAT HAPPENS NEXT:
+• Review Process: Our team will review your submission within 1-2 business days
+• Publication: Once approved, your review will appear on our website
+• Community Impact: Your honest feedback helps other cookie lovers discover our treats
+• Continuous Improvement: We use your feedback to make our cookies even better
+
+LOVE OUR COOKIES?
+Share the joy with friends and family!
+• Order More Cookies: <%= root_url %>
+• Browse Our Flavors: <%= products_url %>
+
+Your review is incredibly valuable to us as a small family business. It helps us grow, improve, and reach more people who love authentic Filipino treats.
+
+If you have any questions about your review or need to make changes, please don't hesitate to contact us at <%= company_email %>.
+
+Maraming salamat (thank you very much)!
+The <%= company_name %> Family
+
+---
+This email was sent to <%= @review.email %> because you submitted a review on our website.
+Contact Us: <%= company_email %>
+Visit Our Website: <%= root_url %>
+View All Reviews: <%= reviews_url %>
+
+© <%= Date.current.year %> <%= company_name %>. Made with ❤️ in New Zealand. 

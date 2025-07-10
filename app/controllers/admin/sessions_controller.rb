@@ -9,7 +9,7 @@ class Admin::SessionsController < ApplicationController
     user = User.find_by(email: params[:email])
     
     if user&.valid_password?(params[:password]) && user.admin?
-      sign_in(user)
+      custom_sign_in(user)
       redirect_to admin_dashboard_path, notice: 'Signed in successfully.'
     else
       flash.now[:alert] = 'Invalid email or password.'
@@ -18,7 +18,7 @@ class Admin::SessionsController < ApplicationController
   end
 
   def destroy
-    sign_out(current_user) if current_user
+    custom_sign_out(current_user) if current_user
     redirect_to admin_login_path, notice: 'Signed out successfully.'
   end
 end 

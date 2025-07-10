@@ -33,8 +33,8 @@ module RecaptchaHelper
     # Skip verification if reCAPTCHA shouldn't be shown
     return true unless show_recaptcha?
     
-    # For reCAPTCHA v3, verify with action and minimum score
-    verify_recaptcha(model: model, action: 'form_submission', minimum_score: 0.5)
+    # For reCAPTCHA v3, verify without action parameter first
+    verify_recaptcha(model: model)
   end
 end
 

@@ -40,29 +40,6 @@
     <% end %>
   </head>
   <body class="bg-orange-50">
-    <!-- Debug reCAPTCHA loading -->
-    <% if show_recaptcha? %>
-      <script>
-        console.log('reCAPTCHA should be loading...');
-        console.log('Site key:', '<%= ENV["RECAPTCHA_SITE_KEY"] %>');
-        
-        // Wait for the script to load
-        function checkRecaptcha() {
-          if (typeof grecaptcha !== 'undefined') {
-            console.log('grecaptcha object is available');
-            grecaptcha.ready(function() {
-              console.log('grecaptcha is ready');
-            });
-          } else {
-            console.log('grecaptcha not yet available, checking again in 100ms...');
-            setTimeout(checkRecaptcha, 100);
-          }
-        }
-        
-        // Start checking after a short delay
-        setTimeout(checkRecaptcha, 100);
-      </script>
-    <% end %>
     <%= render "shared/navigation" %>
 
     <% if notice %>

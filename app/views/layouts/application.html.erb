@@ -34,8 +34,24 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
-
   <body class="bg-orange-50">
+    <!-- Debug reCAPTCHA loading -->
+    <% if show_recaptcha? %>
+      <script>
+        console.log('reCAPTCHA should be loading...');
+        console.log('Site key:', '<%= ENV["RECAPTCHA_SITE_KEY"] %>');
+        
+        // Check if grecaptcha is available
+        if (typeof grecaptcha !== 'undefined') {
+          console.log('grecaptcha object is available');
+          grecaptcha.ready(function() {
+            console.log('grecaptcha is ready');
+          });
+        } else {
+          console.error('grecaptcha object is not available - reCAPTCHA script may not be loading');
+        }
+      </script>
+    <% end %>
     <%= render "shared/navigation" %>
 
     <% if notice %>

@@ -2,9 +2,8 @@ class ContactMessagesController < ApplicationController
   before_action :find_or_create_user, only: [:create]
 
   def create
-    # Verify reCAPTCHA Enterprise first
-    recaptcha_token = params['g-recaptcha-response-data-contact_form'] || params['g-recaptcha-response']
-    unless verify_recaptcha_enterprise(recaptcha_token, 'contact_form')
+    # Verify reCAPTCHA first
+    unless verify_recaptcha_if_needed
       redirect_to contact_path, alert: 'Please complete the reCAPTCHA verification.'
       return
     end

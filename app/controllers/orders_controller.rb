@@ -13,9 +13,8 @@ class OrdersController < ApplicationController
   end
 
   def create
-    # Verify reCAPTCHA Enterprise first
-    recaptcha_token = params['g-recaptcha-response-data-order_submission'] || params['g-recaptcha-response']
-    unless verify_recaptcha_enterprise(recaptcha_token, 'order_submission')
+    # Verify reCAPTCHA first
+    unless verify_recaptcha_if_needed
       @cart_items = @cart.cart_items.includes(:product, :crinkle_package)
       flash.now[:alert] = 'Please complete the reCAPTCHA verification.'
       render :new, status: :unprocessable_entity

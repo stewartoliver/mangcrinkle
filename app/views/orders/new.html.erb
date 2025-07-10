@@ -184,9 +184,7 @@
       </div>
 
       <% if show_recaptcha? %>
-        <div class="mt-4 sm:mt-6">
-          <%= recaptcha_tags %>
-        </div>
+        <%= recaptcha_v3(action: 'form_submission') %>
       <% end %>
     </div>
 

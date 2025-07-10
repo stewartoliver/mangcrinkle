@@ -13,6 +13,9 @@ end
 # Helper method to check if reCAPTCHA should be shown
 module RecaptchaHelper
   def show_recaptcha?
+    # Don't show reCAPTCHA in admin routes
+    return false if request.path.start_with?('/admin')
+    
     # Don't show reCAPTCHA in development/test or when keys are missing
     return false if Rails.env.development? || Rails.env.test?
     return false if ENV['RECAPTCHA_SITE_KEY'].blank? || ENV['RECAPTCHA_SECRET_KEY'].blank?
@@ -24,8 +27,14 @@ module RecaptchaHelper
   end
   
   def verify_recaptcha_if_needed(model = nil)
+    # Skip reCAPTCHA verification in admin routes
+    return true if request.path.start_with?('/admin')
+    
+    # Skip verification if reCAPTCHA shouldn't be shown
     return true unless show_recaptcha?
-    verify_recaptcha(model: model)
+    
+    # For reCAPTCHA v3, verify with action and minimum score
+    verify_recaptcha(model: model, action: 'form_submission', minimum_score: 0.5)
   end
 end
 

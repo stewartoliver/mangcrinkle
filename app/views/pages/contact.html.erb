@@ -78,9 +78,7 @@
           </div>
 
           <% if show_recaptcha? %>
-            <div>
-              <%= recaptcha_tags %>
-            </div>
+            <%= recaptcha_v3(action: 'form_submission') %>
           <% end %>
 
           <div>

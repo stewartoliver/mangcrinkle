@@ -29,7 +29,8 @@ module RecaptchaHelper
   end
 end
 
-# Include the helper in ApplicationController
+# Include the helper in ApplicationController and make methods available to views
 Rails.application.config.to_prepare do
   ApplicationController.include RecaptchaHelper
+  ApplicationController.helper_method :show_recaptcha?, :verify_recaptcha_if_needed
 end 

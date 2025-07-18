@@ -1,9 +1,25 @@
 class Admin::UsersController < Admin::BaseController
   def index
-    @users = User.all.order(created_at: :desc)
+    # Base query with includes for performance
+    @users = User.includes(:orders).order(created_at: :desc)
+    
+    # Apply filters
+    @users = apply_filters(@users)
+    
+    # Apply pagination
+    @users = @users.page(params[:page]).per(25)
+    
+    # Separate queries for stats
     @customers = User.customers.order(created_at: :desc)
     @admins = User.admins.order(created_at: :desc)
     @newsletter_subscribers = User.newsletter_subscribers.order(created_at: :desc)
+    
+    # Calculate stats for filtered results
+    @total_users = @users.total_count
+    @total_customers = @customers.count
+    @total_admins = @admins.count
+    @pending_activation = User.pending_activation.count
+    @total_newsletter_subscribers = @newsletter_subscribers.count
   end
 
   def show
@@ -139,6 +155,48 @@ class Admin::UsersController < Admin::BaseController
   end
 
   private
+
+  def apply_filters(users)
+    # Filter by user type
+    if params[:user_type].present?
+      users = users.where(user_type: params[:user_type])
+    end
+    
+    # Filter by admin status
+    if params[:admin_status].present?
+      case params[:admin_status]
+      when 'activated'
+        users = users.where(user_type: 'admin').where.not(activated_at: nil)
+      when 'pending'
+        users = users.where(user_type: 'admin', activated_at: nil)
+      end
+    end
+    
+    # Filter by newsletter subscription
+    if params[:newsletter_subscribed].present?
+      users = users.where(newsletter_subscribed: params[:newsletter_subscribed] == 'true')
+    end
+    
+    # Search by name or email
+    if params[:search].present?
+      search_term = "%#{params[:search]}%"
+      users = users.where(
+        "LOWER(first_name) LIKE LOWER(?) OR LOWER(last_name) LIKE LOWER(?) OR LOWER(email) LIKE LOWER(?)",
+        search_term, search_term, search_term
+      )
+    end
+    
+    # Filter by date range
+    if params[:start_date].present?
+      users = users.where("created_at >= ?", Date.parse(params[:start_date]).beginning_of_day)
+    end
+    
+    if params[:end_date].present?
+      users = users.where("created_at <= ?", Date.parse(params[:end_date]).end_of_day)
+    end
+    
+    users
+  end
 
   def user_params
     # Allow password parameters for user creation, but not for updates

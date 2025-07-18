@@ -1,101 +1,314 @@
-<% content_for :title, "Users" %>
+<% content_for :title, "User Management" %>
 
-<div class="admin-list-container">
-  <div class="admin-list-header">
-    <div class="flex justify-between items-center">
+<!-- Statistics Cards -->
+<div class="flex flex-wrap gap-4 mb-6">
+  <div class="admin-stats-card flex-1 min-w-0">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-orange">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Total Users</h2>
+        <p class="admin-stats-value admin-stats-value-orange"><%= @total_users %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card flex-1 min-w-0">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-green">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Customers</h2>
+        <p class="admin-stats-value admin-stats-value-green"><%= @total_customers %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card flex-1 min-w-0">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-red">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Admins</h2>
+        <p class="admin-stats-value admin-stats-value-red"><%= @total_admins %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats-card flex-1 min-w-0">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-yellow">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Pending Activation</h2>
+        <p class="admin-stats-value admin-stats-value-yellow"><%= @pending_activation %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Container -->
+<div class="admin-container">
+  <div class="admin-container-header">
+    <div class="flex items-center justify-between">
       <div>
-        <h3 class="admin-container-title">Users</h3>
-        <p class="admin-container-subtitle">Manage all users in the system.</p>
+        <h3 class="admin-container-title">User Management</h3>
+        <p class="admin-container-subtitle">Manage customers and admin accounts</p>
       </div>
-      <%= link_to "Add New User", new_admin_user_path, class: "admin-btn-primary" %>
-    </div>
-  </div>
-
-  <!-- Stats -->
-  <div class="bg-orange-50 px-4 py-3 border-b border-orange-200">
-    <div class="flex justify-between text-sm">
-      <div class="text-center flex-1">
-        <div class="text-2xl font-bold text-orange-600"><%= @users.count %></div>
-        <div class="text-orange-700">Total Users</div>
-      </div>
-      <div class="text-center flex-1">
-        <div class="text-2xl font-bold text-orange-600"><%= @customers.count %></div>
-        <div class="text-orange-700">Customers</div>
-      </div>
-      <div class="text-center flex-1">
-        <div class="text-2xl font-bold text-orange-600"><%= @admins.count %></div>
-        <div class="text-orange-700">Admins</div>
-      </div>
-      <div class="text-center flex-1">
-        <div class="text-2xl font-bold text-orange-600"><%= User.pending_activation.count %></div>
-        <div class="text-orange-700">Pending Activation</div>
-      </div>
-      <div class="text-center flex-1">
-        <div class="text-2xl font-bold text-orange-600"><%= @newsletter_subscribers.count %></div>
-        <div class="text-orange-700">Newsletter Subscribers</div>
+      <div class="flex items-center space-x-3">
+        <%= link_to "Add New Admin", new_admin_user_path(user_type: 'admin'), class: "admin-btn-primary" %>
+        <%= link_to "Add New Customer", new_admin_user_path(user_type: 'customer'), class: "admin-btn-secondary" %>
       </div>
     </div>
   </div>
 
-  <div class="admin-list-content">
-    <ul class="divide-y divide-orange-200">
-      <% @users.each do |user| %>
-        <li class="py-4 px-4 sm:px-6">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <div class="product-avatar">
-                <div class="product-avatar-placeholder">
-                  <span class="product-avatar-initial"><%= user.email.first.upcase %></span>
-                </div>
-              </div>
-              <div class="product-info">
-                <div class="product-name">
-                  <%= user.display_name %>
-                  <span class="ml-2 admin-status-badge <%= user.admin? ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
-                    <%= user.user_type.titleize %>
-                  </span>
-                  <% if user.admin? && user.pending_activation? %>
-                    <span class="ml-1 admin-status-badge bg-yellow-100 text-yellow-800">
-                      Pending Activation
-                    </span>
-                  <% elsif user.admin? && user.activated? %>
-                    <span class="ml-1 admin-status-badge bg-green-100 text-green-800">
-                      Activated
-                    </span>
-                  <% end %>
-                  <% if user.newsletter_subscribed? %>
-                    <span class="ml-1 admin-status-badge bg-blue-100 text-blue-800">
-                      Newsletter
-                    </span>
-                  <% end %>
-                </div>
-                <div class="product-description">
-                  <%= user.email %>
-                </div>
-                <div class="admin-list-item-meta">
-                  Joined <%= user.created_at.strftime("%B %d, %Y") %>
-                  <% if user.customer? && user.orders.any? %>
-                    • <%= pluralize(user.orders.count, 'order') %>
-                  <% end %>
-                </div>
-              </div>
-            </div>
-            <div class="admin-action-btn-group">
-              <%= link_to admin_user_path(user), class: "admin-action-btn", title: "View" do %>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              <% end %>
-              <%= link_to edit_admin_user_path(user), class: "admin-action-btn", title: "Edit" do %>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-              <% end %>
-            </div>
+  <!-- Search and Filters -->
+  <%= form_with url: admin_users_path, method: :get, local: true, class: "px-6 py-4 border-b border-orange-200 bg-gray-50", id: "search-form" do |form| %>
+    <div class="space-y-4">
+      <!-- First Row -->
+      <div class="flex flex-wrap gap-4">
+        <div class="flex-1 min-w-0">
+          <%= form.label :search, "Search", class: "form-label" %>
+          <div class="mt-1">
+            <%= form.text_field :search, value: params[:search], placeholder: "Search by name or email", class: "form-input" %>
           </div>
-        </li>
-      <% end %>
-    </ul>
+        </div>
+        
+        <div class="flex-1 min-w-0">
+          <%= form.label :user_type, "User Type", class: "form-label" %>
+          <div class="mt-1">
+            <%= form.select :user_type, 
+                options_for_select([
+                  ['All Users', ''],
+                  ['Customers', 'customer'],
+                  ['Admins', 'admin']
+                ], params[:user_type]),
+                {},
+                class: "form-select" %>
+          </div>
+        </div>
+        
+        <div class="flex-1 min-w-0">
+          <%= form.label :admin_status, "Admin Status", class: "form-label" %>
+          <div class="mt-1">
+            <%= form.select :admin_status, 
+                options_for_select([
+                  ['All Admins', ''],
+                  ['Activated', 'activated'],
+                  ['Pending Activation', 'pending']
+                ], params[:admin_status]),
+                {},
+                class: "form-select" %>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Second Row -->
+      <div class="flex flex-wrap gap-4">
+        <div class="flex-1 min-w-0">
+          <%= form.label :newsletter_subscribed, "Newsletter", class: "form-label" %>
+          <div class="mt-1">
+            <%= form.select :newsletter_subscribed, 
+                options_for_select([
+                  ['All Users', ''],
+                  ['Subscribed', 'true'],
+                  ['Not Subscribed', 'false']
+                ], params[:newsletter_subscribed]),
+                {},
+                class: "form-select" %>
+          </div>
+        </div>
+        
+        <div class="flex-1 min-w-0">
+          <%= form.label :start_date, "Start Date", class: "form-label" %>
+          <div class="mt-1">
+            <%= form.date_field :start_date, value: params[:start_date], class: "form-date" %>
+          </div>
+        </div>
+        
+        <div class="flex-1 min-w-0">
+          <%= form.label :end_date, "End Date", class: "form-label" %>
+          <div class="mt-1">
+            <%= form.date_field :end_date, value: params[:end_date], class: "form-date" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Filter Buttons -->
+  <div class="px-6 py-3 border-b border-orange-200 bg-gray-50">
+    <div class="flex justify-between items-center">
+      <div class="text-sm text-orange-600">
+        Showing <%= @users.offset_value + 1 %> to <%= @users.offset_value + @users.length %> of <%= @users.total_count %> results
+      </div>
+      <div class="flex items-center space-x-2">
+        <button type="submit" form="search-form" class="admin-btn-primary">
+          Apply Filters
+        </button>
+        <%= link_to "Clear", admin_users_path, class: "admin-btn-secondary" %>
+      </div>
+    </div>
   </div>
+
+  <!-- User Type Tabs -->
+  <div class="border-b border-orange-200">
+    <nav class="flex space-x-8 px-6" aria-label="Tabs">
+      <button class="tab-button active" data-tab="all">
+        All Users (<%= @total_users %>)
+      </button>
+      <button class="tab-button" data-tab="customers">
+        Customers (<%= @total_customers %>)
+      </button>
+      <button class="tab-button" data-tab="admins">
+        Admins (<%= @total_admins %>)
+      </button>
+    </nav>
+  </div>
+
+  <!-- Users Table -->
+  <div class="admin-container-content">
+    <table class="admin-table">
+      <thead class="admin-table-header">
+        <tr>
+          <th scope="col" class="admin-table-header-cell">User</th>
+          <th scope="col" class="admin-table-header-cell-center">Type</th>
+          <th scope="col" class="admin-table-header-cell-center">Status</th>
+          <th scope="col" class="admin-table-header-cell-center">Joined</th>
+          <th scope="col" class="admin-table-header-cell-center">Orders</th>
+          <th scope="col" class="admin-table-header-cell-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="admin-table-body">
+        <% @users.each do |user| %>
+          <tr class="admin-table-row user-row" data-user-type="<%= user.user_type %>">
+            <td class="admin-table-cell">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10">
+                  <div class="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">
+                    <span class="text-sm font-medium text-orange-600">
+                      <%= user.display_name.first.upcase %>
+                    </span>
+                  </div>
+                </div>
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-orange-950">
+                    <%= user.display_name %>
+                  </div>
+                  <div class="text-sm text-orange-600">
+                    <%= user.email %>
+                  </div>
+                  <% if user.phone.present? %>
+                    <div class="text-xs text-orange-500">
+                      <%= user.phone %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </td>
+            <td class="admin-table-cell-center">
+              <span class="admin-status-badge <%= user.admin? ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
+                <%= user.user_type.titleize %>
+              </span>
+            </td>
+            <td class="admin-table-cell-center">
+              <% if user.admin? %>
+                <% if user.pending_activation? %>
+                  <span class="admin-status-badge bg-yellow-100 text-yellow-800">
+                    Pending Activation
+                  </span>
+                <% else %>
+                  <span class="admin-status-badge bg-green-100 text-green-800">
+                    Activated
+                  </span>
+                <% end %>
+              <% else %>
+                <span class="admin-status-badge bg-blue-100 text-blue-800">
+                  Customer
+                </span>
+              <% end %>
+              <% if user.newsletter_subscribed? %>
+                <div class="mt-1">
+                  <span class="admin-status-badge bg-purple-100 text-purple-800 text-xs">
+                    Newsletter
+                  </span>
+                </div>
+              <% end %>
+            </td>
+            <td class="admin-table-cell-center">
+              <div class="text-sm text-orange-950">
+                <%= user.created_at.strftime("%m/%d/%Y") %>
+              </div>
+              <div class="text-xs text-orange-600">
+                <%= time_ago_in_words(user.created_at) %> ago
+              </div>
+            </td>
+            <td class="admin-table-cell-center">
+              <% if user.customer? %>
+                <div class="text-sm text-orange-950">
+                  <%= user.orders.count %>
+                </div>
+                <% if user.orders.any? %>
+                  <div class="text-xs text-orange-600">
+                    $<%= number_with_precision(user.orders.sum(&:total_price), precision: 2) %>
+                  </div>
+                <% end %>
+              <% else %>
+                <span class="text-sm text-orange-500">-</span>
+              <% end %>
+            </td>
+            <td class="admin-table-cell-right">
+              <div class="admin-action-btn-group">
+                <%= link_to admin_user_path(user), class: "admin-action-btn", title: "View Details" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                <% end %>
+                <%= link_to edit_admin_user_path(user), class: "admin-action-btn", title: "Edit" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <% if @users.respond_to?(:total_pages) && @users.total_pages > 1 %>
+    <div class="px-6 py-3 border-t border-orange-200 bg-orange-50">
+      <div class="flex items-center justify-between">
+        <div class="text-sm text-orange-600">
+          Showing <%= @users.offset_value + 1 %> to <%= @users.offset_value + @users.length %> of <%= @users.total_count %> results
+        </div>
+        <div class="flex space-x-2">
+          <% if @users.prev_page %>
+            <%= link_to "Previous", admin_users_path(page: @users.prev_page, **request.query_parameters), 
+                class: "px-3 py-1 text-sm font-medium text-orange-600 bg-white border border-orange-300 rounded hover:bg-orange-50" %>
+          <% end %>
+          
+          <% if @users.next_page %>
+            <%= link_to "Next", admin_users_path(page: @users.next_page, **request.query_parameters), 
+                class: "px-3 py-1 text-sm font-medium text-orange-600 bg-white border border-orange-300 rounded hover:bg-orange-50" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
 </div> 

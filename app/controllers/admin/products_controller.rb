@@ -12,16 +12,43 @@ class Admin::ProductsController < Admin::BaseController
 
   def new
     @product = Product.new
+    @product.active = true  # Set default to active for new products
   end
 
   def create
+    Rails.logger.debug "=== CREATE PRODUCT START ===" if Rails.env.development?
+    Rails.logger.debug "Request method: #{request.method}" if Rails.env.development?
+    Rails.logger.debug "Request path: #{request.path}" if Rails.env.development?
+    Rails.logger.debug "All params: #{params.inspect}" if Rails.env.development?
+    Rails.logger.debug "Product params: #{product_params.inspect}" if Rails.env.development?
+    Rails.logger.debug "Primary image ID param: #{params[:primary_image_id]}" if Rails.env.development?
+    Rails.logger.debug "Images param: #{params[:product][:images]&.length || 0}" if Rails.env.development?
+    
     @product = Product.new(product_params)
     
+    Rails.logger.debug "Product object before save: #{@product.attributes}" if Rails.env.development?
+    Rails.logger.debug "Product valid? #{@product.valid?}" if Rails.env.development?
+    Rails.logger.debug "Product errors: #{@product.errors.full_messages}" if Rails.env.development? && !@product.valid?
+    
     if @product.save
-      # Ensure primary image is set if images were uploaded
-      @product.ensure_primary_image
+      Rails.logger.debug "Product saved successfully" if Rails.env.development?
+      Rails.logger.debug "Product ID: #{@product.id}" if Rails.env.development?
+      
+      # Handle primary image setting
+      if params[:primary_image_id].present?
+        @product.update(primary_image_id: params[:primary_image_id])
+        Rails.logger.debug "Set primary image to: #{params[:primary_image_id]}" if Rails.env.development?
+      elsif @product.images.attached? && @product.images.any?
+        # Ensure primary image is set if images were uploaded
+        @product.ensure_primary_image
+        Rails.logger.debug "Ensured primary image: #{@product.primary_image_id}" if Rails.env.development?
+      end
+      
+      Rails.logger.debug "=== CREATE PRODUCT SUCCESS ===" if Rails.env.development?
       redirect_to admin_product_path(@product), notice: 'Product was successfully created.'
     else
+      Rails.logger.debug "=== CREATE PRODUCT FAILED ===" if Rails.env.development?
+      Rails.logger.debug "Errors: #{@product.errors.full_messages}" if Rails.env.development?
       render :new, status: :unprocessable_entity
     end
   end

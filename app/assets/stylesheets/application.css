@@ -377,3 +377,25 @@
     color: #ea580c;
     margin: 0;
 }
+
+/* User Management Tab Buttons */
+.tab-button {
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid transparent;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #ea580c;
+    transition: color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.tab-button:hover {
+    color: #c2410c;
+    border-color: #fed7aa;
+}
+
+.tab-button.active {
+    border-color: #ea580c;
+    color: #c2410c;
+    background-color: #fff7ed;
+}

@@ -171,7 +171,7 @@ Can be frozen up to 1 month — thaw at room temperature." %>
       
       <div class="admin-status-toggle">
         <label class="admin-toggle-switch">
-          <%= f.check_box :active, class: "admin-toggle-input", checked: product.active? %>
+          <%= f.check_box :active, class: "admin-toggle-input", checked: product.new_record? ? true : product.active? %>
           <span class="admin-toggle-slider"></span>
           <span class="admin-toggle-labels">
             <span class="admin-toggle-active">Active</span>
@@ -190,108 +190,185 @@ Can be frozen up to 1 month — thaw at room temperature." %>
 <% end %>
 
 <script>
-function initializeImageManager() {
-  const container = document.getElementById('imageManagerContainer');
-  if (!container) return;
-  
-  const existingImagesData = container.dataset.existingImages;
-  const primaryImageId = container.dataset.primaryImageId;
-  const maxImages = parseInt(container.dataset.maxImages) || 3;
-  
-  console.log('Initializing with data:', {
-    existingImagesData,
-    primaryImageId,
-    maxImages
-  });
-  
-  // Parse existing images data
-  let existingImages = [];
-  if (existingImagesData && existingImagesData !== 'null' && existingImagesData !== '[]') {
-    try {
-      const parsedData = JSON.parse(existingImagesData);
-      console.log('Parsed data:', parsedData);
-      
-      if (Array.isArray(parsedData)) {
-        existingImages = parsedData.map(img => {
-          console.log('Processing image:', img);
-          
-          // Handle both direct image objects and nested image objects
-          const imageData = img.image || img;
-          
-          return {
-            id: imageData.id,
-            url: imageData.url,
-            isNew: false
-          };
-        }).filter(img => img.id && img.url); // Filter out invalid entries
-      }
-    } catch (e) {
-      console.error('Error parsing existing images:', e);
-      console.error('Raw data:', existingImagesData);
-    }
-  }
-  
-  console.log('Final existing images:', existingImages);
-  
-  // Initialize the image manager
-  window.imageManager = new ImageManager(container, {
-    maxImages: maxImages,
-    allowPrimary: true,
-    fieldName: 'product[images]',
-    primaryFieldName: 'primary_image_id'
-  });
-  
-  // Set existing images
-  window.imageManager.currentImages = existingImages;
-  if (primaryImageId && primaryImageId !== 'null' && primaryImageId !== '') {
-    window.imageManager.primaryImageId = primaryImageId;
-  }
-  
-  // Re-render with existing data
-  window.imageManager.renderImages();
-  window.imageManager.updateUploadVisibility();
-  
-  // Handle form submission
-  const form = container.closest('form');
+// Simple form submission test
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.querySelector('form');
   if (form) {
-    form.addEventListener('submit', function(e) {
-      console.log('Form submission - Image manager state:', {
-        currentImages: window.imageManager.currentImages.length,
-        newFiles: window.imageManager.newFiles.length,
-        totalImages: window.imageManager.currentImages.length + window.imageManager.newFiles.length
-      });
-      
-      // Update hidden fields before submission
-      window.imageManager.updateHiddenFields();
-      
-      // Handle new file uploads
-      const hiddenInput = document.getElementById('hiddenImageInput');
-      if (hiddenInput && window.imageManager.newFiles.length > 0) {
-        console.log('Transferring files to hidden input:', window.imageManager.newFiles.length);
-        
-        const fileTransfer = new DataTransfer();
-        
-        window.imageManager.newFiles.forEach((fileObj, index) => {
-          console.log(`Adding file ${index + 1}:`, fileObj.file.name);
-          fileTransfer.items.add(fileObj.file);
-        });
-        
-        hiddenInput.files = fileTransfer.files;
-        console.log('Hidden input now has files:', hiddenInput.files.length);
-        
-        // Verify the files are there
-        for (let i = 0; i < hiddenInput.files.length; i++) {
-          console.log(`Hidden input file ${i + 1}:`, hiddenInput.files[i].name);
-        }
-      } else {
-        console.log('No new files to transfer or hidden input not found');
-        // Clear the hidden input if no new files to prevent Rails from processing empty file array
-        if (hiddenInput) {
-          hiddenInput.value = '';
-          console.log('Cleared hidden input');
-        }
-      }
+    console.log('Form found:', {
+      action: form.action,
+      method: form.method,
+      enctype: form.enctype
     });
+    
+    // Test form submission
+    form.addEventListener('submit', function(e) {
+      console.log('=== FORM SUBMISSION TEST ===');
+      console.log('Form action:', form.action);
+      console.log('Form method:', form.method);
+      
+      // Log all form fields
+      const formData = new FormData(form);
+      console.log('Form data:');
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+      
+      // Check if required fields are present
+      const nameField = form.querySelector('input[name="product[name]"]');
+      const categoryField = form.querySelector('select[name="product[category]"]');
+      const priceField = form.querySelector('input[name="product[price]"]');
+      const activeField = form.querySelector('input[name="product[active]"]');
+      
+      console.log('Required fields:');
+      console.log('Name:', nameField ? nameField.value : 'NOT FOUND');
+      console.log('Category:', categoryField ? categoryField.value : 'NOT FOUND');
+      console.log('Price:', priceField ? priceField.value : 'NOT FOUND');
+      console.log('Active:', activeField ? activeField.value : 'NOT FOUND');
+      
+      console.log('=== END FORM SUBMISSION TEST ===');
+    });
+  } else {
+    console.error('No form found on page');
+  }
+});
+
+function initializeImageManager() {
+  try {
+    const container = document.getElementById('imageManagerContainer');
+    if (!container) {
+      console.log('Image manager container not found');
+      return;
+    }
+    
+    const existingImagesData = container.dataset.existingImages;
+    const primaryImageId = container.dataset.primaryImageId;
+    const maxImages = parseInt(container.dataset.maxImages) || 3;
+    
+    console.log('Initializing with data:', {
+      existingImagesData,
+      primaryImageId,
+      maxImages
+    });
+    
+    // Parse existing images data
+    let existingImages = [];
+    if (existingImagesData && existingImagesData !== 'null' && existingImagesData !== '[]') {
+      try {
+        const parsedData = JSON.parse(existingImagesData);
+        console.log('Parsed data:', parsedData);
+        
+        if (Array.isArray(parsedData)) {
+          existingImages = parsedData.map(img => {
+            console.log('Processing image:', img);
+            
+            // Handle both direct image objects and nested image objects
+            const imageData = img.image || img;
+            
+            return {
+              id: imageData.id,
+              url: imageData.url,
+              isNew: false
+            };
+          }).filter(img => img.id && img.url); // Filter out invalid entries
+        }
+      } catch (e) {
+        console.error('Error parsing existing images:', e);
+        console.error('Raw data:', existingImagesData);
+      }
+    }
+    
+    console.log('Final existing images:', existingImages);
+    
+    // Initialize the image manager
+    window.imageManager = new ImageManager(container, {
+      maxImages: maxImages,
+      allowPrimary: true,
+      fieldName: 'product[images]',
+      primaryFieldName: 'primary_image_id'
+    });
+    
+    // Set existing images
+    window.imageManager.currentImages = existingImages;
+    if (primaryImageId && primaryImageId !== 'null' && primaryImageId !== '') {
+      window.imageManager.primaryImageId = primaryImageId;
+    }
+    
+    // Re-render with existing data
+    window.imageManager.renderImages();
+    window.imageManager.updateUploadVisibility();
+    
+    // Handle form submission
+    const form = container.closest('form');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        try {
+          console.log('=== FORM SUBMISSION START ===');
+          console.log('Form action:', form.action);
+          console.log('Form method:', form.method);
+          console.log('Form data before processing:');
+          
+          // Log all form data
+          const formData = new FormData(form);
+          for (let [key, value] of formData.entries()) {
+            console.log(`${key}:`, value);
+          }
+          
+          console.log('Image manager state:', {
+            currentImages: window.imageManager.currentImages.length,
+            newFiles: window.imageManager.newFiles.length,
+            totalImages: window.imageManager.currentImages.length + window.imageManager.newFiles.length,
+            primaryImageId: window.imageManager.primaryImageId
+          });
+          
+          // Update hidden fields before submission
+          window.imageManager.updateHiddenFields();
+          
+          // Handle new file uploads
+          const hiddenInput = document.getElementById('hiddenImageInput');
+          if (hiddenInput && window.imageManager.newFiles.length > 0) {
+            console.log('Transferring files to hidden input:', window.imageManager.newFiles.length);
+            
+            const fileTransfer = new DataTransfer();
+            
+            window.imageManager.newFiles.forEach((fileObj, index) => {
+              console.log(`Adding file ${index + 1}:`, fileObj.file.name);
+              fileTransfer.items.add(fileObj.file);
+            });
+            
+            hiddenInput.files = fileTransfer.files;
+            console.log('Hidden input now has files:', hiddenInput.files.length);
+            
+            // Verify the files are there
+            for (let i = 0; i < hiddenInput.files.length; i++) {
+              console.log(`Hidden input file ${i + 1}:`, hiddenInput.files[i].name);
+            }
+          } else {
+            console.log('No new files to transfer or hidden input not found');
+            // Clear the hidden input if no new files to prevent Rails from processing empty file array
+            if (hiddenInput) {
+              hiddenInput.value = '';
+              console.log('Cleared hidden input');
+            }
+          }
+          
+          console.log('Form data after processing:');
+          const finalFormData = new FormData(form);
+          for (let [key, value] of finalFormData.entries()) {
+            console.log(`${key}:`, value);
+          }
+          
+          console.log('=== FORM SUBMISSION END ===');
+          
+          // Don't prevent default - let the form submit normally
+          // e.preventDefault();
+        } catch (error) {
+          console.error('Error during form submission:', error);
+          // Don't prevent default - let the form submit even if there's an error
+        }
+      });
+    }
+  } catch (error) {
+    console.error('Error initializing image manager:', error);
   }
 }
 

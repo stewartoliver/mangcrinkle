@@ -1,5 +1,23 @@
 <% content_for :title, "Dashboard" %>
 
+<!-- Analytics Link -->
+<div class="mb-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-orange-950">Dashboard</h1>
+      <p class="mt-1 text-sm text-orange-600">Overview of your store's performance</p>
+    </div>
+    <div class="flex items-center space-x-3">
+      <%= link_to admin_analytics_path, class: "admin-btn admin-btn-primary flex items-center space-x-2" do %>
+        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        <span>View Analytics</span>
+      <% end %>
+    </div>
+  </div>
+</div>
+
 <!-- Statistics Cards -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
   <!-- Total Orders -->

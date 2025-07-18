@@ -393,14 +393,26 @@ class ImageManager {
         // Remove existing hidden fields
         this.container.querySelectorAll('.image-manager-hidden').forEach(field => field.remove());
 
-        // Add primary image field
+        // Also remove from form
+        const form = this.container.closest('form');
+        if (form) {
+            form.querySelectorAll('.image-manager-hidden').forEach(field => field.remove());
+        }
+
+        // Add primary image field to the form
         if (this.options.allowPrimary && this.primaryImageId) {
             const primaryField = document.createElement('input');
             primaryField.type = 'hidden';
             primaryField.name = this.options.primaryFieldName;
             primaryField.value = this.primaryImageId;
             primaryField.className = 'image-manager-hidden';
-            this.container.appendChild(primaryField);
+
+            // Add to form instead of container
+            if (form) {
+                form.appendChild(primaryField);
+            } else {
+                this.container.appendChild(primaryField);
+            }
         }
     }
 } 

@@ -1,0 +1,810 @@
+<% content_for :title, "System Monitoring Dashboard" %>
+
+<!-- Date Range Filter -->
+<div class="admin-container mb-6">
+  <div class="admin-container-header">
+    <h3 class="admin-container-title">Monitoring Period</h3>
+    <p class="admin-container-subtitle">Select the period for monitoring data</p>
+  </div>
+  <div class="admin-container-content p-6">
+    <%= form_with url: admin_monitoring_path, method: :get, local: true, class: "flex flex-wrap gap-4 items-end" do |form| %>
+      <div class="flex-1 min-w-48">
+        <label class="block text-sm font-medium text-orange-700 mb-1">Start Date</label>
+        <%= form.date_field :start_date, value: @start_date, class: "form-date" %>
+      </div>
+      <div class="flex-1 min-w-48">
+        <label class="block text-sm font-medium text-orange-700 mb-1">End Date</label>
+        <%= form.date_field :end_date, value: @end_date, class: "form-date" %>
+      </div>
+      <div class="flex gap-2">
+        <%= form.submit "Update Monitoring", class: "admin-btn admin-btn-primary" %>
+        <%= link_to "Reset to Last 7 Days", admin_monitoring_path, class: "admin-btn admin-btn-secondary" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- System Health Overview -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+  <!-- Email Delivery Status -->
+  <div class="admin-stats-card">
+    <div class="flex items-center">
+      <div class="admin-stats-icon <%= @email_delivery_enabled && @smtp_configured ? 'admin-stats-icon-green' : 'admin-stats-icon-red' %>">
+        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Email Service</h2>
+        <p class="admin-stats-value <%= @email_delivery_enabled && @smtp_configured ? 'admin-stats-value-green' : 'admin-stats-value-red' %>">
+          <%= @email_delivery_enabled && @smtp_configured ? 'Active' : 'Inactive' %>
+        </p>
+        <p class="text-sm text-orange-600">
+          <%= @email_delivery_stats[:success_rate] %>% Success Rate
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- System Uptime -->
+  <div class="admin-stats-card">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-blue">
+        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">System Uptime</h2>
+        <p class="admin-stats-value admin-stats-value-blue"><%= @system_uptime %>%</p>
+        <p class="text-sm text-orange-600">System Status</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Database Status -->
+  <div class="admin-stats-card">
+    <div class="flex items-center">
+      <div class="admin-stats-icon <%= @system_status[:database] ? 'admin-stats-icon-green' : 'admin-stats-icon-red' %>">
+        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Database</h2>
+        <p class="admin-stats-value <%= @system_status[:database] ? 'admin-stats-value-green' : 'admin-stats-value-red' %>">
+          <%= @system_status[:database] ? 'Connected' : 'Error' %>
+        </p>
+        <p class="text-sm text-orange-600">Connection Status</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Background Jobs -->
+  <div class="admin-stats-card">
+    <div class="flex items-center">
+      <div class="admin-stats-icon <%= @system_status[:background_jobs] ? 'admin-stats-icon-green' : 'admin-stats-icon-red' %>">
+        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Background Jobs</h2>
+        <p class="admin-stats-value <%= @system_status[:background_jobs] ? 'admin-stats-value-green' : 'admin-stats-value-red' %>">
+          <%= @system_status[:background_jobs] ? 'Active' : 'Error' %>
+        </p>
+        <p class="text-sm text-orange-600">
+          <%= @job_stats[:success_rate] %>% Success Rate
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Business Metrics -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+  <!-- Order Processing Status -->
+  <div class="admin-container">
+    <div class="admin-container-header">
+      <h3 class="admin-container-title">Order Processing</h3>
+      <p class="admin-container-subtitle">Order status breakdown for the selected period</p>
+    </div>
+    <div class="admin-container-content p-6">
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">Pending Orders</h4>
+            <p class="text-sm text-orange-600">Awaiting processing</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @pending_orders %></p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">Processing Orders</h4>
+            <p class="text-sm text-orange-600">Currently being handled</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @processing_orders %></p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">Completed Orders</h4>
+            <p class="text-sm text-orange-600">Successfully fulfilled</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @completed_orders %></p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">Cancelled Orders</h4>
+            <p class="text-sm text-orange-600">Cancelled by customer/admin</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @cancelled_orders %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Message Status -->
+  <div class="admin-container">
+    <div class="admin-container-header">
+      <h3 class="admin-container-title">Contact Messages</h3>
+      <p class="admin-container-subtitle">Contact message status breakdown</p>
+    </div>
+    <div class="admin-container-content p-6">
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">New Messages</h4>
+            <p class="text-sm text-orange-600">Awaiting response</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @new_contact_messages %></p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">In Progress</h4>
+            <p class="text-sm text-orange-600">Being handled</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @in_progress_contact_messages %></p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">Resolved</h4>
+            <p class="text-sm text-orange-600">Successfully handled</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @resolved_contact_messages %></p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">Spam Protection</h4>
+            <p class="text-sm text-orange-600">Review attempts blocked</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @review_spam_attempts %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Technical Monitoring -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+  <!-- System Status Details -->
+  <div class="admin-container">
+    <div class="admin-container-header">
+      <h3 class="admin-container-title">System Status</h3>
+      <p class="admin-container-subtitle">Real-time system health indicators</p>
+    </div>
+    <div class="admin-container-content p-6">
+      <div class="space-y-4">
+        <!-- Database Status -->
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div class="flex items-center space-x-3">
+            <div class="w-3 h-3 rounded-full <%= @system_status[:database] ? 'bg-green-500' : 'bg-red-500' %>"></div>
+            <div>
+              <h4 class="font-medium text-orange-950">Database Connection</h4>
+              <p class="text-sm text-orange-600"><%= @system_status[:database] ? 'Connected' : 'Connection Failed' %></p>
+            </div>
+          </div>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @system_status[:database] ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+            <%= @system_status[:database] ? 'OK' : 'ERROR' %>
+          </span>
+        </div>
+
+        <!-- Email Service Status -->
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div class="flex items-center space-x-3">
+            <div class="w-3 h-3 rounded-full <%= @system_status[:email_service] ? 'bg-green-500' : 'bg-red-500' %>"></div>
+            <div>
+              <h4 class="font-medium text-orange-950">Email Service</h4>
+              <p class="text-sm text-orange-600"><%= @system_status[:email_service] ? 'SMTP Configured & Active' : 'SMTP Not Configured' %></p>
+            </div>
+          </div>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @system_status[:email_service] ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+            <%= @system_status[:email_service] ? 'OK' : 'ERROR' %>
+          </span>
+        </div>
+
+        <!-- Storage Status -->
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div class="flex items-center space-x-3">
+            <div class="w-3 h-3 rounded-full <%= @system_status[:storage] ? 'bg-green-500' : 'bg-red-500' %>"></div>
+            <div>
+              <h4 class="font-medium text-orange-950">File Storage</h4>
+              <p class="text-sm text-orange-600"><%= @system_status[:storage] ? 'Storage Service Active' : 'Storage Service Failed' %></p>
+            </div>
+          </div>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @system_status[:storage] ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+            <%= @system_status[:storage] ? 'OK' : 'ERROR' %>
+          </span>
+        </div>
+
+        <!-- Background Jobs Status -->
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div class="flex items-center space-x-3">
+            <div class="w-3 h-3 rounded-full <%= @system_status[:background_jobs] ? 'bg-green-500' : 'bg-red-500' %>"></div>
+            <div>
+              <h4 class="font-medium text-orange-950">Background Jobs</h4>
+              <p class="text-sm text-orange-600"><%= @system_status[:background_jobs] ? 'Job System Active' : 'Job System Failed' %></p>
+            </div>
+          </div>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @system_status[:background_jobs] ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+            <%= @system_status[:background_jobs] ? 'OK' : 'ERROR' %>
+          </span>
+        </div>
+
+        <!-- Google Analytics Status -->
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div class="flex items-center space-x-3">
+            <div class="w-3 h-3 rounded-full <%= @system_status[:google_analytics] ? 'bg-green-500' : 'bg-red-500' %>"></div>
+            <div>
+              <h4 class="font-medium text-orange-950">Google Analytics</h4>
+              <p class="text-sm text-orange-600">
+                <%= @system_status[:google_analytics] ? "Configured (#{@google_analytics_id})" : 'Not Configured' %>
+              </p>
+            </div>
+          </div>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @system_status[:google_analytics] ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+            <%= @system_status[:google_analytics] ? 'OK' : 'ERROR' %>
+          </span>
+        </div>
+
+        <!-- reCAPTCHA Status -->
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div class="flex items-center space-x-3">
+            <div class="w-3 h-3 rounded-full <%= @system_status[:recaptcha] ? 'bg-green-500' : 'bg-red-500' %>"></div>
+            <div>
+              <h4 class="font-medium text-orange-950">reCAPTCHA Protection</h4>
+              <p class="text-sm text-orange-600"><%= @system_status[:recaptcha] ? 'Active & Protecting Forms' : 'Not Configured' %></p>
+            </div>
+          </div>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @system_status[:recaptcha] ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+            <%= @system_status[:recaptcha] ? 'OK' : 'ERROR' %>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Performance Metrics -->
+  <div class="admin-container">
+    <div class="admin-container-header">
+      <h3 class="admin-container-title">Performance Metrics</h3>
+      <p class="admin-container-subtitle">System performance indicators</p>
+    </div>
+    <div class="admin-container-content p-6">
+      <div class="space-y-4">
+        <!-- Average Order Processing Time -->
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">Avg Order Processing</h4>
+            <p class="text-sm text-orange-600">Time from pending to completed</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @avg_order_processing_time %></p>
+            <p class="text-sm text-orange-600">hours</p>
+          </div>
+        </div>
+
+        <!-- Average Contact Response Time -->
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">Avg Response Time</h4>
+            <p class="text-sm text-orange-600">Contact message response time</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @contact_response_time %></p>
+            <p class="text-sm text-orange-600">hours</p>
+          </div>
+        </div>
+
+        <!-- System Uptime -->
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">System Uptime</h4>
+            <p class="text-sm text-orange-600">Overall system availability</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @system_uptime %>%</p>
+            <p class="text-sm text-orange-600">availability</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Error Logging and Email Monitoring -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+  <!-- Recent Error Messages -->
+  <div class="admin-container">
+    <div class="admin-container-header">
+      <h3 class="admin-container-title">Application Errors</h3>
+      <p class="admin-container-subtitle">Real application errors (filtered from bot noise)</p>
+    </div>
+    <div class="admin-container-content p-6">
+      <% if @recent_errors.any? %>
+        <div class="space-y-3">
+          <% @recent_errors.each do |error| %>
+            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0 w-8 h-8 bg-orange-200 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-orange-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <h4 class="font-medium text-orange-950"><%= error[:type] %></h4>
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700">
+                      <%= error[:category] %>
+                    </span>
+                  </div>
+                  <p class="text-sm text-orange-600"><%= error[:message] %></p>
+                  <p class="text-xs text-orange-500"><%= error[:timestamp] %></p>
+                </div>
+              </div>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700">
+                Error
+              </span>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="text-center py-8">
+          <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p class="text-orange-600 font-medium">No application errors</p>
+          <p class="text-sm text-orange-500 mt-1">System is running smoothly</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Spam Detection -->
+  <div class="admin-container">
+    <div class="admin-container-header">
+      <h3 class="admin-container-title">Spam Detection</h3>
+      <p class="admin-container-subtitle">Security monitoring and spam prevention</p>
+    </div>
+    <div class="admin-container-content p-6">
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">Honeypot Triggers</h4>
+            <p class="text-sm text-orange-600">Spam bots caught</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @spam_detection[:honeypot_triggers] %></p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">Rate Limit Triggers</h4>
+            <p class="text-sm text-orange-600">Too many attempts</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @spam_detection[:rate_limit_triggers] %></p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">Blocked IPs</h4>
+            <p class="text-sm text-orange-600">Last 24 hours</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @spam_detection[:blocked_ips].count %></p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+          <div>
+            <h4 class="font-medium text-orange-950">Blocked Emails</h4>
+            <p class="text-sm text-orange-600">Last 24 hours</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-orange-700"><%= @spam_detection[:blocked_emails].count %></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blocked IPs and Emails -->
+      <% if @spam_detection[:blocked_ips].any? || @spam_detection[:blocked_emails].any? %>
+        <div class="space-y-4">
+          <% if @spam_detection[:blocked_ips].any? %>
+            <div>
+              <h4 class="font-medium text-orange-950 mb-2">Recently Blocked IPs</h4>
+              <div class="flex flex-wrap gap-2">
+                <% @spam_detection[:blocked_ips].first(5).each do |ip| %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                    <%= ip %>
+                  </span>
+                <% end %>
+                <% if @spam_detection[:blocked_ips].count > 5 %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700">
+                    +<%= @spam_detection[:blocked_ips].count - 5 %> more
+                  </span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <% if @spam_detection[:blocked_emails].any? %>
+            <div>
+              <h4 class="font-medium text-orange-950 mb-2">Recently Blocked Emails</h4>
+              <div class="flex flex-wrap gap-2">
+                <% @spam_detection[:blocked_emails].first(3).each do |email| %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                    <%= email %>
+                  </span>
+                <% end %>
+                <% if @spam_detection[:blocked_emails].count > 3 %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700">
+                    +<%= @spam_detection[:blocked_emails].count - 3 %> more
+                  </span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="text-center py-4">
+          <p class="text-orange-600 font-medium">No blocked IPs or emails</p>
+          <p class="text-sm text-orange-500 mt-1">Spam protection working well</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Email Bounces -->
+<div class="admin-container mb-8">
+  <div class="admin-container-header">
+    <h3 class="admin-container-title">Email Delivery Issues</h3>
+    <p class="admin-container-subtitle">Failed email deliveries and bounces</p>
+  </div>
+  <div class="admin-container-content p-6">
+    <% if @email_bounces.any? %>
+      <div class="space-y-3 mb-6">
+        <% @email_bounces.each do |bounce| %>
+          <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+            <div class="flex items-center space-x-4">
+              <div class="flex-shrink-0 w-8 h-8 bg-orange-200 rounded-full flex items-center justify-center">
+                <svg class="w-4 h-4 text-orange-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-medium text-orange-950"><%= bounce[:email] %></h4>
+                <p class="text-sm text-orange-600"><%= bounce[:reason] %></p>
+                <p class="text-xs text-orange-500"><%= bounce[:timestamp] %></p>
+              </div>
+            </div>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700">
+              Bounced
+            </span>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-8">
+        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <p class="text-orange-600 font-medium">No email bounces</p>
+        <p class="text-sm text-orange-500 mt-1">All emails delivered successfully</p>
+      </div>
+    <% end %>
+    
+    <!-- Email Delivery Stats -->
+    <div class="mt-6 p-4 bg-orange-50 rounded-lg border border-orange-200">
+      <h4 class="font-medium text-orange-950 mb-2">Email Delivery Statistics</h4>
+      <div class="grid grid-cols-3 gap-4 text-sm">
+        <div>
+          <p class="text-orange-600">Total Sent</p>
+          <p class="font-semibold text-orange-950"><%= @email_delivery_stats[:total_sent] %></p>
+        </div>
+        <div>
+          <p class="text-orange-600">Failed</p>
+          <p class="font-semibold text-orange-950"><%= @email_delivery_stats[:failed] %></p>
+        </div>
+        <div>
+          <p class="text-orange-600">Success Rate</p>
+          <p class="font-semibold text-orange-950"><%= @email_delivery_stats[:success_rate] %>%</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Background Job Monitoring -->
+<div class="admin-container">
+  <div class="admin-container-header">
+    <h3 class="admin-container-title">Background Job Monitoring</h3>
+    <p class="admin-container-subtitle">Job queue health and performance</p>
+  </div>
+  <div class="admin-container-content p-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+        <div>
+          <h4 class="font-medium text-orange-950">Total Jobs</h4>
+          <p class="text-sm text-orange-600">Processed in period</p>
+        </div>
+        <div class="text-right">
+          <p class="text-2xl font-bold text-orange-700"><%= @job_stats[:total_jobs] %></p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+        <div>
+          <h4 class="font-medium text-orange-950">Failed Jobs</h4>
+          <p class="text-sm text-orange-600">Jobs that failed</p>
+        </div>
+        <div class="text-right">
+          <p class="text-2xl font-bold text-orange-700"><%= @job_stats[:failed_jobs] %></p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+        <div>
+          <h4 class="font-medium text-orange-950">Success Rate</h4>
+          <p class="text-sm text-orange-600">Job completion rate</p>
+        </div>
+        <div class="text-right">
+          <p class="text-2xl font-bold text-orange-700"><%= @job_stats[:success_rate] %>%</p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+        <div>
+          <h4 class="font-medium text-orange-950">Job System</h4>
+          <p class="text-sm text-orange-600">Current status</p>
+        </div>
+        <div class="text-right">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @system_status[:background_jobs] ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+            <%= @system_status[:background_jobs] ? 'Active' : 'Error' %>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
+
+<!-- Email Configuration Details -->
+<div class="admin-container mb-8">
+  <div class="admin-container-header">
+    <h3 class="admin-container-title">Email Configuration</h3>
+    <p class="admin-container-subtitle">Email service setup and configuration status</p>
+  </div>
+  <div class="admin-container-content p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- SMTP Configuration -->
+      <div class="space-y-4">
+        <h4 class="font-medium text-orange-950 mb-3">SMTP Configuration</h4>
+        
+        <div class="space-y-3">
+          <div class="flex items-center justify-between p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+            <div>
+              <h5 class="font-medium text-orange-950">SMTP Username</h5>
+              <p class="text-sm text-orange-600">
+                <%= @smtp_configured ? ENV['SMTP_USERNAME'] : 'Not configured' %>
+              </p>
+            </div>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= ENV['SMTP_USERNAME'].present? ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+              <%= ENV['SMTP_USERNAME'].present? ? 'OK' : 'ERROR' %>
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+            <div>
+              <h5 class="font-medium text-orange-950">SMTP Password</h5>
+              <p class="text-sm text-orange-600">
+                <%= ENV['SMTP_PASSWORD'].present? ? 'Configured' : 'Not configured' %>
+              </p>
+            </div>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= ENV['SMTP_PASSWORD'].present? ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+              <%= ENV['SMTP_PASSWORD'].present? ? 'OK' : 'ERROR' %>
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+            <div>
+              <h5 class="font-medium text-orange-950">App Host</h5>
+              <p class="text-sm text-orange-600">
+                <%= @app_host_configured ? ENV['APP_HOST'] : 'Not configured' %>
+              </p>
+            </div>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @app_host_configured ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+              <%= @app_host_configured ? 'OK' : 'ERROR' %>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email Addresses -->
+      <div class="space-y-4">
+        <h4 class="font-medium text-orange-950 mb-3">Email Addresses</h4>
+        
+        <div class="space-y-3">
+          <div class="p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+            <h5 class="font-medium text-orange-950">Primary Email (Receiving)</h5>
+            <p class="text-sm text-orange-600">mangcrinkle@gmail.com</p>
+            <p class="text-xs text-orange-500 mt-1">For receiving contact form submissions and admin notifications</p>
+          </div>
+
+          <div class="p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+            <h5 class="font-medium text-orange-950">From Address (Sending)</h5>
+            <p class="text-sm text-orange-600">sales@mangcrinkle.store</p>
+            <p class="text-xs text-orange-500 mt-1">For sending order confirmations and customer emails</p>
+          </div>
+
+          <div class="p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+            <h5 class="font-medium text-orange-950">Email Service Status</h5>
+            <p class="text-sm text-orange-600">
+              <%= @email_delivery_enabled ? 'Active - Emails will be sent' : 'Inactive - Emails will not be sent' %>
+            </p>
+            <p class="text-xs text-orange-500 mt-1">
+              <%= @smtp_configured ? 'SMTP credentials are configured' : 'SMTP credentials are missing' %>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Google Analytics Summary -->
+<% if @google_analytics_configured %>
+<div class="admin-container mb-8">
+  <div class="admin-container-header">
+    <h3 class="admin-container-title">Google Analytics</h3>
+    <p class="admin-container-subtitle">Website analytics and tracking status</p>
+  </div>
+  <div class="admin-container-content p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Analytics Configuration -->
+      <div class="space-y-4">
+        <h4 class="font-medium text-orange-950 mb-3">Analytics Configuration</h4>
+        
+        <div class="space-y-3">
+          <div class="flex items-center justify-between p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+            <div>
+              <h5 class="font-medium text-orange-950">Measurement ID</h5>
+              <p class="text-sm text-orange-600"><%= @google_analytics_id %></p>
+            </div>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+              Configured
+            </span>
+          </div>
+
+          <div class="p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+            <h5 class="font-medium text-orange-950">Tracking Status</h5>
+            <p class="text-sm text-orange-600">Active - Page views and events are being tracked</p>
+            <p class="text-xs text-orange-500 mt-1">Form submissions, page views, and user interactions are tracked</p>
+          </div>
+
+          <div class="p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+            <h5 class="font-medium text-orange-950">Data Privacy</h5>
+            <p class="text-sm text-orange-600">GDPR compliant tracking</p>
+            <p class="text-xs text-orange-500 mt-1">No personally identifiable information is tracked</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics Summary -->
+      <div class="space-y-4">
+        <h4 class="font-medium text-orange-950 mb-3">Analytics Summary</h4>
+        
+        <div class="space-y-3">
+          <div class="p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+            <h5 class="font-medium text-orange-950">Page Views</h5>
+            <p class="text-sm text-orange-600"><%= @analytics_summary[:page_views] %></p>
+          </div>
+
+          <div class="p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+            <h5 class="font-medium text-orange-950">Unique Visitors</h5>
+            <p class="text-sm text-orange-600"><%= @analytics_summary[:unique_visitors] %></p>
+          </div>
+
+          <div class="p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+            <h5 class="font-medium text-orange-950">Form Submissions</h5>
+            <p class="text-sm text-orange-600"><%= @analytics_summary[:form_submissions] %></p>
+          </div>
+
+          <div class="p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200">
+            <h5 class="font-medium text-orange-950">Conversion Rate</h5>
+            <p class="text-sm text-orange-600"><%= @analytics_summary[:conversion_rate] %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Analytics Dashboard Link -->
+    <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <h4 class="font-medium text-blue-950">Google Analytics Dashboard</h4>
+          <p class="text-sm text-blue-600">View detailed analytics and reports</p>
+        </div>
+        <a href="https://analytics.google.com/" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200">
+          <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+          Open Analytics
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<% else %>
+<!-- Google Analytics Not Configured -->
+<div class="admin-container mb-8">
+  <div class="admin-container-header">
+    <h3 class="admin-container-title">Google Analytics</h3>
+    <p class="admin-container-subtitle">Website analytics and tracking status</p>
+  </div>
+  <div class="admin-container-content p-6">
+    <div class="text-center py-8">
+      <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      </div>
+      <h4 class="text-orange-600 font-medium mb-2">Google Analytics Not Configured</h4>
+      <p class="text-sm text-orange-500 mb-4">Set up Google Analytics to track website performance and user behavior</p>
+      <div class="space-y-2 text-sm text-orange-600">
+        <p>• Create a Google Analytics account</p>
+        <p>• Get your Measurement ID (starts with G-)</p>
+        <p>• Set the GOOGLE_ANALYTICS_ID environment variable</p>
+        <p>• Deploy your changes</p>
+      </div>
+    </div>
+  </div>
+</div>
+<% end %> 

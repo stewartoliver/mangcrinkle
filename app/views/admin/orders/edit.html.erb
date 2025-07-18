@@ -185,7 +185,7 @@
                   <button type="button" 
                           data-package-modal-package-id-param="<%= package.id %>"
                           data-package-modal-package-limit-param="<%= package.quantity %>"
-                          data-package-modal-products-param='<%= raw Product.active.map { |p| { id: p.id, name: p.name, image_url: p.images.attached? ? rails_blob_url(p.primary_image) : nil } }.to_json %>'
+                          data-package-modal-products-param='<%= raw Product.active.map { |p| { id: p.id, name: p.name, image_url: p.image ? rails_blob_url(p.image) : nil } }.to_json %>'
                           class="package-select-btn w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors">
                     Select Package
                   </button>
@@ -333,7 +333,7 @@
     <div class="bg-white shadow rounded-lg border border-orange-200 p-6">
       <div class="flex justify-between items-center mb-6">
         <h3 class="text-lg font-medium text-orange-950">Current Order Items</h3>
-        <button type="button" id="add-items-btn" onclick="showAddItemsSection()" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+        <button type="button" id="add-items-btn" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md text-sm font-medium">
           Add Items
         </button>
       </div>
@@ -792,19 +792,12 @@ window.closeAdminPackageModal = function() {
 
 // Backup function to show add items section
 window.showAddItemsSection = function() {
-  console.log('showAddItemsSection called');
   const addItemsSection = document.getElementById('add-items-section');
   const addItemsBtn = document.getElementById('add-items-btn');
   
-  console.log('Add items section found:', !!addItemsSection);
-  console.log('Add items button found:', !!addItemsBtn);
-  
   if (addItemsSection && addItemsBtn) {
-    console.log('Current classes on add-items-section:', addItemsSection.classList.toString());
     addItemsSection.classList.remove('hidden');
-    console.log('Classes after removing hidden:', addItemsSection.classList.toString());
     addItemsBtn.style.display = 'none';
-    console.log('Button hidden, section should now be visible');
   } else {
     console.error('Elements not found - section:', !!addItemsSection, 'button:', !!addItemsBtn);
   }
@@ -820,27 +813,21 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Show/hide add items section - with proper error handling and event delegation
   document.addEventListener('click', function(e) {
-    console.log('Click event detected:', e.target.id, e.target.classList.toString());
     
     // Add Items button
-    if (e.target.id === 'add-items-btn') {
-      console.log('Add Items button clicked');
+    if (e.target.id === 'add-items-btn' || e.target.closest('#add-items-btn')) {
       const addItemsSection = document.getElementById('add-items-section');
-      console.log('Add items section found:', !!addItemsSection);
-      if (addItemsSection) {
-        console.log('Current classes on add-items-section:', addItemsSection.classList.toString());
+      const addItemsBtn = document.getElementById('add-items-btn');
+      if (addItemsSection && addItemsBtn) {
         addItemsSection.classList.remove('hidden');
-        console.log('Classes after removing hidden:', addItemsSection.classList.toString());
-        e.target.style.display = 'none';
-        console.log('Button hidden');
+        addItemsBtn.style.display = 'none';
       } else {
-        console.error('add-items-section not found!');
+        console.error('Elements not found - section:', !!addItemsSection, 'button:', !!addItemsBtn);
       }
     }
     
     // Hide Items button
     if (e.target.id === 'hide-items-btn' || e.target.closest('#hide-items-btn')) {
-      console.log('Hide Items button clicked');
       const addItemsSection = document.getElementById('add-items-section');
       const addItemsBtn = document.getElementById('add-items-btn');
       if (addItemsSection && addItemsBtn) {
@@ -887,14 +874,98 @@ document.addEventListener('DOMContentLoaded', function() {
       if (typeof window.openAdminPackageModal === 'function') {
         window.openAdminPackageModal(packageId, packageLimit, products);
       } else {
-        // Fallback - just show an alert if the function isn't available
-        alert('Package selection is not available. Please refresh the page.');
+        // Fallback - try to manually open the modal
+        const modal = document.getElementById('adminPackageModal');
+        if (modal) {
+          // Set package ID
+          const packageIdField = document.getElementById('packageId');
+          if (packageIdField) {
+            packageIdField.value = packageId;
+          }
+          
+          // Set package limit
+          const packageLimitDisplay = document.getElementById('packageLimit');
+          if (packageLimitDisplay) {
+            packageLimitDisplay.textContent = packageLimit;
+          }
+          
+          // Clear and populate product selection container
+          const container = document.getElementById('productSelectionContainer');
+          if (container) {
+            container.innerHTML = '';
+            
+            products.forEach(product => {
+              const div = document.createElement('div');
+              div.className = 'flex items-center justify-between p-3 border border-orange-200 rounded-lg bg-orange-50';
+              
+              // Product image
+              let imageHtml = '';
+              if (product.image_url) {
+                imageHtml = `<img src="${product.image_url}" alt="${product.name}" class="w-12 h-12 object-cover rounded-lg flex-shrink-0">`;
+              } else {
+                imageHtml = `<div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                     <span class="text-orange-600 font-medium text-xs">${product.name.charAt(0).toUpperCase()}</span>
+                   </div>`;
+              }
+              
+              // Product name
+              const nameHtml = `<div class="flex-1 min-w-0">
+                       <h4 class="font-semibold text-orange-950 text-sm truncate">${product.name}</h4>
+                     </div>`;
+              
+              // Quantity controls
+              const quantityControls = `
+          <div class="flex items-center space-x-2 flex-shrink-0">
+            <button type="button" 
+                    class="w-8 h-8 rounded-full bg-orange-600 text-white flex items-center justify-center hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    onclick="changeQuantity(${product.id}, -1)"
+                    id="minus-${product.id}">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+              </svg>
+            </button>
+            <span class="w-10 text-center font-semibold text-orange-900 text-sm" id="quantity-${product.id}">0</span>
+            <button type="button" 
+                    class="w-8 h-8 rounded-full bg-orange-600 text-white flex items-center justify-center hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    onclick="changeQuantity(${product.id}, 1)"
+                    id="plus-${product.id}">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+            </button>
+          </div>`;
+              
+              div.innerHTML = `
+          ${imageHtml}
+          ${nameHtml}
+          ${quantityControls}
+          <input type="hidden" name="product_quantities[${product.id}]" value="0" id="hidden-${product.id}">
+        `;
+              
+              container.appendChild(div);
+            });
+          }
+          
+          // Show modal
+          modal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+          document.body.style.position = 'fixed';
+          document.body.style.width = '100%';
+          
+          // Update total items
+          if (typeof window.updateTotalItems === 'function') {
+            window.updateTotalItems();
+          }
+        } else {
+          alert('Package selection is not available. Please refresh the page.');
+        }
       }
     }
   });
   
   // Modal submit button click handler (delegated event listener)
   document.addEventListener('click', function(e) {
+    
     if (
       e.target.id === 'submitButton' &&
       document.getElementById('adminPackageModal') &&
@@ -906,14 +977,20 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // Form submission - add line items
-  const form = document.querySelector('form[action*="admin/orders"]');
+  const orderForm = document.querySelector('form[action*="admin/orders"]');
   
-  if (form) {
-    form.addEventListener('submit', function(e) {
+  if (orderForm) {
+    orderForm.addEventListener('submit', function(e) {
       // Prevent default submission first
       e.preventDefault();
       
       const lineItemsContainer = document.getElementById('line-items-container');
+      
+      if (!lineItemsContainer) {
+        console.error('Line items container not found!');
+        alert('Error: Line items container not found. Please refresh the page.');
+        return;
+      }
       
       // Clear existing line items
       lineItemsContainer.innerHTML = '';
@@ -921,16 +998,18 @@ document.addEventListener('DOMContentLoaded', function() {
       let lineItemCount = 0;
       
       // Add hidden fields for removed line items
-      window.removedLineItemIds.forEach(lineItemId => {
-        const hiddenInput = document.createElement('input');
-        hiddenInput.type = 'hidden';
-        hiddenInput.name = 'removed_line_item_ids[]';
-        hiddenInput.value = lineItemId;
-        lineItemsContainer.appendChild(hiddenInput);
-      });
+      if (window.removedLineItemIds && window.removedLineItemIds.length > 0) {
+        window.removedLineItemIds.forEach(lineItemId => {
+          const hiddenInput = document.createElement('input');
+          hiddenInput.type = 'hidden';
+          hiddenInput.name = 'removed_line_item_ids[]';
+          hiddenInput.value = lineItemId;
+          lineItemsContainer.appendChild(hiddenInput);
+        });
+      }
       
       // Add hidden fields for updated line items
-      if (window.updatedLineItems) {
+      if (window.updatedLineItems && window.updatedLineItems.length > 0) {
         window.updatedLineItems.forEach((updatedItem, index) => {
           const lineItemIdInput = document.createElement('input');
           lineItemIdInput.type = 'hidden';
@@ -972,35 +1051,328 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       
       // Add new package line items
-      window.selectedPackages.forEach((package, index) => {
-        const packageIdInput = document.createElement('input');
-        packageIdInput.type = 'hidden';
-        packageIdInput.name = 'line_items[][package_id]';
-        packageIdInput.value = package.id;
-        lineItemsContainer.appendChild(packageIdInput);
-        
-        const quantityInput = document.createElement('input');
-        quantityInput.type = 'hidden';
-        quantityInput.name = 'line_items[][quantity]';
-        quantityInput.value = package.quantity;
-        lineItemsContainer.appendChild(quantityInput);
-        
-        const productQuantitiesInput = document.createElement('input');
-        productQuantitiesInput.type = 'hidden';
-        productQuantitiesInput.name = 'line_items[][product_quantities]';
-        productQuantitiesInput.value = JSON.stringify(package.product_quantities);
-        lineItemsContainer.appendChild(productQuantitiesInput);
-        
-        lineItemCount++;
-      });
+      if (window.selectedPackages && window.selectedPackages.length > 0) {
+        window.selectedPackages.forEach((package, index) => {
+          const packageIdInput = document.createElement('input');
+          packageIdInput.type = 'hidden';
+          packageIdInput.name = 'line_items[][package_id]';
+          packageIdInput.value = package.id;
+          lineItemsContainer.appendChild(packageIdInput);
+          
+          const quantityInput = document.createElement('input');
+          quantityInput.type = 'hidden';
+          quantityInput.name = 'line_items[][quantity]';
+          quantityInput.value = package.quantity;
+          lineItemsContainer.appendChild(quantityInput);
+          
+          const productQuantitiesInput = document.createElement('input');
+          productQuantitiesInput.type = 'hidden';
+          productQuantitiesInput.name = 'line_items[][product_quantities]';
+          productQuantitiesInput.value = JSON.stringify(package.product_quantities);
+          lineItemsContainer.appendChild(productQuantitiesInput);
+          
+          lineItemCount++;
+        });
+      }
       
-      // Submit the form
-      this.submit();
+      // Submit the form using the form reference
+      orderForm.submit();
     });
   } else {
     console.error('Admin orders form not found!');
   }
 });
+
+// Add Turbo event listeners for navigation
+document.addEventListener('turbo:load', function() {
+  initializeOrderEditPage();
+});
+
+document.addEventListener('turbo:render', function() {
+  initializeOrderEditPage();
+});
+
+// Initialize all the page functionality
+function initializeOrderEditPage() {
+  // Add event listeners for quantity changes in the add items section
+  document.addEventListener('change', function(e) {
+    if (e.target.classList.contains('product-quantity') && e.target.closest('#add-items-section')) {
+      window.updateNewItemsTotal();
+    }
+  });
+  
+  // Show/hide add items section - with proper error handling and event delegation
+  document.addEventListener('click', function(e) {
+    
+    // Add Items button
+    if (e.target.id === 'add-items-btn' || e.target.closest('#add-items-btn')) {
+      const addItemsSection = document.getElementById('add-items-section');
+      const addItemsBtn = document.getElementById('add-items-btn');
+      if (addItemsSection && addItemsBtn) {
+        addItemsSection.classList.remove('hidden');
+        addItemsBtn.style.display = 'none';
+      } else {
+        console.error('Elements not found - section:', !!addItemsSection, 'button:', !!addItemsBtn);
+      }
+    }
+    
+    // Hide Items button
+    if (e.target.id === 'hide-items-btn' || e.target.closest('#hide-items-btn')) {
+      const addItemsSection = document.getElementById('add-items-section');
+      const addItemsBtn = document.getElementById('add-items-btn');
+      if (addItemsSection && addItemsBtn) {
+        addItemsSection.classList.add('hidden');
+        addItemsBtn.style.display = 'block';
+      }
+    }
+  });
+  
+  // Handle line item card clicks for editing
+  document.addEventListener('click', function(e) {
+    const lineItemCard = e.target.closest('.line-item-card');
+    if (lineItemCard && !e.target.classList.contains('remove-line-item-btn')) {
+      const lineItemType = lineItemCard.dataset.lineItemType;
+      const purchasableId = lineItemCard.dataset.lineItemPurchasableId;
+      
+      if (lineItemType === 'CrinklePackage') {
+        // Open package modal for editing
+        openPackageModalForEditing(purchasableId, lineItemCard.dataset.lineItemId, lineItemCard.dataset.lineItemProductQuantities);
+      } else if (lineItemType === 'Product') {
+        // For individual products, we could add quantity editing here
+        alert('Product editing functionality can be added here');
+      }
+    }
+  });
+  
+  // Handle remove line item button clicks
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-line-item-btn') || e.target.closest('.remove-line-item-btn')) {
+      const button = e.target.classList.contains('remove-line-item-btn') ? e.target : e.target.closest('.remove-line-item-btn');
+      const lineItemId = button.dataset.lineItemId;
+      window.removeLineItem(lineItemId);
+    }
+  });
+  
+  // Package selection button clicks
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('package-select-btn')) {
+      const packageId = e.target.dataset.packageModalPackageIdParam;
+      const packageLimit = e.target.dataset.packageModalPackageLimitParam;
+      const products = JSON.parse(e.target.dataset.packageModalProductsParam);
+      
+      // Use the openAdminPackageModal function from application.js
+      if (typeof window.openAdminPackageModal === 'function') {
+        window.openAdminPackageModal(packageId, packageLimit, products);
+      } else {
+        // Fallback - try to manually open the modal
+        const modal = document.getElementById('adminPackageModal');
+        if (modal) {
+          // Set package ID
+          const packageIdField = document.getElementById('packageId');
+          if (packageIdField) {
+            packageIdField.value = packageId;
+          }
+          
+          // Set package limit
+          const packageLimitDisplay = document.getElementById('packageLimit');
+          if (packageLimitDisplay) {
+            packageLimitDisplay.textContent = packageLimit;
+          }
+          
+          // Clear and populate product selection container
+          const container = document.getElementById('productSelectionContainer');
+          if (container) {
+            container.innerHTML = '';
+            
+            products.forEach(product => {
+              const div = document.createElement('div');
+              div.className = 'flex items-center justify-between p-3 border border-orange-200 rounded-lg bg-orange-50';
+              
+              // Product image
+              let imageHtml = '';
+              if (product.image_url) {
+                imageHtml = `<img src="${product.image_url}" alt="${product.name}" class="w-12 h-12 object-cover rounded-lg flex-shrink-0">`;
+              } else {
+                imageHtml = `<div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                     <span class="text-orange-600 font-medium text-xs">${product.name.charAt(0).toUpperCase()}</span>
+                   </div>`;
+              }
+              
+              // Product name
+              const nameHtml = `<div class="flex-1 min-w-0">
+                       <h4 class="font-semibold text-orange-950 text-sm truncate">${product.name}</h4>
+                     </div>`;
+              
+              // Quantity controls
+              const quantityControls = `
+          <div class="flex items-center space-x-2 flex-shrink-0">
+            <button type="button" 
+                    class="w-8 h-8 rounded-full bg-orange-600 text-white flex items-center justify-center hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    onclick="changeQuantity(${product.id}, -1)"
+                    id="minus-${product.id}">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+              </svg>
+            </button>
+            <span class="w-10 text-center font-semibold text-orange-900 text-sm" id="quantity-${product.id}">0</span>
+            <button type="button" 
+                    class="w-8 h-8 rounded-full bg-orange-600 text-white flex items-center justify-center hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    onclick="changeQuantity(${product.id}, 1)"
+                    id="plus-${product.id}">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+            </button>
+          </div>`;
+              
+              div.innerHTML = `
+          ${imageHtml}
+          ${nameHtml}
+          ${quantityControls}
+          <input type="hidden" name="product_quantities[${product.id}]" value="0" id="hidden-${product.id}">
+        `;
+              
+              container.appendChild(div);
+            });
+          }
+          
+          // Show modal
+          modal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+          document.body.style.position = 'fixed';
+          document.body.style.width = '100%';
+          
+          // Update total items
+          if (typeof window.updateTotalItems === 'function') {
+            window.updateTotalItems();
+          }
+        } else {
+          alert('Package selection is not available. Please refresh the page.');
+        }
+      }
+    }
+  });
+  
+  // Modal submit button click handler (delegated event listener)
+  document.addEventListener('click', function(e) {
+    
+    if (
+      e.target.id === 'submitButton' &&
+      document.getElementById('adminPackageModal') &&
+      !document.getElementById('adminPackageModal').classList.contains('hidden')
+    ) {
+      e.preventDefault();
+      window.addPackageToOrder();
+    }
+  });
+  
+  // Form submission - add line items
+  const orderForm = document.querySelector('form[action*="admin/orders"]');
+  
+  if (orderForm) {
+    orderForm.addEventListener('submit', function(e) {
+      // Prevent default submission first
+      e.preventDefault();
+      
+      const lineItemsContainer = document.getElementById('line-items-container');
+      
+      if (!lineItemsContainer) {
+        console.error('Line items container not found!');
+        alert('Error: Line items container not found. Please refresh the page.');
+        return;
+      }
+      
+      // Clear existing line items
+      lineItemsContainer.innerHTML = '';
+      
+      let lineItemCount = 0;
+      
+      // Add hidden fields for removed line items
+      if (window.removedLineItemIds && window.removedLineItemIds.length > 0) {
+        window.removedLineItemIds.forEach(lineItemId => {
+          const hiddenInput = document.createElement('input');
+          hiddenInput.type = 'hidden';
+          hiddenInput.name = 'removed_line_item_ids[]';
+          hiddenInput.value = lineItemId;
+          lineItemsContainer.appendChild(hiddenInput);
+        });
+      }
+      
+      // Add hidden fields for updated line items
+      if (window.updatedLineItems && window.updatedLineItems.length > 0) {
+        window.updatedLineItems.forEach((updatedItem, index) => {
+          const lineItemIdInput = document.createElement('input');
+          lineItemIdInput.type = 'hidden';
+          lineItemIdInput.name = 'updated_line_item_ids[]';
+          lineItemIdInput.value = updatedItem.line_item_id;
+          lineItemsContainer.appendChild(lineItemIdInput);
+          
+          const productQuantitiesInput = document.createElement('input');
+          productQuantitiesInput.type = 'hidden';
+          productQuantitiesInput.name = `updated_line_item_quantities_${updatedItem.line_item_id}`;
+          productQuantitiesInput.value = JSON.stringify(updatedItem.product_quantities);
+          lineItemsContainer.appendChild(productQuantitiesInput);
+        });
+      }
+      
+      // Add new product line items
+      const productInputs = document.querySelectorAll('#add-items-section .product-quantity');
+      
+      productInputs.forEach((input, index) => {
+        const quantity = parseInt(input.value) || 0;
+        
+        if (quantity > 0) {
+          const productId = input.dataset.productId;
+          
+          const hiddenInput = document.createElement('input');
+          hiddenInput.type = 'hidden';
+          hiddenInput.name = 'line_items[][product_id]';
+          hiddenInput.value = productId;
+          lineItemsContainer.appendChild(hiddenInput);
+          
+          const quantityInput = document.createElement('input');
+          quantityInput.type = 'hidden';
+          quantityInput.name = 'line_items[][quantity]';
+          quantityInput.value = quantity;
+          lineItemsContainer.appendChild(quantityInput);
+          
+          lineItemCount++;
+        }
+      });
+      
+      // Add new package line items
+      if (window.selectedPackages && window.selectedPackages.length > 0) {
+        window.selectedPackages.forEach((package, index) => {
+          const packageIdInput = document.createElement('input');
+          packageIdInput.type = 'hidden';
+          packageIdInput.name = 'line_items[][package_id]';
+          packageIdInput.value = package.id;
+          lineItemsContainer.appendChild(packageIdInput);
+          
+          const quantityInput = document.createElement('input');
+          quantityInput.type = 'hidden';
+          quantityInput.name = 'line_items[][quantity]';
+          quantityInput.value = package.quantity;
+          lineItemsContainer.appendChild(quantityInput);
+          
+          const productQuantitiesInput = document.createElement('input');
+          productQuantitiesInput.type = 'hidden';
+          productQuantitiesInput.name = 'line_items[][product_quantities]';
+          productQuantitiesInput.value = JSON.stringify(package.product_quantities);
+          lineItemsContainer.appendChild(productQuantitiesInput);
+          
+          lineItemCount++;
+        });
+      }
+      
+      // Submit the form using the form reference
+      orderForm.submit();
+    });
+  } else {
+    console.error('Admin orders form not found!');
+  }
+  
+}
 
 // Function to open package modal for editing existing packages
 function openPackageModalForEditing(packageId, lineItemId, productQuantitiesJson) {
@@ -1042,5 +1414,51 @@ function openPackageModalForEditing(packageId, lineItemId, productQuantitiesJson
     // Fallback - just show an alert if the function isn't available
     alert('Package selection is not available. Please refresh the page.');
   }
+}
+
+// Add missing functions for package modal
+window.changeQuantity = function(productId, change) {
+  const quantityElement = document.getElementById(`quantity-${productId}`);
+  const hiddenInput = document.getElementById(`hidden-${productId}`);
+  const minusButton = document.getElementById(`minus-${productId}`);
+  const plusButton = document.getElementById(`plus-${productId}`);
+  
+  if (quantityElement && hiddenInput) {
+    let currentQuantity = parseInt(quantityElement.textContent) || 0;
+    const newQuantity = Math.max(0, currentQuantity + change);
+    
+    quantityElement.textContent = newQuantity;
+    hiddenInput.value = newQuantity;
+    
+    // Update button states
+    if (minusButton) {
+      minusButton.disabled = newQuantity === 0;
+    }
+    if (plusButton) {
+      const packageLimit = parseInt(document.getElementById('packageLimit').textContent) || 0;
+      const currentTotal = getCurrentTotal();
+      plusButton.disabled = currentTotal >= packageLimit;
+    }
+    
+    // Update total
+    updateTotalItems();
+  }
+};
+
+window.updateTotalItems = function() {
+  const totalElement = document.getElementById('totalItems');
+  if (totalElement) {
+    const total = getCurrentTotal();
+    totalElement.textContent = total;
+  }
+};
+
+function getCurrentTotal() {
+  let total = 0;
+  const inputs = document.querySelectorAll('#productSelectionContainer input[type="hidden"][id^="hidden-"]');
+  inputs.forEach(input => {
+    total += parseInt(input.value) || 0;
+  });
+  return total;
 }
 </script>

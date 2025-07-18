@@ -117,54 +117,50 @@ class Admin::OrdersController < Admin::BaseController
   end
 
   def update
+    Rails.logger.debug "=== UPDATE ORDER START ===" if Rails.env.development?
+    Rails.logger.debug "Request method: #{request.method}" if Rails.env.development?
+    Rails.logger.debug "Request path: #{request.path}" if Rails.env.development?
+    Rails.logger.debug "All params: #{params.inspect}" if Rails.env.development?
+    Rails.logger.debug "Order params: #{order_params.inspect}" if Rails.env.development?
+    Rails.logger.debug "Line items params: #{params[:line_items].inspect}" if Rails.env.development?
+    Rails.logger.debug "Removed line item IDs: #{params[:removed_line_item_ids].inspect}" if Rails.env.development?
+    Rails.logger.debug "Updated line items: #{params[:updated_line_item_ids].inspect}" if Rails.env.development?
+    
     if @order.update(order_params)
+      Rails.logger.debug "Order updated successfully" if Rails.env.development?
+      
       # Handle removed line items
       if params[:removed_line_item_ids].present?
+        Rails.logger.debug "Removing line items: #{params[:removed_line_item_ids]}" if Rails.env.development?
         params[:removed_line_item_ids].each do |line_item_id|
           line_item = @order.line_items.find_by(id: line_item_id)
-          line_item&.destroy
+          if line_item
+            line_item.destroy
+            Rails.logger.debug "Removed line item: #{line_item_id}" if Rails.env.development?
+          else
+            Rails.logger.debug "Line item not found: #{line_item_id}" if Rails.env.development?
+          end
         end
       end
       
       # Handle updated line items
       if params[:updated_line_item_ids].present?
-        Rails.logger.info "=== UPDATED LINE ITEMS DEBUG ==="
-        Rails.logger.info "Updated line item IDs: #{params[:updated_line_item_ids].inspect}"
-        
+        Rails.logger.debug "Updating line items: #{params[:updated_line_item_ids]}" if Rails.env.development?
         params[:updated_line_item_ids].each do |line_item_id|
-          # Find the corresponding product quantities parameter
-          quantities_param_name = "updated_line_item_quantities_#{line_item_id}"
-          product_quantities_param = params[quantities_param_name]
-          
-          Rails.logger.info "Line item ID: #{line_item_id}"
-          Rails.logger.info "Quantities param name: #{quantities_param_name}"
-          Rails.logger.info "Quantities param value: #{product_quantities_param.inspect}"
-          
           line_item = @order.line_items.find_by(id: line_item_id)
-          if line_item && line_item.purchasable.is_a?(CrinklePackage)
-            # Parse product_quantities if it's a JSON string
-            product_quantities = {}
-            if product_quantities_param.present?
-              if product_quantities_param.is_a?(String)
-                begin
-                  product_quantities = JSON.parse(product_quantities_param)
-                rescue JSON::ParserError => e
-                  Rails.logger.error "Failed to parse product_quantities JSON: #{e.message}"
-                  product_quantities = {}
-                end
-              else
-                product_quantities = product_quantities_param
-              end
-            end
-            
-            line_item.update!(product_quantities: product_quantities)
+          if line_item && params["updated_line_item_quantities_#{line_item_id}"].present?
+            product_quantities = JSON.parse(params["updated_line_item_quantities_#{line_item_id}"])
+            line_item.update(product_quantities: product_quantities)
+            Rails.logger.debug "Updated line item: #{line_item_id}" if Rails.env.development?
           end
         end
       end
       
-      # Add new line items if provided
+      # Handle new line items
       if params[:line_items].present?
+        Rails.logger.debug "Adding new line items: #{params[:line_items].length}" if Rails.env.development?
         params[:line_items].each_with_index do |item_params, index|
+          Rails.logger.debug "Processing line item #{index + 1}: #{item_params.inspect}" if Rails.env.development?
           next if item_params[:quantity].blank? || item_params[:quantity].to_i <= 0
           
           if item_params[:product_id].present?
@@ -174,6 +170,7 @@ class Admin::OrdersController < Admin::BaseController
               quantity: item_params[:quantity].to_i,
               price: product.price
             )
+            Rails.logger.debug "Added product line item: #{product.name}" if Rails.env.development?
           elsif item_params[:package_id].present?
             package = CrinklePackage.find(item_params[:package_id])
             
@@ -198,16 +195,21 @@ class Admin::OrdersController < Admin::BaseController
               price: package.price,
               product_quantities: product_quantities
             )
+            Rails.logger.debug "Added package line item: #{package.name}" if Rails.env.development?
           end
         end
         
         # Recalculate total after all line items are created
         @order.calculate_total
         @order.save!
+        Rails.logger.debug "Recalculated total: #{@order.total_price}" if Rails.env.development?
       end
       
+      Rails.logger.debug "=== UPDATE ORDER SUCCESS ===" if Rails.env.development?
       redirect_to admin_order_path(@order), notice: 'Order was successfully updated.'
     else
+      Rails.logger.debug "=== UPDATE ORDER FAILED ===" if Rails.env.development?
+      Rails.logger.debug "Errors: #{@order.errors.full_messages}" if Rails.env.development?
       @products = Product.active
       @crinkle_packages = CrinklePackage.active.ordered_by_quantity
       render :edit, status: :unprocessable_entity

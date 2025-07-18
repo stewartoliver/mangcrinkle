@@ -3,8 +3,7 @@ Recaptcha.configure do |config|
   config.secret_key = ENV['RECAPTCHA_SECRET_KEY']
   
   # Disable reCAPTCHA in development and test environments
-  if Rails.env.development? || Rails.env.test? || 
-     ENV['RECAPTCHA_SITE_KEY'].blank? || ENV['RECAPTCHA_SECRET_KEY'].blank?
+  if Rails.env.development? || Rails.env.test?
     config.skip_verify_env = ['development', 'test']
   end
 end
@@ -12,43 +11,20 @@ end
 # Helper methods for reCAPTCHA
 module RecaptchaHelper
   def show_recaptcha?
-    # TEMPORARILY DISABLED - Return false to disable reCAPTCHA everywhere
-    # To re-enable, comment out the line below and uncomment the original logic
-    return false
+    # Don't show reCAPTCHA in admin routes
+    return false if request.path.start_with?('/admin')
     
-    # ORIGINAL LOGIC (commented out for temporary disable):
-    # # Debug logging (safe - no key values)
-    # Rails.logger.info "🔍 reCAPTCHA Debug - Request path: #{request.path}"
-    # Rails.logger.info "🔍 reCAPTCHA Debug - Request host: #{request.host}"
-    # Rails.logger.info "🔍 reCAPTCHA Debug - Rails env: #{Rails.env}"
-    # Rails.logger.info "🔍 reCAPTCHA Debug - Site key present: #{ENV['RECAPTCHA_SITE_KEY'].present?}"
-    # Rails.logger.info "🔍 reCAPTCHA Debug - Secret key present: #{ENV['RECAPTCHA_SECRET_KEY'].present?}"
+    # Don't show reCAPTCHA in development/test
+    return false if Rails.env.development? || Rails.env.test?
     
-    # # Don't show reCAPTCHA in admin routes
-    # if request.path.start_with?('/admin')
-    #   Rails.logger.info "🔍 reCAPTCHA Debug - Skipping: admin route"
-    #   return false
-    # end
+    # Don't show on localhost
+    return false if request.host.include?('localhost') || request.host.include?('127.0.0.1')
     
-    # # Don't show reCAPTCHA in development/test or when keys are missing
-    # if Rails.env.development? || Rails.env.test?
-    #   Rails.logger.info "🔍 reCAPTCHA Debug - Skipping: dev/test environment"
-    #   return false
-    # end
+    # Don't show if keys are missing (safety check)
+    return false if ENV['RECAPTCHA_SITE_KEY'].blank? || ENV['RECAPTCHA_SECRET_KEY'].blank?
     
-    # if ENV['RECAPTCHA_SITE_KEY'].blank? || ENV['RECAPTCHA_SECRET_KEY'].blank?
-    #   Rails.logger.info "🔍 reCAPTCHA Debug - Skipping: missing keys"
-    #   return false
-    # end
-    
-    # # Don't show on localhost
-    # if request.host.include?('localhost') || request.host.include?('127.0.0.1')
-    #   Rails.logger.info "🔍 reCAPTCHA Debug - Skipping: localhost"
-    #   return false
-    # end
-    
-    # Rails.logger.info "🔍 reCAPTCHA Debug - Showing reCAPTCHA: TRUE"
-    # true
+    # Show reCAPTCHA on production with valid keys
+    true
   end
   
   def verify_recaptcha_if_needed(model = nil)
@@ -58,8 +34,30 @@ module RecaptchaHelper
     # Skip verification if reCAPTCHA shouldn't be shown
     return true unless show_recaptcha?
     
-    # For reCAPTCHA v3, verify without action parameter
-    verify_recaptcha(model: model)
+    # For reCAPTCHA v3, verify with score threshold
+    verify_recaptcha(
+      model: model,
+      action: get_recaptcha_action,
+      minimum_score: 0.5
+    )
+  end
+  
+  private
+  
+  def get_recaptcha_action
+    # Different actions for different forms
+    case request.path
+    when /contact/
+      'contact_form'
+    when /orders/
+      'order_form'
+    when /reviews/
+      'review_form'
+    when /newsletter/
+      'newsletter_subscription'
+    else
+      'page_view'
+    end
   end
 end
 

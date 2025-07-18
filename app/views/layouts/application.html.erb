@@ -34,6 +34,61 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     
+    <!-- Google Analytics -->
+    <% if Rails.env.production? && ENV['GOOGLE_ANALYTICS_ID'].present? %>
+      <!-- Google tag (gtag.js) -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=<%= ENV['GOOGLE_ANALYTICS_ID'] %>"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '<%= ENV['GOOGLE_ANALYTICS_ID'] %>');
+        
+        // Track form submissions
+        document.addEventListener('DOMContentLoaded', function() {
+          // Track contact form submissions
+          const contactForm = document.querySelector('form[action*="contact"]');
+          if (contactForm) {
+            contactForm.addEventListener('submit', function() {
+              gtag('event', 'form_submit', {
+                'form_name': 'contact_form'
+              });
+            });
+          }
+          
+          // Track order form submissions
+          const orderForm = document.querySelector('form[action*="orders"]');
+          if (orderForm) {
+            orderForm.addEventListener('submit', function() {
+              gtag('event', 'form_submit', {
+                'form_name': 'order_form'
+              });
+            });
+          }
+          
+          // Track review form submissions
+          const reviewForm = document.querySelector('form[action*="reviews"]');
+          if (reviewForm) {
+            reviewForm.addEventListener('submit', function() {
+              gtag('event', 'form_submit', {
+                'form_name': 'review_form'
+              });
+            });
+          }
+          
+          // Track newsletter subscriptions
+          const newsletterForm = document.querySelector('form[action*="newsletter"]');
+          if (newsletterForm) {
+            newsletterForm.addEventListener('submit', function() {
+              gtag('event', 'form_submit', {
+                'form_name': 'newsletter_subscription'
+              });
+            });
+          }
+        });
+      </script>
+    <% end %>
+    
     <!-- reCAPTCHA v3 Script -->
     <% if show_recaptcha? %>
       <%= recaptcha_tags %>

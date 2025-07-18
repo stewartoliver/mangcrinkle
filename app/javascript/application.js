@@ -5,6 +5,7 @@ import "./admin_navigation"
 import "./form_interactions"
 import "./hero_animations"
 import "./image_switcher"
+import "./user_management"
 
 // Global variable for package limit
 let currentPackageLimit = 0;

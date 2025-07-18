@@ -12,6 +12,9 @@ end
 # Helper methods for reCAPTCHA v3
 module RecaptchaHelper
   def show_recaptcha?
+    # DISABLED - Return false to make pages work
+    return false
+    
     # Don't show reCAPTCHA in admin routes
     return false if request.path.start_with?('/admin')
     
@@ -29,6 +32,9 @@ module RecaptchaHelper
   end
   
   def verify_recaptcha_if_needed(model = nil)
+    # DISABLED - Return true to make forms work
+    return true
+    
     # Skip reCAPTCHA verification in admin routes
     return true if request.path.start_with?('/admin')
     

@@ -3,9 +3,6 @@ Recaptcha.configure do |config|
   config.site_key = ENV['RECAPTCHA_SITE_KEY']
   config.secret_key = ENV['RECAPTCHA_SECRET_KEY']
   
-  # Configure for v3
-  config.api_version = 'v3'
-  
   # Disable reCAPTCHA in development and test environments
   if Rails.env.development? || Rails.env.test?
     config.skip_verify_env = ['development', 'test']
@@ -41,11 +38,11 @@ module RecaptchaHelper
     # Skip verification if reCAPTCHA shouldn't be shown
     return true unless show_recaptcha?
     
-    # For reCAPTCHA v3, verify with score threshold
+    # For reCAPTCHA v3, use the standard verification method
+    # The gem should automatically detect v3 keys and handle them properly
     verify_recaptcha(
       model: model,
-      action: get_recaptcha_action,
-      minimum_score: 0.5
+      action: get_recaptcha_action
     )
   end
   

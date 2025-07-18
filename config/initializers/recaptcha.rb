@@ -35,12 +35,9 @@ module RecaptchaHelper
     # Skip verification if reCAPTCHA shouldn't be shown
     return true unless show_recaptcha?
     
-    # For reCAPTCHA v3, use the standard verification method
-    # The gem should automatically detect v3 keys and handle them properly
-    verify_recaptcha(
-      model: model,
-      action: get_recaptcha_action
-    )
+    # Use the basic recaptcha verification
+    # The gem should automatically handle v3 keys
+    verify_recaptcha(model: model)
   end
   
   private

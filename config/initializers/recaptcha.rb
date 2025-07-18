@@ -12,9 +12,6 @@ end
 # Helper methods for reCAPTCHA v3
 module RecaptchaHelper
   def show_recaptcha?
-    # TEMPORARILY DISABLED FOR TESTING
-    return false
-    
     # Don't show reCAPTCHA in admin routes
     return false if request.path.start_with?('/admin')
     

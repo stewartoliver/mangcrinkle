@@ -91,7 +91,21 @@
     
     <!-- reCAPTCHA v3 Script -->
     <% if show_recaptcha? %>
-      <%= recaptcha_tags %>
+      <script src="https://www.google.com/recaptcha/api.js?render=<%= ENV['RECAPTCHA_SITE_KEY'] %>"></script>
+      <script>
+        grecaptcha.ready(function() {
+          grecaptcha.execute('<%= ENV['RECAPTCHA_SITE_KEY'] %>', {action: 'page_view'}).then(function(token) {
+            // Add the token to all forms
+            document.querySelectorAll('form').forEach(function(form) {
+              var input = document.createElement('input');
+              input.type = 'hidden';
+              input.name = 'g-recaptcha-response';
+              input.value = token;
+              form.appendChild(input);
+            });
+          });
+        });
+      </script>
     <% end %>
   </head>
   <body class="bg-orange-50">

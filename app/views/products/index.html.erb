@@ -90,7 +90,7 @@
               
               <div class="p-6">
                 <h4 class="customer-feature-title"><%= product.name %></h4>
-                <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center justify-between space-x-2", data: { turbo: false, recaptcha: true } do |f| %>
+                <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center justify-between space-x-2", data: { turbo: false } do |f| %>
                   <span class="customer-price-large">$<%= number_with_precision(product.price, precision: 2) %></span>
                   <div class="flex items-center space-x-2">
                     <%= f.hidden_field :product_id, value: product.id %>
@@ -144,7 +144,7 @@
               <div class="p-6">
                 <h4 class="customer-feature-title"><%= product.name %></h4>
                 <p class="customer-feature-description mb-4"><%= truncate(product.description, length: 100) %></p>
-                <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center justify-between space-x-2", data: { turbo: false, recaptcha: true } do |f| %>
+                <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center justify-between space-x-2", data: { turbo: false } do |f| %>
                   <span class="customer-price-large">$<%= number_with_precision(product.price, precision: 2) %></span>
                   <div class="flex items-center space-x-2">
                     <%= f.hidden_field :product_id, value: product.id %>
@@ -195,7 +195,7 @@
                 <div class="flex justify-between items-center">
                   <span class="text-lg font-bold text-blue-950">$<%= number_with_precision(product.price, precision: 2) %></span>
                   <div class="flex space-x-2">
-                    <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center space-x-2", data: { turbo: false, recaptcha: true } do |f| %>
+                    <%= form_with url: add_product_cart_path, method: :post, class: "flex items-center space-x-2", data: { turbo: false } do |f| %>
                       <%= f.hidden_field :product_id, value: product.id %>
                       <%= f.number_field :quantity, value: 1, min: 1, class: "form-input w-16" %>
                       <%= f.submit "Add to Cart", class: "inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>

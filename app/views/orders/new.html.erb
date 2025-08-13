@@ -9,7 +9,7 @@
 </div>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16">
-  <%= form_with model: @order, data: { turbo: false, recaptcha: true }, class: "space-y-6 sm:space-y-8" do |f| %>
+  <%= form_with model: @order, data: { turbo: false }, class: "space-y-6 sm:space-y-8" do |f| %>
     <% if @order.errors.any? %>
       <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
         <div class="flex">

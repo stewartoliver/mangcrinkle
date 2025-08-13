@@ -45,7 +45,7 @@
             
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-3">
-                <%= form_with url: update_quantity_cart_path, method: :patch, class: "flex items-center space-x-2", data: { turbo: false, recaptcha: true } do |f| %>
+                <%= form_with url: update_quantity_cart_path, method: :patch, class: "flex items-center space-x-2", data: { turbo: false } do |f| %>
                   <%= f.hidden_field :cart_item_id, value: item.id %>
                   <%= f.number_field :quantity, value: item.quantity, min: 1, class: "form-input w-16" %>
                   <%= f.submit "Update", class: "text-xs text-orange-600 hover:text-orange-950 bg-transparent border-none cursor-pointer" %>
@@ -53,7 +53,7 @@
               </div>
               <div class="text-right">
                 <div class="text-sm font-medium text-orange-950">$<%= number_with_precision(item.subtotal, precision: 2) %></div>
-                <%= form_with url: remove_item_cart_path, method: :delete, class: "inline", data: { turbo: false, recaptcha: true } do |f| %>
+                <%= form_with url: remove_item_cart_path, method: :delete, class: "inline", data: { turbo: false } do |f| %>
                   <%= f.hidden_field :cart_item_id, value: item.id %>
                   <%= f.submit "Remove", class: "text-xs text-orange-600 hover:text-orange-950 bg-transparent border-none cursor-pointer" %>
                 <% end %>
@@ -101,7 +101,7 @@
                   <% end %>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-center">
-                  <%= form_with url: update_quantity_cart_path, method: :patch, class: "flex items-center justify-center space-x-2", data: { turbo: false, recaptcha: true } do |f| %>
+                  <%= form_with url: update_quantity_cart_path, method: :patch, class: "flex items-center justify-center space-x-2", data: { turbo: false } do |f| %>
                     <%= f.hidden_field :cart_item_id, value: item.id %>
                     <%= f.number_field :quantity, value: item.quantity, min: 1, class: "form-input w-16" %>
                     <%= f.submit "Update", class: "text-sm text-orange-600 hover:text-orange-950" %>
@@ -114,7 +114,7 @@
                   $<%= number_with_precision(item.subtotal, precision: 2) %>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <%= form_with url: remove_item_cart_path, method: :delete, class: "inline", data: { turbo: false, recaptcha: true } do |f| %>
+                  <%= form_with url: remove_item_cart_path, method: :delete, class: "inline", data: { turbo: false } do |f| %>
                     <%= f.hidden_field :cart_item_id, value: item.id %>
                     <%= f.submit "Remove", class: "text-orange-600 hover:text-orange-950 bg-transparent border-none cursor-pointer" %>
                   <% end %>

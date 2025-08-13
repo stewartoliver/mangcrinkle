@@ -102,7 +102,7 @@
       </p>
     </div>
     <div class="customer-cta-content">
-      <%= form_with url: newsletter_subscriptions_path, method: :post, local: true, data: { turbo: false, recaptcha: true }, class: "customer-newsletter-form" do |form| %>
+      <%= form_with url: newsletter_subscriptions_path, method: :post, local: true, data: { turbo: false }, class: "customer-newsletter-form" do |form| %>
         <%= form.email_field :email, 
               placeholder: "Enter your email address", 
               required: true, 

@@ -53,7 +53,7 @@
               gtag('event', 'form_submit', {
                 'form_name': 'contact_form'
               });
-            });
+            0-});
           }
           
           // Track order form submissions
@@ -91,7 +91,7 @@
     
     <!-- reCAPTCHA v3 Script -->
     <% if show_recaptcha? %>
-      <%= recaptcha_tags %>
+      <%= recaptcha_v3(action: 'page_view') %>
     <% end %>
   </head>
   <body class="bg-orange-50">

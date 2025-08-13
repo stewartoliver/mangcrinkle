@@ -102,18 +102,16 @@
       </p>
     </div>
     <div class="customer-cta-content">
-      <%= form_with url: newsletter_subscriptions_path, method: :post, local: true, class: "customer-newsletter-form" do |form| %>
+      <%= form_with url: newsletter_subscriptions_path, method: :post, local: true, data: { turbo: false, recaptcha: true }, class: "customer-newsletter-form" do |form| %>
         <%= form.email_field :email, 
               placeholder: "Enter your email address", 
               required: true, 
               class: "customer-newsletter-input" %>
         
-        <% if show_recaptcha? %>
-          <%= recaptcha_v3 %>
-        <% end %>
-        
         <%= form.submit "Subscribe", 
               class: "customer-newsletter-submit" %>
+        
+        <%= recaptcha_v3(action: 'newsletter_subscription') %>
       <% end %>
       <p class="text-sm text-orange-800 mt-2">We respect your privacy. Unsubscribe anytime.</p>
     </div>

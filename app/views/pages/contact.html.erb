@@ -46,7 +46,7 @@
       <div class="customer-info-card">
         <h2 class="customer-feature-title mb-6">Send us a Message</h2>
         
-        <%= form_with model: ContactMessage.new, url: contact_messages_path, local: true, class: "customer-section-spacing" do |form| %>
+        <%= form_with model: ContactMessage.new, url: contact_messages_path, local: true, data: { turbo: false }, class: "customer-section-spacing" do |form| %>
           <div>
             <%= form.label :name, "Name", class: "form-label" %>
             <div class="mt-1">
@@ -77,13 +77,11 @@
             </div>
           </div>
 
-          <% if show_recaptcha? %>
-            <%= recaptcha_v3 %>
-          <% end %>
-
           <div>
             <%= form.submit "Send Message", class: "form-btn-primary customer-transition" %>
           </div>
+          
+          <%= recaptcha_v3(action: 'contact_form') %>
         <% end %>
       </div>
     </div>

@@ -24,7 +24,7 @@
           </div>
         </div>
 
-        <%= form_with url: add_package_cart_path, method: :post, id: "packageForm", data: { turbo: false } do |f| %>
+        <%= form_with url: add_package_cart_path, method: :post, id: "packageForm", data: { turbo: false, recaptcha: true } do |f| %>
           <%= f.hidden_field :package_id, id: "packageId" %>
           
           <div class="mt-6 space-y-3" id="productSelectionContainer">

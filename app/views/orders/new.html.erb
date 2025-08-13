@@ -9,7 +9,7 @@
 </div>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16">
-  <%= form_with model: @order, class: "space-y-6 sm:space-y-8" do |f| %>
+  <%= form_with model: @order, data: { turbo: false, recaptcha: true }, class: "space-y-6 sm:space-y-8" do |f| %>
     <% if @order.errors.any? %>
       <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
         <div class="flex">
@@ -182,16 +182,14 @@
           </div>
         </div>
       </div>
-
-      <% if show_recaptcha? %>
-        <%= recaptcha_v3 %>
-      <% end %>
     </div>
 
     <!-- Action Buttons -->
     <div class="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
       <%= link_to "Back to Cart", cart_path, class: "w-full sm:w-auto text-center text-orange-600 hover:text-orange-950 font-medium" %>
-      <%= f.submit "Place Order", class: "w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" %>
+      <%= f.submit "Place Order", class: "w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors duration-200" %>
     </div>
+    
+    <%= recaptcha_v3(action: 'order_form') %>
   <% end %>
 </div>

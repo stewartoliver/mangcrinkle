@@ -31,7 +31,7 @@
   <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 border border-orange-200">
     <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-orange-950">Review Details</h2>
     
-    <%= form_with model: @review, local: true, class: "space-y-6" do |form| %>
+    <%= form_with model: @review, local: true, data: { turbo: false, recaptcha: true }, class: "space-y-6" do |form| %>
       <% if @review.errors.any? %>
         <div class="bg-red-50 border border-red-200 rounded-md p-4">
           <div class="flex">
@@ -127,10 +127,6 @@
         <p class="mt-1 text-sm text-orange-500">Tell us about your experience with our products</p>
       </div>
 
-      <% if show_recaptcha? %>
-        <%= recaptcha_v3 %>
-      <% end %>
-
       <!-- Order Association (if available) -->
       <% if @order %>
         <%= form.hidden_field :order_id, value: @order.id %>
@@ -156,6 +152,8 @@
                         class: "form-btn-primary",
                         data: { disable_with: "Submitting..." } %>
       </div>
+      
+      <%= recaptcha_v3(action: 'review_form') %>
     <% end %>
   </div>
 

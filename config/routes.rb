@@ -54,7 +54,6 @@ Rails.application.routes.draw do
   namespace :admin do
     get 'dashboard', to: 'dashboard#index'
     get 'analytics', to: 'analytics#index'
-    get 'monitoring', to: 'monitoring#index'
     get 'login', to: 'sessions#new'
     post 'login', to: 'sessions#create'
     delete 'logout', to: 'sessions#destroy'

@@ -1,23 +1,5 @@
 <% content_for :title, "Dashboard" %>
 
-<!-- Analytics Link -->
-<div class="mb-6">
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl font-bold text-orange-950">Dashboard</h1>
-      <p class="mt-1 text-sm text-orange-600">Overview of your store's performance</p>
-    </div>
-    <div class="flex items-center space-x-3">
-      <%= link_to admin_analytics_path, class: "admin-btn admin-btn-primary flex items-center space-x-2" do %>
-        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-        <span>View Analytics</span>
-      <% end %>
-    </div>
-  </div>
-</div>
-
 <!-- Statistics Cards -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
   <!-- Total Orders -->
@@ -81,100 +63,137 @@
   </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+<div class="grid grid-cols-1 gap-8 mb-8">
   <!-- Orders by Day Chart - Redesigned -->
-  <div class="lg:col-span-2">
+  <div>
     <div class="admin-chart-container h-full">
       <div class="admin-chart-header">
         <h3 class="admin-container-title">Orders This Week</h3>
-        <p class="admin-container-subtitle">Daily order count for the current week</p>
       </div>
       <div class="admin-chart-content">
-        <div class="admin-chart-bar">
-          <% (0..6).each do |i| %>
-            <% date = Date.current.beginning_of_week + i.days %>
-            <% date_string = date.strftime("%Y-%m-%d") %>
-            <% count = @orders_by_day[date_string] || 0 %>
-            <% is_today = date == Date.current %>
-            
-            <div class="admin-chart-bar-item <%= 'bg-orange-100 border-orange-300' if is_today %>">
-              <div class="admin-chart-bar-value <%= 'text-orange-600' if is_today %>">
-                <%= count %>
+        <!-- Line Chart Container -->
+        <div class="h-64 mb-6">
+          <%= line_chart @orders_by_day, 
+              colors: ["#ea580c"],
+              curve: true,
+              points: true,
+              library: {
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    ticks: {
+                      stepSize: 1,
+                      color: "#6b7280",
+                      font: {
+                        size: 11
+                      }
+                    },
+                    grid: {
+                      color: "#f3f4f6",
+                      drawBorder: false
+                    }
+                  },
+                  x: {
+                    ticks: {
+                      color: "#6b7280",
+                      font: {
+                        size: 11
+                      }
+                    },
+                    grid: {
+                      display: false
+                    }
+                  }
+                },
+                plugins: {
+                  legend: {
+                    display: false
+                  }
+                },
+                elements: {
+                  point: {
+                    radius: 3,
+                    hoverRadius: 5,
+                    backgroundColor: "#ea580c",
+                    borderColor: "#ffffff",
+                    borderWidth: 2
+                  },
+                  line: {
+                    borderWidth: 2,
+                    tension: 0.3
+                  }
+                }
+              } %>
+        </div>
+        
+        <!-- Week Summary -->
+        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200 mt-12">
+          <div class="flex items-center space-x-4">
+            <div class="flex-shrink-0">
+              <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
               </div>
-              <div class="admin-chart-bar-divider">
-                <div class="admin-chart-bar-line"></div>
-                <div class="admin-chart-bar-dot <%= 'bg-orange-500' if is_today %>"></div>
-                <div class="admin-chart-bar-line"></div>
-              </div>
-              <div class="admin-chart-bar-label">
-                <div class="admin-chart-bar-day <%= 'text-orange-600 font-bold' if is_today %>">
-                  <%= date.strftime("%a") %>
-                </div>
-                <div class="admin-chart-bar-date">
-                  <%= date.strftime("%m/%d") %>
-                </div>
+            </div>
+            <div>
+              <div class="text-sm font-medium text-orange-700">This Week Total</div>
+              <div class="text-2xl font-bold text-orange-900"><%= @this_week_orders %> orders</div>
+            </div>
+          </div>
+          
+          <% if defined?(@last_week_orders) && @last_week_orders > 0 %>
+            <div class="text-right">
+              <div class="text-sm text-orange-600">vs Last Week</div>
+              <% change = @this_week_orders - @last_week_orders %>
+              <div class="text-lg font-semibold <%= change >= 0 ? 'text-green-600' : 'text-red-600' %>">
+                <%= change >= 0 ? '+' : '' %><%= change %>
+                <span class="text-sm font-normal text-orange-600">orders</span>
               </div>
             </div>
           <% end %>
         </div>
-        
-        <!-- Week Summary -->
-        <div class="mt-6 pt-6 border-t border-orange-200 bg-orange-50 rounded-lg p-4">
-          <div class="flex justify-between items-center text-sm">
-            <span class="text-orange-700 font-medium">This Week Total:</span>
-            <span class="font-bold text-orange-900"><%= @this_week_orders %> orders</span>
+
+        <!-- Order Status Breakdown -->
+        <div class="mt-4">
+          <h4 class="text-sm font-medium text-orange-700 mb-3">This Week's Order Status</h4>
+          <div class="grid grid-cols-2 gap-3">
+            <% 
+              # Define the order we want to display statuses in
+              status_order = ['pending', 'processing', 'completed', 'cancelled']
+              # Filter and sort the statuses according to our preferred order
+              sorted_statuses = status_order.map { |status| [status, @this_week_orders_by_status[status] || 0] }
+            %>
+            <% sorted_statuses.each do |status, count| %>
+              <%= link_to admin_orders_path(status: status), class: "block p-3 rounded-lg border border-orange-200 hover:bg-orange-50 transition-colors duration-200" do %>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                      <%= case status
+                          when 'pending' then 'bg-yellow-100 text-yellow-800'
+                          when 'processing' then 'bg-blue-100 text-blue-800'
+                          when 'completed' then 'bg-green-100 text-green-800'
+                          when 'cancelled' then 'bg-red-100 text-red-800'
+                          else 'bg-gray-100 text-gray-800'
+                          end %>">
+                      <%= status.titleize %>
+                    </span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <span class="text-lg font-bold text-orange-900"><%= count %></span>
+                    <svg class="h-4 w-4 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
           </div>
-          <% if defined?(@last_week_orders) && @last_week_orders > 0 %>
-            <div class="flex justify-between items-center text-sm mt-2">
-              <span class="text-orange-700 font-medium">vs Last Week:</span>
-              <% change = @this_week_orders - @last_week_orders %>
-              <span class="font-bold <%= change >= 0 ? 'text-green-600' : 'text-red-600' %>">
-                <%= change >= 0 ? '+' : '' %><%= change %>
-              </span>
-            </div>
-          <% end %>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Order Status Breakdown - Fixed height, padding, and alignment -->
-  <div class="lg:col-span-1">
-    <div class="admin-container h-full">
-      <div class="admin-container-header">
-        <h3 class="admin-container-title">Order Status</h3>
-        <p class="admin-container-subtitle">Current order breakdown</p>
-      </div>
-      <div class="admin-container-content flex-1 p-4">
-        <div class="space-y-3 h-full flex flex-col justify-center">
-          <% @orders_by_status.each do |status, count| %>
-            <%= link_to admin_orders_path(status: status), class: "block p-4 rounded-lg border border-orange-200 hover:bg-orange-50 transition-colors duration-200" do %>
-              <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                    <%= case status
-                        when 'pending' then 'bg-yellow-100 text-yellow-800'
-                        when 'processing' then 'bg-blue-100 text-blue-800'
-                        when 'completed' then 'bg-green-100 text-green-800'
-                        when 'cancelled' then 'bg-red-100 text-red-800'
-                        else 'bg-gray-100 text-gray-800'
-                        end %>">
-                    <%= status.titleize %>
-                  </span>
-                </div>
-                <div class="flex items-center space-x-2">
-                  <span class="text-xl font-bold text-orange-900"><%= count %></span>
-                  <svg class="h-5 w-5 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
-            <% end %>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
   
 <!-- Recent Orders -->

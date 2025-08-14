@@ -8,24 +8,14 @@ class Admin::DashboardController < Admin::BaseController
     # Order status breakdown
     @orders_by_status = Order.group(:status).count
     
-    # Recent revenue (last 7 days)
-    @recent_revenue = Order.where(created_at: 7.days.ago..Time.current).sum(:total_price)
-    
-    # Contact Messages Statistics
-    @total_contact_messages = ContactMessage.count
-    @new_contact_messages = ContactMessage.where(status: 'new').count
-    @urgent_contact_messages = ContactMessage.where(priority: 'urgent').count
-    @recent_contact_messages = ContactMessage.includes(:user)
-                                            .where.not(status: ['resolved', 'cancelled'])
-                                            .recent
-                                            .limit(5)
-    
-    # For navigation badge
-    @new_contact_messages_count = @new_contact_messages
-    
-    # Orders by day - Simplified approach to avoid conversion errors
+    # This week's order status breakdown
     week_start = Date.current.beginning_of_week
     week_end = week_start + 6.days
+    
+    # This week's order status breakdown
+    @this_week_orders_by_status = Order.where(created_at: week_start.beginning_of_day..week_end.end_of_day)
+                                       .group(:status)
+                                       .count
     
     # Initialize the hash with all days of the week set to 0 using string keys
     @orders_by_day = {}
@@ -52,6 +42,21 @@ class Admin::DashboardController < Admin::BaseController
     @last_week_orders = Order.where(
       created_at: (week_start - 7.days).beginning_of_day..(week_start - 1.day).end_of_day
     ).count
+    
+    # Recent revenue (last 7 days)
+    @recent_revenue = Order.where(created_at: 7.days.ago..Time.current).sum(:total_price)
+    
+    # Contact Messages Statistics
+    @total_contact_messages = ContactMessage.count
+    @new_contact_messages = ContactMessage.where(status: 'new').count
+    @urgent_contact_messages = ContactMessage.where(priority: 'urgent').count
+    @recent_contact_messages = ContactMessage.includes(:user)
+                                            .where.not(status: ['resolved', 'cancelled'])
+                                            .recent
+                                            .limit(5)
+    
+    # For navigation badge
+    @new_contact_messages_count = @new_contact_messages
     
     # Top customers
     @top_customers = Order.joins(:user)

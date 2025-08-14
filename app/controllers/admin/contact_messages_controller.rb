@@ -28,6 +28,7 @@ class Admin::ContactMessagesController < Admin::BaseController
       new: ContactMessage.where(status: 'new').count,
       in_progress: ContactMessage.where(status: 'in_progress').count,
       resolved: ContactMessage.where(status: 'resolved').count,
+      closed: ContactMessage.where(status: 'closed').count,
       urgent: ContactMessage.where(priority: 'urgent').count
     }
   end

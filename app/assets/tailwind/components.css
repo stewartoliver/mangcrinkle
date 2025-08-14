@@ -177,6 +177,10 @@
         @apply bg-blue-100 text-blue-600;
     }
 
+    .admin-stats-icon-red {
+        @apply bg-red-100 text-red-600;
+    }
+
     .admin-stats-content {
         @apply ml-4;
     }
@@ -203,6 +207,10 @@
 
     .admin-stats-value-blue {
         @apply text-blue-950;
+    }
+
+    .admin-stats-value-red {
+        @apply text-red-950;
     }
 
     /* Admin Status Badges */
@@ -895,5 +903,10 @@
     /* Icon styling for features */
     .customer-feature-icon {
         @apply text-4xl mb-4 text-orange-600;
+    }
+
+    /* Subject Line Component */
+    .subject-line {
+        @apply mt-1 text-sm text-orange-950 bg-gray-50 p-3 rounded-lg border;
     }
 }

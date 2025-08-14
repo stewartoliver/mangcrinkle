@@ -1,34 +1,8 @@
-<% content_for :title, "Content Blocks - Detailed Management" %>
+<% content_for :title, "Content Blocks" %>
 
 <div class="admin-container">
-  <div class="admin-container-header">
-    <div class="flex items-center justify-between">
-      <div>
-        <h3 class="admin-container-title">Content Blocks - Detailed Management</h3>
-        <p class="admin-container-subtitle">Manage individual content blocks with technical details.</p>
-      </div>
-      <div class="flex items-center space-x-3">
-        <!-- Developer-only button with tooltip -->
-        <div class="relative group">
-          <button class="admin-btn-secondary opacity-50 cursor-not-allowed" disabled>
-            Add New Content Block
-          </button>
-          <div class="absolute right-0 top-full mt-2 w-64 bg-gray-900 text-white text-xs rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-            <div class="flex items-start">
-              <svg class="h-4 w-4 text-yellow-400 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <div>
-                <p class="font-medium">Developer Required</p>
-                <p class="mt-1">Contact your developer to add new content blocks. They need to set up the proper code integration.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Actual link for developers (hidden by default, can be shown with CSS or conditionally) -->
-        <%= link_to "Add New Content Block", new_admin_content_block_path, class: "admin-btn-primary hidden", id: "developer-add-button" %>
-      </div>
-    </div>
+<div class="admin-container-header">
+      <h3 class="admin-container-title">Content Blocks</h3>
   </div>
 
   <!-- Search and Filters -->

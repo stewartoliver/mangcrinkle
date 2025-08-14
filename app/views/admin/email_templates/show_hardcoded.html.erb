@@ -14,81 +14,61 @@
   </div>
 
   <div class="admin-container-content p-6">
-    
-    <!-- Template Header -->
-    <div class="flex items-center justify-between mb-6">
-      <div>
-        <h4 class="text-xl font-semibold text-orange-950"><%= @hardcoded_template[:name] %></h4>
-        <p class="text-sm text-orange-600 mt-1">
-          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-            <%= @hardcoded_template[:template_type].titleize %>
-          </span>
-          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 ml-2">
-            Hardcoded
-          </span>
-        </p>
-      </div>
-      <div class="flex items-center space-x-2">
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-          <%= @hardcoded_template[:active] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
-          <%= @hardcoded_template[:active] ? 'Active' : 'Inactive' %>
-        </span>
-      </div>
-    </div>
-
-    <!-- Template Details -->
-    <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-      <div>
-        <dt class="text-sm font-medium text-orange-700">Template Name</dt>
-        <dd class="mt-1 text-sm text-orange-950"><%= @hardcoded_template[:name] %></dd>
-      </div>
-      <div>
-        <dt class="text-sm font-medium text-orange-700">Template Type</dt>
-        <dd class="mt-1 text-sm text-orange-950"><%= @hardcoded_template[:template_type].titleize %></dd>
-      </div>
-      <div>
-        <dt class="text-sm font-medium text-orange-700">Status</dt>
-        <dd class="mt-1 text-sm text-orange-950">
+    <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6 mb-6">
+      <!-- Template Header -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h4 class="text-xl font-semibold text-orange-950"><%= @hardcoded_template[:name] %></h4>
+          <p class="text-sm text-orange-600 mt-1">
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+              <%= @hardcoded_template[:template_type].titleize %>
+            </span>
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 ml-2">
+              Hardcoded
+            </span>
+          </p>
+        </div>
+        <div class="flex items-center space-x-2">
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
             <%= @hardcoded_template[:active] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
             <%= @hardcoded_template[:active] ? 'Active' : 'Inactive' %>
           </span>
-        </dd>
+        </div>
       </div>
-      <div>
-        <dt class="text-sm font-medium text-orange-700">File Path</dt>
-        <dd class="mt-1 text-sm text-orange-950 font-mono"><%= @hardcoded_template[:path] %></dd>
-      </div>
-      <div class="sm:col-span-2">
-        <dt class="text-sm font-medium text-orange-700">Subject Line</dt>
-        <dd class="mt-1 text-sm text-orange-950 bg-gray-50 p-3 rounded-lg border">
-          <%= @hardcoded_template[:subject] %>
-        </dd>
-      </div>
-      <div class="sm:col-span-2">
-        <dt class="text-sm font-medium text-orange-700">Description</dt>
-        <dd class="mt-1 text-sm text-orange-950 bg-gray-50 p-3 rounded-lg border">
-          <%= @hardcoded_template[:description] %>
-        </dd>
-      </div>
-      <% if @hardcoded_template[:variables].present? %>
+
+      <!-- Template Details -->
+      <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-3">
         <div class="sm:col-span-2">
-          <dt class="text-sm font-medium text-orange-700">Available Variables</dt>
-          <dd class="mt-1">
-            <div class="flex flex-wrap gap-2">
-              <% @hardcoded_template[:variables].each do |var| %>
-                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
-                  <%= var %>
-                </span>
-              <% end %>
-            </div>
+          <dt class="text-sm font-medium text-orange-700">Subject Line</dt>
+          <dd class="subject-line">
+            <%= @hardcoded_template[:subject] %>
           </dd>
         </div>
-      <% end %>
-    </dl>
+        <div class="sm:col-span-2">
+          <dt class="text-sm font-medium text-orange-700">Description</dt>
+          <dd class="mt-1 text-sm text-orange-950 bg-gray-50 p-3 rounded-lg border">
+            <%= @hardcoded_template[:description] %>
+          </dd>
+        </div>
+        <% if @hardcoded_template[:variables].present? %>
+          <div class="sm:col-span-2">
+            <dt class="text-sm font-medium text-orange-700">Available Variables</dt>
+            <dd class="mt-1">
+              <div class="flex flex-wrap gap-2">
+                <% @hardcoded_template[:variables].each do |var| %>
+                  <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
+                    <%= var %>
+                  </span>
+                <% end %>
+              </div>
+            </dd>
+          </div>
+        <% end %>
+      </dl>
+    </div>
 
     <!-- Test Email Form -->
-    <div class="bg-white rounded-lg shadow-sm border border-green-200 p-6 mb-6 mt-6">
+    <div class="bg-white rounded-lg shadow-sm border border-green-200 p-6 mb-6">
       <div class="flex items-center justify-between mb-4">
         <h4 class="text-lg font-semibold text-green-950">Send Test Email</h4>
         <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -132,11 +112,6 @@
                 <li>Test emails use sample data and will be marked with [TEST] in the subject line</li>
                 <li>The email will be sent using the actual template design and styling</li>
                 <li>This helps you see exactly how recipients will view the email</li>
-                <% if Rails.env.development? %>
-                  <li><strong>Development:</strong> Emails will automatically open in your browser (no actual email sent)</li>
-                <% else %>
-                  <li>Test emails are sent immediately to the specified address</li>
-                <% end %>
               </ul>
             </div>
           </div>
@@ -145,7 +120,7 @@
     </div>
 
     <!-- Template Preview -->
-    <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6 mb-6 mt-6">
+    <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6 mb-6">
       <div class="flex items-center justify-between mb-4">
         <h4 class="text-lg font-semibold text-orange-950">Template Preview</h4>
         <div class="flex items-center space-x-2">
@@ -217,38 +192,6 @@
       </div>
     </div>
 
-    <script>
-      function switchView(viewType) {
-        const codeView = document.getElementById('code-view');
-        const styledView = document.getElementById('styled-view');
-        const codeBtn = document.getElementById('code-view-btn');
-        const styledBtn = document.getElementById('styled-view-btn');
-        
-        if (viewType === 'code') {
-          // Show code view
-          codeView.classList.remove('hidden');
-          styledView.classList.add('hidden');
-          
-          // Update button styles - make code button primary (orange)
-          codeBtn.className = 'px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 bg-orange-600 text-white hover:bg-orange-700';
-          styledBtn.className = 'px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 text-orange-700 bg-white hover:bg-orange-50 border border-orange-300';
-        } else {
-          // Show styled view
-          styledView.classList.remove('hidden');
-          codeView.classList.add('hidden');
-          
-          // Update button styles - make styled button primary (orange)
-          styledBtn.className = 'px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 bg-orange-600 text-white hover:bg-orange-700';
-          codeBtn.className = 'px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 text-orange-700 bg-white hover:bg-orange-50 border border-orange-300';
-        }
-      }
-      
-      // Set initial view to styled (changed from code)
-      document.addEventListener('DOMContentLoaded', function() {
-        switchView('styled');
-      });
-    </script>
-
     <!-- Template Usage Information -->
     <div class="bg-white rounded-lg shadow-sm border border-orange-200 p-6">
       <h4 class="text-lg font-semibold text-orange-950 mb-4">Template Usage & Information</h4>
@@ -281,13 +224,6 @@
             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
-            <strong>File Location:</strong> <code class="bg-gray-100 px-1 py-0.5 rounded text-xs"><%= @hardcoded_template[:path] %></code>
-          </p>
-          
-          <p class="text-sm text-orange-600">
-            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM7 3H5a2 2 0 00-2 2v12a4 4 0 004 4h2a2 2 0 002-2V5a2 2 0 00-2-2z"></path>
-            </svg>
             <strong>Template Type:</strong> <%= @hardcoded_template[:template_type].titleize %>
           </p>
           
@@ -303,4 +239,36 @@
       </div>
     </div>
   </div>
-</div> 
+</div>
+
+<script>
+  function switchView(viewType) {
+    const codeView = document.getElementById('code-view');
+    const styledView = document.getElementById('styled-view');
+    const codeBtn = document.getElementById('code-view-btn');
+    const styledBtn = document.getElementById('styled-view-btn');
+    
+    if (viewType === 'code') {
+      // Show code view
+      codeView.classList.remove('hidden');
+      styledView.classList.add('hidden');
+      
+      // Update button styles - make code button primary (orange)
+      codeBtn.className = 'px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 bg-orange-600 text-white hover:bg-orange-700';
+      styledBtn.className = 'px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 text-orange-700 bg-white hover:bg-orange-50 border border-orange-300';
+    } else {
+      // Show styled view
+      styledView.classList.remove('hidden');
+      codeView.classList.add('hidden');
+      
+      // Update button styles - make styled button primary (orange)
+      styledBtn.className = 'px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 bg-orange-600 text-white hover:bg-orange-700';
+      codeBtn.className = 'px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200 text-orange-700 bg-white hover:bg-orange-50 border border-orange-300';
+    }
+  }
+  
+  // Set initial view to styled (changed from code)
+  document.addEventListener('DOMContentLoaded', function() {
+    switchView('styled');
+  });
+</script> 

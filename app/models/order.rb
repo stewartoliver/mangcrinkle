@@ -39,6 +39,12 @@ class Order < ApplicationRecord
       "%#{email}%", "%#{email}%"
     )
   }
+  scope :by_customer_or_email, ->(search_term) { 
+    left_joins(:user).where(
+      "orders.customer_name ILIKE ? OR orders.email ILIKE ? OR users.email ILIKE ? OR users.first_name ILIKE ? OR users.last_name ILIKE ? OR CONCAT(users.first_name, ' ', users.last_name) ILIKE ?", 
+      "%#{search_term}%", "%#{search_term}%", "%#{search_term}%", "%#{search_term}%", "%#{search_term}%", "%#{search_term}%"
+    )
+  }
   scope :by_order_id, ->(order_id) { where(id: order_id) }
   scope :by_min_total, ->(amount) { where("total_price >= ?", amount) }
   scope :by_max_total, ->(amount) { where("total_price <= ?", amount) }

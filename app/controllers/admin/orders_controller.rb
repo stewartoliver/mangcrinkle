@@ -280,17 +280,9 @@ class Admin::OrdersController < Admin::BaseController
       orders = orders.by_date_range(start_date, end_date)
     end
     
-    # Customer name search
-    orders = orders.by_customer(params[:customer_name]) if params[:customer_name].present?
-    
-    # Email search - exact match by default, partial if specified
-    if params[:email].present?
-      if params[:email_search_type] == 'partial'
-        orders = orders.by_email_partial(params[:email])
-      else
-        # Default to exact match
-        orders = orders.by_email(params[:email])
-      end
+    # Search by customer name or email
+    if params[:search].present?
+      orders = orders.by_customer_or_email(params[:search])
     end
     
     # Order ID search

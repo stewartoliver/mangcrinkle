@@ -115,36 +115,7 @@
         </div>
       </div>
       
-      <!-- Second Row -->
-      <div class="flex flex-wrap gap-4">
-        <div class="flex-1 min-w-0">
-          <%= form.label :newsletter_subscribed, "Newsletter", class: "form-label" %>
-          <div class="mt-1">
-            <%= form.select :newsletter_subscribed, 
-                options_for_select([
-                  ['All Users', ''],
-                  ['Subscribed', 'true'],
-                  ['Not Subscribed', 'false']
-                ], params[:newsletter_subscribed]),
-                {},
-                class: "form-select" %>
-          </div>
-        </div>
-        
-        <div class="flex-1 min-w-0">
-          <%= form.label :start_date, "Start Date", class: "form-label" %>
-          <div class="mt-1">
-            <%= form.date_field :start_date, value: params[:start_date], class: "form-date" %>
-          </div>
-        </div>
-        
-        <div class="flex-1 min-w-0">
-          <%= form.label :end_date, "End Date", class: "form-label" %>
-          <div class="mt-1">
-            <%= form.date_field :end_date, value: params[:end_date], class: "form-date" %>
-          </div>
-        </div>
-      </div>
+
     </div>
   <% end %>
 

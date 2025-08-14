@@ -76,9 +76,9 @@
       <!-- First Row -->
       <div class="flex flex-wrap gap-4">
         <div class="flex-1 min-w-0">
-          <%= form.label :customer_name, "Customer Name", class: "form-label" %>
+          <%= form.label :search, "Search", class: "form-label" %>
           <div class="mt-1">
-            <%= form.text_field :customer_name, value: params[:customer_name], placeholder: "Search by name", class: "form-input" %>
+            <%= form.text_field :search, value: params[:search], placeholder: "Search by customer name or email", class: "form-input" %>
           </div>
         </div>
         
@@ -114,41 +114,16 @@
         </div>
       </div>
       
-      <!-- Second Row -->
-      <div class="flex flex-wrap gap-4">
-        <div class="flex-1 min-w-0">
-          <%= form.label :email, "Email", class: "form-label" %>
-          <div class="mt-1">
-            <%= form.email_field :email, value: params[:email], placeholder: "Search by email", class: "form-input" %>
-          </div>
-        </div>
-        
-        <div class="flex-1 min-w-0">
-          <%= form.label :email_search_type, "Email Search Type", class: "form-label" %>
-          <div class="mt-1">
-            <%= form.select :email_search_type, 
-                options_for_select([
-                  ['Exact Match', 'exact'],
-                  ['Partial Match', 'partial']
-                ], params[:email_search_type] || 'exact'),
-                {},
-                class: "form-select" %>
-          </div>
-        </div>
-        
-        <div class="flex-1 min-w-0">
-          <%= form.label :start_date, "Start Date", class: "form-label" %>
-          <div class="mt-1">
-            <%= form.date_field :start_date, value: params[:start_date], class: "form-date" %>
-          </div>
-        </div>
-      </div>
+
     </div>
   <% end %>
 
   <!-- Filter Buttons Section -->
   <div class="px-6 py-3 border-b border-orange-200 bg-gray-50">
-    <div class="flex justify-end">
+    <div class="flex justify-between items-center">
+      <div class="text-sm text-orange-600">
+        Showing <%= @orders.offset_value + 1 %> to <%= @orders.offset_value + @orders.length %> of <%= @orders.total_count %> results
+      </div>
       <div class="flex items-center space-x-2">
         <button type="submit" form="search-form" class="admin-btn-primary">
           Apply Filters
@@ -156,6 +131,27 @@
         <%= link_to "Clear", admin_orders_path, class: "admin-btn-secondary" %>
       </div>
     </div>
+  </div>
+
+  <!-- Order Status Tabs -->
+  <div class="border-b border-orange-200">
+    <nav class="flex space-x-8 px-6" aria-label="Tabs">
+      <button class="tab-button active" data-tab="all">
+        All Orders (<%= @total_orders %>)
+      </button>
+      <button class="tab-button" data-tab="pending">
+        Pending (<%= @orders_by_status['pending']&.count || 0 %>)
+      </button>
+      <button class="tab-button" data-tab="processing">
+        Processing (<%= @orders_by_status['processing']&.count || 0 %>)
+      </button>
+      <button class="tab-button" data-tab="completed">
+        Completed (<%= @orders_by_status['completed']&.count || 0 %>)
+      </button>
+      <button class="tab-button" data-tab="cancelled">
+        Cancelled (<%= @orders_by_status['cancelled']&.count || 0 %>)
+      </button>
+    </nav>
   </div>
 
   <!-- Orders Table -->
@@ -341,6 +337,49 @@
 
 <script>
 // Order contents toggle is now handled globally in application.js
+
+// Tab functionality for order status filtering
+document.addEventListener('DOMContentLoaded', function() {
+    initializeOrderStatusTabs();
+});
+
+// Also handle Turbo navigation
+document.addEventListener('turbo:load', function() {
+    initializeOrderStatusTabs();
+});
+
+function initializeOrderStatusTabs() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const orderRows = document.querySelectorAll('.admin-table-row[data-order-id]');
+
+    if (tabButtons.length === 0) return; // Exit if no tabs found
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const tab = this.dataset.tab;
+
+            // Update active tab
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            // Show/hide rows based on tab
+            orderRows.forEach(row => {
+                const statusCell = row.querySelector('td:nth-child(4) .admin-status-badge');
+                if (statusCell) {
+                    const status = statusCell.textContent.toLowerCase().trim();
+
+                    if (tab === 'all') {
+                        row.style.display = '';
+                    } else if (status === tab) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
+    });
+}
 
 // Handle order deletion with smooth animation
 document.addEventListener('click', function(e) {

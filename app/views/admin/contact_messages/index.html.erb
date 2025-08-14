@@ -129,13 +129,65 @@
               { class: "form-select" } %>
         </div>
       </div>
-      
-      <div class="flex items-end">
-        <%= form.submit "Filter", class: "admin-btn-primary" %>
-        <%= link_to "Clear", admin_contact_messages_path, class: "ml-2 admin-btn-secondary" %>
-      </div>
     </div>
   <% end %>
+
+  <!-- Filter Buttons -->
+  <div class="px-6 py-3 border-b border-orange-200 bg-gray-50">
+    <div class="flex justify-between items-center">
+      <div class="text-sm text-orange-600">
+        <% if @contact_messages.respond_to?(:total_count) %>
+          Showing <%= @contact_messages.offset_value + 1 %> to <%= @contact_messages.offset_value + @contact_messages.length %> of <%= @contact_messages.total_count %> results
+        <% else %>
+          Showing <%= @contact_messages.length %> results
+        <% end %>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button type="submit" form="search-form" class="admin-btn-primary">
+          Apply Filters
+        </button>
+        <%= link_to "Clear", admin_contact_messages_path, class: "admin-btn-secondary" %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Filter Tabs -->
+  <div class="border-b border-orange-200">
+    <nav class="flex space-x-8 px-6" aria-label="Tabs">
+      <button class="tab-button <%= 'active' unless params[:status].present? %>" data-tab="all">
+        All Messages (<%= @stats[:total] %>)
+      </button>
+      <button class="tab-button <%= 'active' if params[:status] == 'new' %>" data-tab="new">
+        New (<%= @stats[:new] %>)
+      </button>
+      <button class="tab-button <%= 'active' if params[:status] == 'in_progress' %>" data-tab="in_progress">
+        In Progress (<%= @stats[:in_progress] %>)
+      </button>
+      <button class="tab-button <%= 'active' if params[:status] == 'resolved' %>" data-tab="resolved">
+        Resolved (<%= @stats[:resolved] %>)
+      </button>
+      <button class="tab-button <%= 'active' if params[:status] == 'closed' %>" data-tab="closed">
+        Closed (<%= @stats[:closed] || 0 %>)
+      </button>
+    </nav>
+  </div>
+
+  <style>
+    /* Only keep essential styles that don't conflict with existing tab-button classes */
+    .tab-button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .animate-spin {
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
 
   <!-- Contact Messages Table -->
   <div class="admin-container-content">
@@ -186,7 +238,7 @@
                 </div>
               </td>
               <td class="admin-table-cell">
-                <div class="text-sm font-medium text-orange-950"><%= message.subject %></div>
+                <div class="text-sm font-normal text-orange-950"><%= message.subject %></div>
               </td>
               <td class="admin-table-cell-center">
                 <div class="text-sm font-medium text-orange-950">
@@ -239,48 +291,12 @@
             <tr class="message-details-row hidden" data-message-id="<%= message.id %>">
               <td colspan="5" class="px-6 py-4 bg-orange-50 border-t border-orange-200">
                 <div class="bg-white rounded-lg p-4 border border-orange-200">
-                  <h4 class="text-lg font-medium text-orange-950 mb-4 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                    </svg>
-                    Message Details
-                  </h4>
-                  
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h5 class="font-medium text-orange-950 mb-2">Customer Information</h5>
-                      <div class="text-sm text-orange-700 space-y-1">
-                        <p><strong>Name:</strong> <%= message.user.display_name %></p>
-                        <p><strong>Email:</strong> <%= message.user.email %></p>
-                        <% if message.user.phone.present? %>
-                          <p><strong>Phone:</strong> <%= message.user.phone %></p>
-                        <% end %>
-                        <p class="mt-2">
-                          <%= link_to "View Customer Profile", admin_user_path(message.user), 
-                              class: "inline-flex items-center px-3 py-1 border border-orange-300 text-sm font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100" %>
-                        </p>
+                    <div class="w-full">
+                      <h5 class="font-medium text-orange-950 mb-2">Customer Message</h5>
+                      <div class="subject-line">
+                        <p class="text-gray-700 whitespace-pre-wrap"><%= message.message %></p>
                       </div>
                     </div>
-                    <div>
-                      <h5 class="font-medium text-orange-950 mb-2">Message Information</h5>
-                      <div class="text-sm text-orange-700 space-y-1">
-                        <p><strong>Subject:</strong> <%= message.subject %></p>
-                        <p><strong>Priority:</strong> <%= message.priority.titleize %></p>
-                        <p><strong>Status:</strong> <%= message.status.titleize %></p>
-                        <p><strong>Submitted:</strong> <%= message.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
-                        <% if message.response_count > 0 %>
-                          <p><strong>Responses:</strong> <%= pluralize(message.response_count, 'response') %></p>
-                        <% end %>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div class="mt-6">
-                    <h5 class="font-medium text-orange-950 mb-2">Customer Message</h5>
-                    <div class="bg-gray-50 p-4 rounded-lg border">
-                      <p class="text-gray-700 whitespace-pre-wrap"><%= message.message %></p>
-                    </div>
-                  </div>
                 </div>
               </td>
             </tr>
@@ -297,6 +313,32 @@
       </div>
     <% end %>
   </div>
+
+  <!-- Pagination -->
+  <% if @contact_messages.respond_to?(:total_pages) && @contact_messages.total_pages > 1 %>
+    <div class="px-6 py-3 border-t border-orange-200 bg-orange-50">
+      <div class="flex items-center justify-between">
+        <div class="text-sm text-orange-600">
+          <% if @contact_messages.respond_to?(:total_count) %>
+            Showing <%= @contact_messages.offset_value + 1 %> to <%= @contact_messages.offset_value + @contact_messages.length %> of <%= @contact_messages.total_count %> results
+          <% else %>
+            Showing <%= @contact_messages.length %> results
+          <% end %>
+        </div>
+        <div class="flex space-x-2">
+          <% if @contact_messages.prev_page %>
+            <%= link_to "Previous", admin_contact_messages_path(page: @contact_messages.prev_page, **request.query_parameters), 
+                class: "px-3 py-1 text-sm font-medium text-orange-600 bg-white border border-orange-300 rounded hover:bg-orange-50" %>
+          <% end %>
+          
+          <% if @contact_messages.next_page %>
+            <%= link_to "Next", admin_contact_messages_path(page: @contact_messages.next_page, **request.query_parameters), 
+                class: "px-3 py-1 text-sm font-medium text-orange-600 bg-white border border-orange-300 rounded hover:bg-orange-50" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
 </div>
 
 <script>
@@ -344,18 +386,116 @@ function handleMessageDetailsToggle(event) {
   }
 }
 
+// Tab functionality for status filtering
+function setupStatusTabs() {
+  document.querySelectorAll('.tab-button').forEach(button => {
+    button.addEventListener('click', function() {
+      try {
+        const status = this.dataset.tab;
+        const currentUrl = new URL(window.location);
+        
+        // Add loading state to the clicked tab
+        const originalText = this.innerHTML;
+        this.innerHTML = '<svg class="animate-spin h-4 w-4 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+        this.disabled = true;
+        
+        // Remove existing status parameter
+        currentUrl.searchParams.delete('status');
+        
+        // Add new status parameter if not "all"
+        if (status !== 'all') {
+          currentUrl.searchParams.set('status', status);
+        }
+        
+        // Reset to first page when changing tabs
+        currentUrl.searchParams.delete('page');
+        
+        // Update the status filter in the form to match the selected tab
+        const statusSelect = document.querySelector('select[name="status"]');
+        if (statusSelect) {
+          statusSelect.value = status === 'all' ? '' : status;
+        }
+        
+        // Navigate to new URL
+        window.location.href = currentUrl.toString();
+      } catch (error) {
+        console.error('Error in tab click handler:', error);
+        // Restore button state on error
+        this.innerHTML = originalText;
+        this.disabled = false;
+      }
+    });
+  });
+}
+
+// Sync form submission with active tab
+function setupFormSync() {
+  const form = document.getElementById('search-form');
+  if (form) {
+    form.addEventListener('submit', function() {
+      try {
+        const statusSelect = this.querySelector('select[name="status"]');
+        const status = statusSelect ? statusSelect.value : '';
+        
+        // Update active tab based on form status
+        document.querySelectorAll('.tab-button').forEach(button => {
+          button.classList.remove('active');
+          if ((status === '' && button.dataset.tab === 'all') || 
+              (status === button.dataset.tab)) {
+            button.classList.add('active');
+          }
+        });
+      } catch (error) {
+        console.error('Error in form sync:', error);
+      }
+    });
+  }
+}
+
+// Update active tab based on current URL parameters
+function updateActiveTabFromURL() {
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+    
+    document.querySelectorAll('.tab-button').forEach(button => {
+      button.classList.remove('active');
+      if ((!status && button.dataset.tab === 'all') || 
+          (status === button.dataset.tab)) {
+        button.classList.add('active');
+      }
+    });
+  } catch (error) {
+    console.error('Error updating active tab from URL:', error);
+  }
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
   setupMessageDetailsToggle();
+  setupStatusTabs();
+  setupFormSync(); // Initialize form sync
+  updateActiveTabFromURL(); // Update active tab from URL on load
 });
 
 // Also handle Turbo navigation
 document.addEventListener('turbo:load', function() {
   setupMessageDetailsToggle();
+  setupStatusTabs();
+  setupFormSync(); // Initialize form sync
+  updateActiveTabFromURL(); // Update active tab from URL on load
 });
 
 // Also handle Turbo frame loads
 document.addEventListener('turbo:frame-load', function() {
   setupMessageDetailsToggle();
+  setupStatusTabs();
+  setupFormSync(); // Initialize form sync
+  updateActiveTabFromURL(); // Update active tab from URL on load
+});
+
+// Handle browser back/forward navigation
+window.addEventListener('popstate', function() {
+  updateActiveTabFromURL();
 });
 </script> 

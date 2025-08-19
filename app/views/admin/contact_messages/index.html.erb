@@ -97,7 +97,7 @@
 </div>
 
 <!-- Main Contact Messages Table with Integrated Filters -->
-<div class="admin-container">
+<div class="admin-container" data-tab-container="contact_messages">
   <div class="admin-container-header">
     <div class="flex items-center justify-between">
       <h3 class="admin-container-title">Contact Messages</h3>
@@ -108,72 +108,73 @@
   </div>
 
   <!-- Search Filters -->
-  <%= form_with url: admin_contact_messages_path, method: :get, local: true, class: "px-6 py-4 border-b border-orange-200 bg-gray-50", id: "search-form" do |form| %>
-    <div class="flex flex-wrap gap-4">
-      <div class="flex-1 min-w-0">
-        <%= form.label :status, "Status", class: "form-label" %>
-        <div class="mt-1">
-          <%= form.select :status, 
-              [['All Statuses', ''], ['New', 'new'], ['In Progress', 'in_progress'], ['Resolved', 'resolved'], ['Closed', 'closed']], 
-              { selected: params[:status] }, 
-              { class: "form-select" } %>
-        </div>
-      </div>
-      
-      <div class="flex-1 min-w-0">
-        <%= form.label :priority, "Priority", class: "form-label" %>
-        <div class="mt-1">
-          <%= form.select :priority, 
-              [['All Priorities', ''], ['Urgent', 'urgent'], ['High', 'high'], ['Normal', 'normal'], ['Low', 'low']], 
-              { selected: params[:priority] }, 
-              { class: "form-select" } %>
-        </div>
-      </div>
-    </div>
-  <% end %>
-
-  <!-- Filter Buttons -->
-  <div class="px-6 py-3 border-b border-orange-200 bg-gray-50">
-    <div class="flex justify-between items-center">
-      <div class="text-sm text-orange-600">
-        <% if @contact_messages.respond_to?(:total_count) %>
-          Showing <%= @contact_messages.offset_value + 1 %> to <%= @contact_messages.offset_value + @contact_messages.length %> of <%= @contact_messages.total_count %> results
-        <% else %>
-          Showing <%= @contact_messages.length %> results
-        <% end %>
-      </div>
-      <div class="flex items-center space-x-2">
-        <button type="submit" form="search-form" class="admin-btn-primary">
-          Apply Filters
-        </button>
-        <%= link_to "Clear", admin_contact_messages_path, class: "admin-btn-secondary" %>
-      </div>
-    </div>
-  </div>
+  <!-- Removed - using client-side tab filtering instead -->
 
   <!-- Status Filter Tabs -->
   <div class="border-b border-orange-200">
     <nav class="flex space-x-8 px-6" aria-label="Tabs">
-      <button class="tab-button <%= 'active' unless params[:status].present? %>" data-tab="all">
-        All Messages (<%= @stats[:total] %>)
-      </button>
-      <button class="tab-button <%= 'active' if params[:status] == 'new' %>" data-tab="new">
-        New (<%= @stats[:new] %>)
-      </button>
-      <button class="tab-button <%= 'active' if params[:status] == 'in_progress' %>" data-tab="in_progress">
-        In Progress (<%= @stats[:in_progress] %>)
-      </button>
-      <button class="tab-button <%= 'active' if params[:status] == 'resolved' %>" data-tab="resolved">
-        Resolved (<%= @stats[:resolved] %>)
-      </button>
-      <button class="tab-button <%= 'active' if params[:status] == 'closed' %>" data-tab="closed">
-        Closed (<%= @stats[:closed] || 0 %>)
-      </button>
+      <% 
+        # Get counts from filtered contact messages, not the stats hash
+        # This ensures tab counts match the current filtered results
+        filtered_messages = @contact_messages
+        all_count = filtered_messages.count
+        new_count = filtered_messages.where(status: 'new').count
+        in_progress_count = filtered_messages.where(status: 'in_progress').count
+        resolved_count = filtered_messages.where(status: 'resolved').count
+        closed_count = filtered_messages.where(status: 'closed').count
+        
+        # Only show tabs that have data
+        statuses_with_data = []
+        statuses_with_data << 'new' if new_count > 0
+        statuses_with_data << 'in_progress' if in_progress_count > 0
+        statuses_with_data << 'resolved' if resolved_count > 0
+        statuses_with_data << 'closed' if closed_count > 0
+        
+        show_all_tab = statuses_with_data.length > 1
+      %>
+      
+      <% if show_all_tab %>
+        <button class="tab-button <%= 'active' unless params[:status].present? %>" data-tab="all" data-container-type="contact_messages">
+          All Messages (<%= all_count %>)
+        </button>
+      <% end %>
+      
+      <% if new_count > 0 %>
+        <button class="tab-button <%= 'active' if params[:status] == 'new' %>" data-tab="new" data-container-type="contact_messages">
+          New (<%= new_count %>)
+        </button>
+      <% end %>
+      
+      <% if in_progress_count > 0 %>
+        <button class="tab-button <%= 'active' if params[:status] == 'in_progress' %>" data-tab="in_progress" data-container-type="contact_messages">
+          In Progress (<%= in_progress_count %>)
+        </button>
+      <% end %>
+      
+      <% if resolved_count > 0 %>
+        <button class="tab-button <%= 'active' if params[:status] == 'resolved' %>" data-tab="resolved" data-container-type="contact_messages">
+          Resolved (<%= resolved_count %>)
+        </button>
+      <% end %>
+      
+      <% if closed_count > 0 %>
+        <button class="tab-button <%= 'active' if params[:status] == 'closed' %>" data-tab="closed" data-container-type="contact_messages">
+          Closed (<%= closed_count %>)
+        </button>
+      <% end %>
     </nav>
   </div>
 
   <style>
     /* Only keep essential styles that don't conflict with existing tab-button classes */
+    .tab-button {
+      @apply px-3 py-2 text-sm font-medium text-orange-600 border-b-2 border-transparent hover:text-orange-800 hover:border-orange-300 transition-colors duration-200;
+    }
+    
+    .tab-button.active {
+      @apply text-orange-800 border-orange-500;
+    }
+    
     .tab-button:disabled {
       opacity: 0.7;
       cursor: not-allowed;
@@ -204,12 +205,9 @@
         </thead>
         <tbody class="admin-table-body">
           <% @contact_messages.each do |message| %>
-            <tr class="admin-table-row 
-                <%= 'opacity-60 bg-orange-50' if %w[resolved closed].include?(message.status) %>
-                <%= 'border-l-4' if message.priority == 'urgent' %>
-                <%= 'border-l-4' if message.priority == 'high' %>" 
-                style="<%= 'border-left-color: rgb(249 115 22);' if message.priority == 'urgent' %><%= 'border-left-color: rgb(248 113 113);' if message.priority == 'high' %>"
-                data-message-id="<%= message.id %>">
+            <tr class="admin-table-row" 
+                data-message-id="<%= message.id %>"
+                data-status="<%= message.status %>">
               <td class="admin-table-cell">
                 <div class="flex items-center">
                   <div>
@@ -268,7 +266,7 @@
                           data-message-id="<%= message.id %>"
                           title="View Message Details">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
                   
@@ -288,7 +286,7 @@
             </tr>
             
             <!-- Expandable Message Details Row -->
-            <tr class="message-details-row hidden" data-message-id="<%= message.id %>">
+            <tr class="message-details-row hidden" data-message-id="<%= message.id %>" data-status="<%= message.status %>">
               <td colspan="5" class="px-6 py-4 bg-orange-50 border-t border-orange-200">
                 <div class="bg-white rounded-lg p-4 border border-orange-200">
                     <div class="w-full">
@@ -314,42 +312,25 @@
     <% end %>
   </div>
 
-  <!-- Pagination -->
-  <% if @contact_messages.respond_to?(:total_pages) && @contact_messages.total_pages > 1 %>
-    <div class="px-6 py-3 border-t border-orange-200 bg-orange-50">
-      <div class="flex items-center justify-between">
-        <div class="text-sm text-orange-600">
-          <% if @contact_messages.respond_to?(:total_count) %>
-            Showing <%= @contact_messages.offset_value + 1 %> to <%= @contact_messages.offset_value + @contact_messages.length %> of <%= @contact_messages.total_count %> results
-          <% else %>
-            Showing <%= @contact_messages.length %> results
-          <% end %>
-        </div>
-        <div class="flex space-x-2">
-          <% if @contact_messages.prev_page %>
-            <%= link_to "Previous", admin_contact_messages_path(page: @contact_messages.prev_page, **request.query_parameters), 
-                class: "px-3 py-1 text-sm font-medium text-orange-600 bg-white border border-orange-300 rounded hover:bg-orange-50" %>
-          <% end %>
-          
-          <% if @contact_messages.next_page %>
-            <%= link_to "Next", admin_contact_messages_path(page: @contact_messages.next_page, **request.query_parameters), 
-                class: "px-3 py-1 text-sm font-medium text-orange-600 bg-white border border-orange-300 rounded hover:bg-orange-50" %>
-          <% end %>
-        </div>
+  <!-- Client-side pagination info -->
+  <div class="px-6 py-3 border-t border-orange-200 bg-orange-50">
+    <div class="flex items-center justify-between">
+      <div class="text-sm text-orange-600">
+        Showing <span id="visible-count"><%= @contact_messages.count %></span> results
+      </div>
+      <div class="text-sm text-orange-600">
+        Use tabs above to filter results
       </div>
     </div>
-  <% end %>
+  </div>
 </div>
 
 <script>
 // Message details toggle functionality
 function setupMessageDetailsToggle() {
-  console.log('Setting up message details toggle...');
+  const toggleButtons = document.querySelectorAll('.message-details-toggle');
   
-  // Handle message details toggle
-  document.querySelectorAll('.message-details-toggle').forEach(button => {
-    console.log('Found message details toggle button:', button);
-    
+  toggleButtons.forEach(button => {
     // Remove existing event listeners to prevent duplicates
     button.removeEventListener('click', handleMessageDetailsToggle);
     
@@ -364,10 +345,7 @@ function handleMessageDetailsToggle(event) {
   event.stopPropagation();
   
   const messageId = this.dataset.messageId;
-  console.log('Toggling message details for message ID:', messageId);
-  
   const detailsRow = document.querySelector(`.message-details-row[data-message-id="${messageId}"]`);
-  console.log('Found details element:', detailsRow);
   
   if (detailsRow) {
     detailsRow.classList.toggle('hidden');
@@ -376,126 +354,25 @@ function handleMessageDetailsToggle(event) {
     const svg = this.querySelector('svg');
     if (detailsRow.classList.contains('hidden')) {
       svg.style.transform = 'rotate(0deg)';
-      console.log('Message details hidden');
+      svg.style.transition = 'transform 0.2s ease-in-out';
     } else {
       svg.style.transform = 'rotate(180deg)';
-      console.log('Message details shown');
+      svg.style.transition = 'transform 0.2s ease-in-out';
     }
-  } else {
-    console.error('Could not find message details element for message ID:', messageId);
-  }
-}
-
-// Tab functionality for status filtering
-function setupStatusTabs() {
-  document.querySelectorAll('.tab-button').forEach(button => {
-    button.addEventListener('click', function() {
-      try {
-        const status = this.dataset.tab;
-        const currentUrl = new URL(window.location);
-        
-        // Add loading state to the clicked tab
-        const originalText = this.innerHTML;
-        this.innerHTML = '<svg class="animate-spin h-4 w-4 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
-        this.disabled = true;
-        
-        // Remove existing status parameter
-        currentUrl.searchParams.delete('status');
-        
-        // Add new status parameter if not "all"
-        if (status !== 'all') {
-          currentUrl.searchParams.set('status', status);
-        }
-        
-        // Reset to first page when changing tabs
-        currentUrl.searchParams.delete('page');
-        
-        // Update the status filter in the form to match the selected tab
-        const statusSelect = document.querySelector('select[name="status"]');
-        if (statusSelect) {
-          statusSelect.value = status === 'all' ? '' : status;
-        }
-        
-        // Navigate to new URL
-        window.location.href = currentUrl.toString();
-      } catch (error) {
-        console.error('Error in tab click handler:', error);
-        // Restore button state on error
-        this.innerHTML = originalText;
-        this.disabled = false;
-      }
-    });
-  });
-}
-
-// Sync form submission with active tab
-function setupFormSync() {
-  const form = document.getElementById('search-form');
-  if (form) {
-    form.addEventListener('submit', function() {
-      try {
-        const statusSelect = this.querySelector('select[name="status"]');
-        const status = statusSelect ? statusSelect.value : '';
-        
-        // Update active tab based on form status
-        document.querySelectorAll('.tab-button').forEach(button => {
-          button.classList.remove('active');
-          if ((status === '' && button.dataset.tab === 'all') || 
-              (status === button.dataset.tab)) {
-            button.classList.add('active');
-          }
-        });
-      } catch (error) {
-        console.error('Error in form sync:', error);
-      }
-    });
-  }
-}
-
-// Update active tab based on current URL parameters
-function updateActiveTabFromURL() {
-  try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const status = urlParams.get('status');
-    
-    document.querySelectorAll('.tab-button').forEach(button => {
-      button.classList.remove('active');
-      if ((!status && button.dataset.tab === 'all') || 
-          (status === button.dataset.tab)) {
-        button.classList.add('active');
-      }
-    });
-  } catch (error) {
-    console.error('Error updating active tab from URL:', error);
   }
 }
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
   setupMessageDetailsToggle();
-  setupStatusTabs();
-  setupFormSync(); // Initialize form sync
-  updateActiveTabFromURL(); // Update active tab from URL on load
 });
 
 // Also handle Turbo navigation
 document.addEventListener('turbo:load', function() {
   setupMessageDetailsToggle();
-  setupStatusTabs();
-  setupFormSync(); // Initialize form sync
-  updateActiveTabFromURL(); // Update active tab from URL on load
 });
 
-// Also handle Turbo frame loads
 document.addEventListener('turbo:frame-load', function() {
   setupMessageDetailsToggle();
-  setupStatusTabs();
-  setupFormSync(); // Initialize form sync
-  updateActiveTabFromURL(); // Update active tab from URL on load
-});
-
-// Handle browser back/forward navigation
-window.addEventListener('popstate', function() {
-  updateActiveTabFromURL();
 });
 </script> 

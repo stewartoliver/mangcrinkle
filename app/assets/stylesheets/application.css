@@ -399,3 +399,99 @@
     color: #c2410c;
     background-color: #fff7ed;
 }
+
+/* Admin Status Badge Styling */
+.admin-status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    transition: all 0.2s ease-in-out;
+}
+
+.admin-status-badge svg {
+    flex-shrink: 0;
+}
+
+/* Review Expandable Row Styling */
+.review-expand-details {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Review Action Button States */
+.review-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    background-color: #f3f4f6 !important;
+    color: #9ca3af !important;
+    border-color: #d1d5db !important;
+}
+
+.review-disabled:hover {
+    opacity: 0.5;
+    background-color: #f3f4f6 !important;
+    color: #9ca3af !important;
+    border-color: #d1d5db !important;
+}
+
+.review-disabled svg {
+    color: #9ca3af !important;
+}
+
+/* Loading state for review buttons */
+.review-approve[data-loading="true"],
+.review-unapprove[data-loading="true"],
+.review-feature[data-loading="true"],
+.review-unfeature[data-loading="true"] {
+    opacity: 0.7;
+    cursor: not-allowed;
+    background-color: transparent !important;
+}
+
+/* Smooth transitions for review row updates */
+.admin-table-row {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Animation for review row deletion */
+.review-row-deleting {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease-out, height 0.3s ease-out;
+}
+
+/* Notification animations */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(100%);
+    }
+}
+
+.notification-slide-in {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.notification-slide-out {
+    animation: slideOutRight 0.3s ease-out;
+}

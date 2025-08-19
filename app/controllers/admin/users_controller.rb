@@ -3,23 +3,23 @@ class Admin::UsersController < Admin::BaseController
     # Base query with includes for performance
     @users = User.includes(:orders).order(created_at: :desc)
     
-    # Apply filters
+    # Calculate stats for ALL users (before any filtering)
+    @total_customers = @users.where(user_type: 'customer').count
+    @total_admins = @users.where(user_type: 'admin').count
+    @pending_activation = User.pending_activation.count
+    @total_newsletter_subscribers = User.newsletter_subscribers.count
+    
+    # Store current tab for view
+    @current_tab = params[:tab] || 'all'
+    
+    # Apply filters (including tab filtering) AFTER calculating counts
     @users = apply_filters(@users)
     
-    # Apply pagination
+    # Get the filtered count BEFORE pagination
+    @filtered_users_count = @users.count
+    
+    # Apply pagination after filtering
     @users = @users.page(params[:page]).per(25)
-    
-    # Separate queries for stats
-    @customers = User.customers.order(created_at: :desc)
-    @admins = User.admins.order(created_at: :desc)
-    @newsletter_subscribers = User.newsletter_subscribers.order(created_at: :desc)
-    
-    # Calculate stats for filtered results
-    @total_users = @users.total_count
-    @total_customers = @customers.count
-    @total_admins = @admins.count
-    @pending_activation = User.pending_activation.count
-    @total_newsletter_subscribers = @newsletter_subscribers.count
   end
 
   def show
@@ -157,9 +157,10 @@ class Admin::UsersController < Admin::BaseController
   private
 
   def apply_filters(users)
-    # Filter by user type
-    if params[:user_type].present?
-      users = users.where(user_type: params[:user_type])
+    # Filter by user type (from form) or tab parameter
+    user_type_filter = params[:user_type] || params[:tab]
+    if user_type_filter.present? && user_type_filter != 'all'
+      users = users.where(user_type: user_type_filter)
     end
     
     # Filter by admin status

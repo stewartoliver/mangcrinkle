@@ -1,6 +1,6 @@
 <% content_for :title, "Review Details" %>
 
-<div class="admin-container">
+<div class="admin-container" data-review-id="<%= @review.id %>" data-review-page="true">
   <div class="admin-container-header">
     <div class="flex items-center justify-between">
       <div>
@@ -241,15 +241,13 @@
       <div class="flex justify-end items-center gap-3">
         <%= link_to "#{@review.featured? ? 'Remove from Featured' : 'Add to Featured'}", 
                     toggle_featured_admin_review_path(@review), 
-                    method: :patch, class: "admin-btn-secondary",
-                    data: { confirm: "Are you sure you want to #{@review.featured? ? 'unfeature' : 'feature'} this review?" } %>
+                    class: "admin-btn-secondary #{@review.featured? ? 'review-unfeature' : 'review-feature'}" %>
         <% if @review.approved? %>
           <%= link_to "Unapprove Review", unapprove_admin_review_path(@review), 
-                      method: :patch, class: "admin-btn-secondary",
-                      data: { confirm: "Are you sure you want to unapprove this review?" } %>
+                      class: "admin-btn-secondary review-unapprove" %>
         <% else %>
           <%= link_to "Approve Review", approve_admin_review_path(@review), 
-                      method: :patch, class: "admin-btn-primary" %>
+                      class: "admin-btn-primary review-approve" %>
         <% end %>
       </div>
     </div>

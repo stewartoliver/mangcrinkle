@@ -135,6 +135,25 @@
         @apply flex justify-end space-x-3;
     }
 
+    /* Admin Tab Components */
+    .order-tab-btn,
+    .message-tab-btn {
+        @apply px-4 py-2 text-sm font-medium text-orange-600 border-b-2 border-transparent hover:text-orange-800 hover:border-orange-300 transition-colors duration-200;
+    }
+
+    .order-tab-btn.order-tab-active,
+    .message-tab-btn.message-tab-active {
+        @apply text-orange-800 border-orange-500;
+    }
+
+    .tab-label {
+        @apply mr-2;
+    }
+
+    .tab-count {
+        @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
+    }
+
     /* Admin Card Components */
     .admin-card {
         @apply bg-white rounded-lg shadow p-6 border border-orange-200;
@@ -181,6 +200,10 @@
         @apply bg-red-100 text-red-600;
     }
 
+    .admin-stats-icon-purple {
+        @apply bg-purple-100 text-purple-600;
+    }
+
     .admin-stats-content {
         @apply ml-4;
     }
@@ -211,6 +234,10 @@
 
     .admin-stats-value-red {
         @apply text-red-950;
+    }
+
+    .admin-stats-value-purple {
+        @apply text-purple-950;
     }
 
     /* Admin Status Badges */

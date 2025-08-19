@@ -2,10 +2,14 @@
 import "@hotwired/turbo-rails"
 import "./controllers"
 import "./admin_navigation"
+import "./admin_tabs"
+import "./admin_reviews"
 import "./form_interactions"
 import "./hero_animations"
 import "./image_switcher"
 import "./user_management"
+
+console.log('Application.js loaded - Review preview functionality available');
 
 // Global variable for package limit
 let currentPackageLimit = 0;
@@ -40,11 +44,23 @@ function handleOrderContentsToggle(event) {
     if (details) {
         if (details.classList.contains('hidden')) {
             details.classList.remove('hidden');
+            // Update button icon to show expanded state (up arrow)
+            this.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+            `;
             // Add visual feedback to the button
             this.classList.add('bg-orange-100', 'text-orange-800');
             console.log('Order details shown');
         } else {
             details.classList.add('hidden');
+            // Update button icon to show collapsed state (down arrow)
+            this.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            `;
             // Remove visual feedback from the button
             this.classList.remove('bg-orange-100', 'text-orange-800');
             console.log('Order details hidden');

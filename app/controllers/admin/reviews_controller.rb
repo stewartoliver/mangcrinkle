@@ -4,7 +4,10 @@ class Admin::ReviewsController < Admin::BaseController
   def index
     @reviews = Review.includes(:user, :order, :approved_by)
     
-    case params[:status]
+    # Store current tab for view - use status parameter from tabs, fallback to all
+    @current_tab = params[:status] || 'all'
+    
+    case @current_tab
     when 'pending'
       @reviews = @reviews.pending
     when 'approved'
@@ -16,6 +19,9 @@ class Admin::ReviewsController < Admin::BaseController
     @reviews = @reviews.by_rating(params[:rating]) if params[:rating].present?
     @reviews = @reviews.where('customer_name ILIKE ? OR email ILIKE ? OR content ILIKE ?', 
                               "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%") if params[:search].present?
+    
+    # Get the filtered count BEFORE pagination
+    @filtered_reviews_count = @reviews.count
     
     @reviews = @reviews.recent.page(params[:page]).per(20)
     
@@ -45,26 +51,81 @@ class Admin::ReviewsController < Admin::BaseController
 
   def destroy
     @review.destroy
-    redirect_to admin_reviews_path, notice: 'Review was successfully deleted.'
+    
+    respond_to do |format|
+      format.html { redirect_to admin_reviews_path, notice: 'Review was successfully deleted.' }
+      format.json { render json: { success: true, message: 'Review was successfully deleted.' } }
+    end
   end
 
   def approve
     @review.approve!(current_user)
-    redirect_back(fallback_location: admin_reviews_path, notice: 'Review was approved.')
+    
+    respond_to do |format|
+      format.html { redirect_back(fallback_location: admin_reviews_path, notice: 'Review was approved.') }
+      format.json { 
+        render json: { 
+          success: true, 
+          message: 'Review was approved.',
+          review: {
+            id: @review.id,
+            approved: @review.approved?,
+            featured: @review.featured?,
+            can_be_featured: @review.can_be_featured?,
+            status_badge: render_to_string(partial: 'status_badge', locals: { review: @review }, formats: [:html])
+          }
+        }
+      }
+    end
   end
 
   def unapprove
     @review.unapprove!
-    redirect_back(fallback_location: admin_reviews_path, notice: 'Review was unapproved.')
+    
+    respond_to do |format|
+      format.html { redirect_back(fallback_location: admin_reviews_path, notice: 'Review was unapproved.') }
+      format.json { 
+        render json: { 
+          success: true, 
+          message: 'Review was unapproved.',
+          review: {
+            id: @review.id,
+            approved: @review.approved?,
+            featured: @review.featured?,
+            can_be_featured: @review.can_be_featured?,
+            status_badge: render_to_string(partial: 'status_badge', locals: { review: @review }, formats: [:html])
+          }
+        }
+      }
+    end
   end
 
   def toggle_featured
     if @review.can_be_featured?
       @review.toggle_featured!
       status = @review.featured? ? 'featured' : 'unfeatured'
-      redirect_back(fallback_location: admin_reviews_path, notice: "Review was #{status}.")
+      
+      respond_to do |format|
+        format.html { redirect_back(fallback_location: admin_reviews_path, notice: "Review was #{status}.") }
+        format.json { 
+          render json: { 
+            success: true, 
+            message: "Review was #{status}.",
+            review: {
+              id: @review.id,
+              approved: @review.approved?,
+              featured: @review.featured?,
+              can_be_featured: @review.can_be_featured?,
+              status_badge: render_to_string(partial: 'status_badge', locals: { review: @review }, formats: [:html])
+            }
+          }
+        }
+      end
     else
-      redirect_back(fallback_location: admin_reviews_path, alert: 'Only approved reviews can be featured.')
+      respond_to do |format|
+        format.html { redirect_back(fallback_location: admin_reviews_path, alert: 'Only approved reviews can be featured.') }
+        format.json { render json: { success: false, message: 'Only approved reviews can be featured.' }, status: :unprocessable_entity }
+      end
     end
   end
 

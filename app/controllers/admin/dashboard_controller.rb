@@ -1,6 +1,9 @@
 class Admin::DashboardController < Admin::BaseController
   def index
-    @recent_orders = Order.order(created_at: :desc, id: :desc).limit(5)
+    # New and actionable orders for dashboard tabs
+    @new_orders = Order.where(status: 'pending').order(created_at: :desc, id: :desc).limit(5)
+    @actionable_orders = Order.where(status: 'processing').order(created_at: :desc, id: :desc).limit(5)
+    
     @total_orders = Order.count
     @total_products = Product.count
     @total_revenue = Order.sum(:total_price)
@@ -48,15 +51,18 @@ class Admin::DashboardController < Admin::BaseController
     
     # Contact Messages Statistics
     @total_contact_messages = ContactMessage.count
-    @new_contact_messages = ContactMessage.where(status: 'new').count
+    @new_contact_messages = ContactMessage.includes(:user)
+                                        .where(status: 'new')
+                                        .order(created_at: :desc, id: :desc)
+                                        .limit(5)
+    @actionable_contact_messages = ContactMessage.includes(:user)
+                                               .where(status: 'in_progress')
+                                               .order(created_at: :desc, id: :desc)
+                                               .limit(5)
     @urgent_contact_messages = ContactMessage.where(priority: 'urgent').count
-    @recent_contact_messages = ContactMessage.includes(:user)
-                                            .where.not(status: ['resolved', 'cancelled'])
-                                            .recent
-                                            .limit(5)
     
     # For navigation badge
-    @new_contact_messages_count = @new_contact_messages
+    @new_contact_messages_count = ContactMessage.where(status: 'new').count
     
     # Top customers
     @top_customers = Order.joins(:user)

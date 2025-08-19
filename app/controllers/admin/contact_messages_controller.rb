@@ -4,8 +4,6 @@ class Admin::ContactMessagesController < Admin::BaseController
   def index
     @contact_messages = ContactMessage.includes(:user, :contact_responses)
                                      .recent
-                                     .page(params[:page])
-                                     .per(20)
     
     # Filter by user if provided
     if params[:user_id].present?
@@ -13,23 +11,14 @@ class Admin::ContactMessagesController < Admin::BaseController
       @filtered_user = User.find_by(id: params[:user_id])
     end
     
-    # Filter by status if provided
-    if params[:status].present?
-      @contact_messages = @contact_messages.where(status: params[:status])
-    end
-    
-    # Filter by priority if provided
-    if params[:priority].present?
-      @contact_messages = @contact_messages.where(priority: params[:priority])
-    end
-    
+    # Calculate stats from the filtered results
     @stats = {
-      total: ContactMessage.count,
-      new: ContactMessage.where(status: 'new').count,
-      in_progress: ContactMessage.where(status: 'in_progress').count,
-      resolved: ContactMessage.where(status: 'resolved').count,
-      closed: ContactMessage.where(status: 'closed').count,
-      urgent: ContactMessage.where(priority: 'urgent').count
+      total: @contact_messages.count,
+      new: @contact_messages.where(status: 'new').count,
+      in_progress: @contact_messages.where(status: 'in_progress').count,
+      resolved: @contact_messages.where(status: 'resolved').count,
+      closed: @contact_messages.where(status: 'closed').count,
+      urgent: @contact_messages.where(priority: 'urgent').count
     }
   end
 

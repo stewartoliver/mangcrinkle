@@ -1,4 +1,4 @@
-<% content_for :title, "New User" %>
+<% content_for :title, "New Customer or Admin" %>
 
 <div class="admin-container">
   <div class="admin-container-header">
@@ -13,7 +13,7 @@
           <% end %>
         </p>
       </div>
-      <%= link_to "Back to Users", admin_users_path, class: "admin-btn-back" %>
+      <%= link_to "Back to Customers & Admins", admin_users_path, class: "admin-btn-back" %>
     </div>
   </div>
 
@@ -41,7 +41,7 @@
 
         <!-- User Type Selection -->
         <div class="form-group">
-          <%= form.label :user_type, "User Type", class: "form-label" %>
+          <%= form.label :user_type, "Account Type", class: "form-label" %>
           <div class="mt-1">
             <%= form.select :user_type, 
                 options_for_select([

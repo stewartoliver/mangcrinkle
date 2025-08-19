@@ -2,8 +2,15 @@ class Admin::ProductsController < Admin::BaseController
   before_action :set_product, only: [:show, :edit, :update, :destroy]
 
   def index
+    # Get total counts for statistics (before any filtering)
+    @total_products = Product.count
+    
+    # Calculate category counts from unfiltered dataset
+    @category_counts = Product.group(:category).count
+    
+    # Load all products for client-side filtering
     @products = Product.all.order(created_at: :desc)
-    @products = @products.by_category(params[:category]) if params[:category].present?
+    
     @categories = Product.available_categories
   end
 

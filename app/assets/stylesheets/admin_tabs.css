@@ -1,0 +1,184 @@
+/* Admin Tabs - Consistent styling and loading states */
+
+/* Tab button base styles */
+.tab-button {
+    @apply px-3 py-2 text-sm font-medium text-orange-600 border-b-2 border-transparent hover:text-orange-800 hover:border-orange-300 transition-all duration-200;
+}
+
+.tab-button.active {
+    @apply text-orange-900 border-orange-500;
+}
+
+.tab-button:disabled {
+    @apply opacity-70 cursor-not-allowed;
+}
+
+/* Loading spinner animation */
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Tab container transitions */
+[data-tab-container] {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Smooth row filtering transitions */
+.admin-table-row {
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.admin-table-row[style*="display: none"] {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+/* Loading state for tab buttons */
+.tab-button.loading {
+    @apply relative;
+}
+
+.tab-button.loading::after {
+    content: '';
+    @apply absolute inset-0 bg-orange-100 opacity-50 rounded;
+}
+
+/* Tab content fade transitions */
+.tab-content {
+    transition: opacity 0.2s ease-in-out;
+}
+
+.tab-content.loading {
+    opacity: 0.7;
+}
+
+/* Consistent hover effects */
+.tab-button:hover:not(:disabled) {
+    @apply bg-orange-50;
+}
+
+/* Active tab indicator */
+.tab-button.active::before {
+    content: '';
+    @apply absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500;
+}
+
+/* Responsive tab layout */
+@media (max-width: 768px) {
+    .tab-button {
+        @apply px-2 py-1 text-xs;
+    }
+
+    /* Stack tabs vertically on small screens */
+    [data-tab-container] nav {
+        @apply flex-col space-y-2 space-x-0;
+    }
+}
+
+/* Focus states for accessibility */
+.tab-button:focus {
+    @apply outline-none ring-2 ring-orange-500 ring-offset-2;
+}
+
+/* Disabled state styling */
+.tab-button:disabled {
+    @apply text-gray-400 cursor-not-allowed;
+}
+
+.tab-button:disabled:hover {
+    @apply bg-transparent border-transparent;
+}
+
+/* Review Action Button Overrides - Force override important styles */
+.admin-action-btn.review-approve {
+    background-color: transparent !important;
+    color: rgb(22 163 74) !important;
+    /* text-green-600 */
+    border: none !important;
+}
+
+.admin-action-btn.review-approve:hover {
+    background-color: transparent !important;
+}
+
+.admin-action-btn.review-unapprove {
+    background-color: transparent !important;
+    color: rgb(220 38 38) !important;
+    /* text-red-600 */
+    border: none !important;
+}
+
+.admin-action-btn.review-unapprove:hover {
+    background-color: transparent !important;
+}
+
+.admin-action-btn.review-feature {
+    background-color: transparent !important;
+    color: rgb(245 158 11) !important;
+    /* text-amber-500 - proper star color */
+    border: none !important;
+}
+
+.admin-action-btn.review-feature:hover {
+    background-color: transparent !important;
+}
+
+.admin-action-btn.review-unfeature {
+    background-color: transparent !important;
+    color: rgb(245 158 11) !important;
+    /* text-amber-500 - proper star color */
+    border: none !important;
+}
+
+.admin-action-btn.review-unfeature:hover {
+    background-color: transparent !important;
+}
+
+.admin-action-btn.review-disabled {
+    background-color: transparent !important;
+    color: rgb(156 163 175) !important;
+    /* text-gray-400 - but icon should be amber */
+    border: none !important;
+    cursor: not-allowed !important;
+}
+
+.admin-action-btn.review-disabled svg {
+    color: rgb(245 158 11) !important;
+    /* text-amber-500 - proper star color for disabled state */
+}
+
+/* Review Expand Toggle Button States */
+.review-expand-toggle.active {
+    background-color: rgb(255 237 213) !important;
+    /* bg-orange-100 */
+    color: rgb(194 65 12) !important;
+    /* text-orange-800 */
+}
+
+/* Expandable Review Details Rows */
+.review-expand-details {
+    transition: all 0.3s ease-in-out;
+}
+
+tr.review-expand-details.review-row-collapsed {
+    display: none !important;
+}
+
+/* Ensure the expandable rows are properly styled */
+.review-expand-details td {
+    padding: 1rem 1.5rem;
+    background-color: rgb(255 247 237);
+    /* bg-orange-50 */
+    border-top: 1px solid rgb(254 215 170);
+    /* border-orange-200 */
+}

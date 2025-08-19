@@ -11,7 +11,7 @@
       </div>
       <div class="admin-stats-content">
         <h2 class="admin-stats-label">Pending</h2>
-        <p class="admin-stats-value admin-stats-value-yellow"><%= @orders_by_status['pending']&.count || 0 %></p>
+        <p class="admin-stats-value admin-stats-value-yellow"><%= @orders_by_status['pending'] || 0 %></p>
       </div>
     </div>
   </div>
@@ -39,7 +39,7 @@
       </div>
       <div class="admin-stats-content">
         <h2 class="admin-stats-label">Processing</h2>
-        <p class="admin-stats-value admin-stats-value-blue"><%= @orders_by_status['processing']&.count || 0 %></p>
+        <p class="admin-stats-value admin-stats-value-blue"><%= @orders_by_status['processing'] || 0 %></p>
       </div>
     </div>
   </div>
@@ -60,7 +60,7 @@
 </div>
 
 <!-- Main Orders Table with Integrated Filters -->
-<div class="admin-container">
+<div class="admin-container" data-tab-container="orders" data-paginated="true">
   <div class="admin-container-header">
     <div class="flex items-center justify-between">
       <h3 class="admin-container-title">Orders</h3>
@@ -79,22 +79,6 @@
           <%= form.label :search, "Search", class: "form-label" %>
           <div class="mt-1">
             <%= form.text_field :search, value: params[:search], placeholder: "Search by customer name or email", class: "form-input" %>
-          </div>
-        </div>
-        
-        <div class="flex-1 min-w-0">
-          <%= form.label :status, "Status", class: "form-label" %>
-          <div class="mt-1">
-            <%= form.select :status, 
-                options_for_select([
-                  ['All Statuses', ''],
-                  ['Pending', 'pending'],
-                  ['Processing', 'processing'],
-                  ['Completed', 'completed'],
-                  ['Cancelled', 'cancelled']
-                ], params[:status]),
-                {},
-                class: "form-select" %>
           </div>
         </div>
         
@@ -122,7 +106,7 @@
   <div class="px-6 py-3 border-b border-orange-200 bg-gray-50">
     <div class="flex justify-between items-center">
       <div class="text-sm text-orange-600">
-        Showing <%= @orders.offset_value + 1 %> to <%= @orders.offset_value + @orders.length %> of <%= @orders.total_count %> results
+        Showing <span id="filtered-count"><%= @filtered_orders_count %></span> results
       </div>
       <div class="flex items-center space-x-2">
         <button type="submit" form="search-form" class="admin-btn-primary">
@@ -136,21 +120,64 @@
   <!-- Order Status Tabs -->
   <div class="border-b border-orange-200">
     <nav class="flex space-x-8 px-6" aria-label="Tabs">
-      <button class="tab-button active" data-tab="all">
-        All Orders (<%= @total_orders %>)
-      </button>
-      <button class="tab-button" data-tab="pending">
-        Pending (<%= @orders_by_status['pending']&.count || 0 %>)
-      </button>
-      <button class="tab-button" data-tab="processing">
-        Processing (<%= @orders_by_status['processing']&.count || 0 %>)
-      </button>
-      <button class="tab-button" data-tab="completed">
-        Completed (<%= @orders_by_status['completed']&.count || 0 %>)
-      </button>
-      <button class="tab-button" data-tab="cancelled">
-        Cancelled (<%= @orders_by_status['cancelled']&.count || 0 %>)
-      </button>
+
+      
+      <% 
+        # Get counts from the controller (total counts, not just current page)
+        # Add safety checks to prevent count method errors
+        all_count = @total_orders || 0
+        pending_count = (@orders_by_status && @orders_by_status['pending']) || 0
+        processing_count = (@orders_by_status && @orders_by_status['processing']) || 0
+        completed_count = (@orders_by_status && @orders_by_status['completed']) || 0
+        cancelled_count = (@orders_by_status && @orders_by_status['cancelled']) || 0
+        
+        # Ensure all counts are integers
+        all_count = all_count.to_i
+        pending_count = pending_count.to_i
+        processing_count = processing_count.to_i
+        completed_count = completed_count.to_i
+        cancelled_count = cancelled_count.to_i
+        
+        # Only show tabs that have data
+        statuses_with_data = []
+        statuses_with_data << 'pending' if pending_count > 0
+        statuses_with_data << 'processing' if processing_count > 0
+        statuses_with_data << 'completed' if completed_count > 0
+        statuses_with_data << 'cancelled' if cancelled_count > 0
+        
+        show_all_tab = statuses_with_data.length > 1
+        current_tab = @current_tab
+      %>
+      
+      <% if show_all_tab %>
+        <button class="tab-button <%= current_tab == 'all' ? 'active' : '' %>" data-tab="all" data-container-type="orders">
+          All Orders (<%= all_count %>)
+        </button>
+      <% end %>
+      
+      <% if pending_count > 0 %>
+        <button class="tab-button <%= current_tab == 'pending' ? 'active' : '' %>" data-tab="pending" data-container-type="orders">
+          Pending (<%= pending_count %>)
+        </button>
+      <% end %>
+      
+      <% if processing_count > 0 %>
+        <button class="tab-button <%= current_tab == 'processing' ? 'active' : '' %>" data-tab="processing" data-container-type="orders">
+          Processing (<%= processing_count %>)
+        </button>
+      <% end %>
+      
+              <% if completed_count > 0 %>
+          <button class="tab-button <%= current_tab == 'completed' ? 'active' : '' %>" data-tab="completed" data-container-type="orders">
+            Completed (<%= completed_count %>)
+          </button>
+        <% end %>
+      
+      <% if cancelled_count > 0 %>
+        <button class="tab-button <%= current_tab == 'cancelled' ? 'active' : '' %>" data-tab="cancelled" data-container-type="orders">
+          Cancelled (<%= cancelled_count %>)
+        </button>
+      <% end %>
     </nav>
   </div>
 
@@ -169,7 +196,7 @@
       </thead>
       <tbody class="admin-table-body">
         <% @orders.each do |order| %>
-          <tr class="admin-table-row" data-order-id="<%= order.id %>">
+          <tr class="admin-table-row" data-order-id="<%= order.id %>" data-status="<%= order.status %>">
             <td class="admin-table-cell">
               <div class="text-sm font-medium text-orange-950"><%= order.customer_name %></div>
               <div class="text-xs text-orange-600"><%= order.email %></div>
@@ -193,7 +220,8 @@
                     when 'completed' then 'admin-status-completed'
                     when 'cancelled' then 'admin-status-cancelled'
                     else 'admin-status-default'
-                    end %>">
+                    end %>"
+                data-status="<%= order.status %>">
                 <%= order.status.titleize %>
               </span>
             </td>
@@ -216,7 +244,7 @@
                         data-order-id="<%= order.id %>"
                         title="View Order Contents">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
                 
@@ -245,7 +273,7 @@
           </tr>
           
           <!-- Expandable Order Details Row -->
-          <tr class="order-contents-details hidden" data-order-id="<%= order.id %>">
+          <tr class="order-contents-details hidden" data-order-id="<%= order.id %>" data-status="<%= order.status %>">
             <td colspan="6" class="px-6 py-4 bg-orange-50 border-t border-orange-200">
               <div class="bg-white rounded-lg p-4 border border-orange-200">
                 <h4 class="text-lg font-medium text-orange-950 mb-4 flex items-center">
@@ -312,22 +340,32 @@
     </table>
   </div>
 
-  <!-- Pagination -->
-  <% if @orders.respond_to?(:total_pages) && @orders.total_pages > 1 %>
-    <div class="px-6 py-3 border-t border-orange-200 bg-orange-50">
+  <!-- Client-side pagination info -->
+  <div class="px-6 py-3 border-t border-orange-200 bg-orange-50">
+    <div class="flex items-center justify-between">
+      <div class="text-sm text-orange-600">
+        Showing <span id="visible-count"><%= @orders.count %></span> of <span id="total-count"><%= @filtered_orders_count %></span> results
+      </div>
+      <div class="text-sm text-orange-600">
+        Use tabs above to filter results
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination Controls -->
+  <% if @orders.total_pages > 1 %>
+    <div class="px-6 py-4 border-t border-orange-200 bg-orange-50">
       <div class="flex items-center justify-between">
         <div class="text-sm text-orange-600">
-          Showing <%= @orders.offset_value + 1 %> to <%= @orders.offset_value + @orders.length %> of <%= @orders.total_count %> results
+          Page <%= @orders.current_page %> of <%= @orders.total_pages %> (<%= @filtered_orders_count %> total results)
         </div>
-        <div class="flex space-x-2">
+        <div class="flex items-center space-x-2">
           <% if @orders.prev_page %>
-            <%= link_to "Previous", admin_orders_path(page: @orders.prev_page, **request.query_parameters), 
-                class: "px-3 py-1 text-sm font-medium text-orange-600 bg-white border border-orange-300 rounded hover:bg-orange-50" %>
+            <%= link_to "Previous", admin_orders_path(page: @orders.prev_page, status: @current_tab, search: params[:search], order_source: params[:order_source]), class: "admin-btn-secondary" %>
           <% end %>
           
           <% if @orders.next_page %>
-            <%= link_to "Next", admin_orders_path(page: @orders.next_page, **request.query_parameters), 
-                class: "px-3 py-1 text-sm font-medium text-orange-600 bg-white border border-orange-300 rounded hover:bg-orange-50" %>
+            <%= link_to "Next", admin_orders_path(page: @orders.next_page, status: @current_tab, search: params[:search], order_source: params[:order_source]), class: "admin-btn-secondary" %>
           <% end %>
         </div>
       </div>
@@ -337,49 +375,7 @@
 
 <script>
 // Order contents toggle is now handled globally in application.js
-
-// Tab functionality for order status filtering
-document.addEventListener('DOMContentLoaded', function() {
-    initializeOrderStatusTabs();
-});
-
-// Also handle Turbo navigation
-document.addEventListener('turbo:load', function() {
-    initializeOrderStatusTabs();
-});
-
-function initializeOrderStatusTabs() {
-    const tabButtons = document.querySelectorAll('.tab-button');
-    const orderRows = document.querySelectorAll('.admin-table-row[data-order-id]');
-
-    if (tabButtons.length === 0) return; // Exit if no tabs found
-
-    tabButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const tab = this.dataset.tab;
-
-            // Update active tab
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-
-            // Show/hide rows based on tab
-            orderRows.forEach(row => {
-                const statusCell = row.querySelector('td:nth-child(4) .admin-status-badge');
-                if (statusCell) {
-                    const status = statusCell.textContent.toLowerCase().trim();
-
-                    if (tab === 'all') {
-                        row.style.display = '';
-                    } else if (status === tab) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                }
-            });
-        });
-    });
-}
+// Tab functionality is now handled globally in admin_tabs.js
 
 // Handle order deletion with smooth animation
 document.addEventListener('click', function(e) {
@@ -490,3 +486,28 @@ function showNotification(message, type = 'info') {
   }, 3000);
 }
 </script>
+
+<style>
+    /* Tab button styles */
+    .tab-button {
+      @apply px-3 py-2 text-sm font-medium text-orange-600 border-b-2 border-transparent hover:text-orange-800 hover:border-orange-300 transition-colors duration-200;
+    }
+    
+    .tab-button.active {
+      @apply text-orange-800 border-orange-500;
+    }
+    
+    .tab-button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .animate-spin {
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>

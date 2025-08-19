@@ -3,13 +3,39 @@ class Admin::OrdersController < Admin::BaseController
   before_action :set_orders, only: [:index]
 
   def index
-    @orders = apply_filters(@orders)
+    # Get total counts for statistics (before any filtering)
+    @total_orders = Order.count
+    @total_revenue = Order.sum(:total_price)
+    
+    # Load all orders and apply filters
+    @orders = apply_filters(Order.includes(:user, :line_items).order(created_at: :desc))
+    
+    # Store current tab for view - use status parameter from tabs, fallback to all
+    @current_tab = params[:status] || 'all'
+    
+    # Apply status filtering based on current tab
+    case @current_tab
+    when 'pending'
+      @orders = @orders.where(status: 'pending')
+    when 'processing'
+      @orders = @orders.where(status: 'processing')
+    when 'completed'
+      @orders = @orders.where(status: 'completed')
+    when 'cancelled'
+      @orders = @orders.where(status: 'cancelled')
+    end
+    
+    # Get the filtered count BEFORE pagination
+    @filtered_orders_count = @orders.count
+    
+    # Apply pagination after filtering
     @orders = @orders.page(params[:page]).per(25)
     
-    # Statistics for the current filtered results
-    @total_orders = @orders.total_count
-    @total_revenue = @orders.sum(&:total_price)
-    @orders_by_status = @orders.group_by(&:status)
+    # Get orders by status for tab counts (from unfiltered dataset)
+    @orders_by_status = Order.group(:status).count
+    
+    # Ensure @orders_by_status is a hash
+    @orders_by_status = {} unless @orders_by_status.is_a?(Hash)
   end
 
   def new
@@ -267,9 +293,6 @@ class Admin::OrdersController < Admin::BaseController
   end
 
   def apply_filters(orders)
-    # Status filter
-    orders = orders.by_status(params[:status]) if params[:status].present?
-    
     # Order source filter
     orders = orders.by_order_source(params[:order_source]) if params[:order_source].present?
     

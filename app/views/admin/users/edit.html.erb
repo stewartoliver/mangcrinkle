@@ -1,13 +1,13 @@
-<% content_for :title, "Edit User - #{@user.display_name}" %>
+<% content_for :title, "Edit Account - #{@user.display_name}" %>
 
 <div class="admin-container">
   <div class="admin-container-header">
     <div class="flex items-center justify-between">
       <div>
-        <h3 class="admin-container-title">Edit User</h3>
-        <p class="admin-container-subtitle">Update user information and contact details.</p>
+        <h3 class="admin-container-title">Edit Account</h3>
+        <p class="admin-container-subtitle">Update account information and contact details.</p>
       </div>
-      <%= link_to "Back to Users", admin_users_path, class: "admin-btn-back" %>
+      <%= link_to "Back to Customers & Admins", admin_users_path, class: "admin-btn-back" %>
     </div>
   </div>
 
@@ -46,7 +46,7 @@
             </div>
 
             <div class="form-group">
-              <%= form.label :user_type, "User Type", class: "form-label" %>
+              <%= form.label :user_type, "Account Type", class: "form-label" %>
               <div class="mt-1">
                 <%= form.select :user_type, 
                     [['Customer', 'customer'], ['Admin', 'admin']], 
@@ -55,7 +55,7 @@
               </div>
             </div>
 
-            <!-- User Type Change Information -->
+            <!-- Account Type Change Information -->
             <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
               <div class="flex items-start">
                 <div class="flex-shrink-0 pt-1">

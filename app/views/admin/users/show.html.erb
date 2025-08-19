@@ -1,11 +1,11 @@
-<% content_for :title, "User Details - #{@user.display_name}" %>
+<% content_for :title, "Account Details - #{@user.display_name}" %>
 
 <div class="admin-show-container">
   <div class="admin-show-header">
     <div class="flex items-center justify-between">
       <div>
-        <h3 class="admin-container-title">User Details</h3>
-        <p class="admin-container-subtitle">Detailed information about this user.</p>
+        <h3 class="admin-container-title">Account Details</h3>
+        <p class="admin-container-subtitle">Detailed information about this account.</p>
       </div>
       <div class="flex space-x-3">
         <%= link_to "Edit", edit_admin_user_path(@user), class: "admin-btn-primary" %>
@@ -21,7 +21,7 @@
                       confirm: "Send password reset email to #{@user.email}? This will allow them to reset their password.",
                       data: { turbo_method: :post } %>
         <% end %>
-        <%= link_to "Back to Users", admin_users_path, class: "admin-btn-back" %>
+        <%= link_to "Back to Customers & Admins", admin_users_path, class: "admin-btn-back" %>
       </div>
     </div>
   </div>
@@ -34,7 +34,7 @@
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @user.email %></dd>
       </div>
       <div class="<%= cycle('bg-orange-50', 'bg-white') %> px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-        <dt class="text-sm font-medium text-orange-700">User Type</dt>
+        <dt class="text-sm font-medium text-orange-700">Account Type</dt>
         <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @user.admin? ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
             <%= @user.user_type.titleize %>
@@ -173,7 +173,7 @@
                             data-order-id="<%= order.id %>"
                             title="View Order Contents">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
                     

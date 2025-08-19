@@ -1,18 +1,18 @@
-<% content_for :title, "Dashboard" %>
+<% content_for :title, "Admin Dashboard" %>
 
 <!-- Statistics Cards -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
   <!-- Total Orders -->
   <div class="admin-stats-card">
     <div class="flex items-center">
-      <div class="admin-stats-icon admin-stats-icon-orange">
-        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div class="admin-stats-icon admin-stats-icon-blue">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
         </svg>
       </div>
       <div class="admin-stats-content">
         <h2 class="admin-stats-label">Total Orders</h2>
-        <p class="admin-stats-value admin-stats-value-orange"><%= @total_orders %></p>
+        <p class="admin-stats-value admin-stats-value-blue"><%= @total_orders %></p>
       </div>
     </div>
   </div>
@@ -21,7 +21,7 @@
   <div class="admin-stats-card">
     <div class="flex items-center">
       <div class="admin-stats-icon admin-stats-icon-green">
-        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       </div>
@@ -32,17 +32,17 @@
     </div>
   </div>
 
-  <!-- Contact Messages -->
+  <!-- Pending Orders -->
   <div class="admin-stats-card">
     <div class="flex items-center">
-      <div class="admin-stats-icon admin-stats-icon-blue">
-        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+      <div class="admin-stats-icon admin-stats-icon-yellow">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       </div>
       <div class="admin-stats-content">
-        <h2 class="admin-stats-label">Contact Messages</h2>
-        <p class="admin-stats-value admin-stats-value-blue"><%= @total_contact_messages %></p>
+        <h2 class="admin-stats-label">Pending Orders</h2>
+        <p class="admin-stats-value admin-stats-value-yellow"><%= @new_orders&.count || 0 %></p>
       </div>
     </div>
   </div>
@@ -50,165 +50,179 @@
   <!-- Processing Orders -->
   <div class="admin-stats-card">
     <div class="flex items-center">
-      <div class="admin-stats-icon admin-stats-icon-yellow">
-        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      <div class="admin-stats-icon admin-stats-icon-orange">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       </div>
       <div class="admin-stats-content">
-        <h2 class="admin-stats-label">Processing</h2>
-        <p class="admin-stats-value admin-stats-value-yellow"><%= @processing_orders %></p>
+        <h2 class="admin-stats-label">Processing Orders</h2>
+        <p class="admin-stats-value admin-stats-value-orange"><%= @actionable_orders&.count || 0 %></p>
       </div>
     </div>
   </div>
 </div>
 
-<div class="grid grid-cols-1 gap-8 mb-8">
-  <!-- Orders by Day Chart - Redesigned -->
-  <div>
-    <div class="admin-chart-container h-full">
-      <div class="admin-chart-header">
-        <h3 class="admin-container-title">Orders This Week</h3>
-      </div>
-      <div class="admin-chart-content">
-        <!-- Line Chart Container -->
-        <div class="h-64 mb-6">
-          <%= line_chart @orders_by_day, 
-              colors: ["#ea580c"],
-              curve: true,
-              points: true,
-              library: {
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                    ticks: {
-                      stepSize: 1,
-                      color: "#6b7280",
-                      font: {
-                        size: 11
-                      }
-                    },
-                    grid: {
-                      color: "#f3f4f6",
-                      drawBorder: false
-                    }
-                  },
-                  x: {
-                    ticks: {
-                      color: "#6b7280",
-                      font: {
-                        size: 11
-                      }
-                    },
-                    grid: {
-                      display: false
-                    }
-                  }
-                },
-                plugins: {
-                  legend: {
-                    display: false
-                  }
-                },
-                elements: {
-                  point: {
-                    radius: 3,
-                    hoverRadius: 5,
-                    backgroundColor: "#ea580c",
-                    borderColor: "#ffffff",
-                    borderWidth: 2
-                  },
-                  line: {
-                    borderWidth: 2,
-                    tension: 0.3
+<!-- Weekly Orders Chart and Status Breakdown -->
+<div class="admin-container mb-8">
+  <div class="admin-container-header">
+    <h3 class="admin-container-title">Orders This Week</h3>
+  </div>
+  <div class="admin-container-content">
+    <!-- Line Chart Container -->
+    <div class="px-6 pt-6 flex flex-col gap-6">
+      <div class="h-64">
+        <%= line_chart @orders_by_day, 
+            colors: ["#f97316"], 
+            height: "300px",
+            library: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    stepSize: 1
                   }
                 }
-              } %>
+              }
+            } %>
+      </div>
+      
+      <!-- Week Summary -->
+      <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200 mt-6">
+        <div class="flex items-center space-x-4">
+          <div class="flex-shrink-0">
+            <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+          </div>
+          <div>
+            <div class="text-sm font-medium text-orange-700">This Week Total</div>
+            <div class="text-2xl font-bold text-orange-900"><%= @this_week_orders || 0 %> orders</div>
+          </div>
         </div>
-        
-        <!-- Week Summary -->
-        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200 mt-12">
-          <div class="flex items-center space-x-4">
-            <div class="flex-shrink-0">
-              <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                <svg class="w-5 h-5 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </div>
+
+      <!-- Order Status Breakdown -->
+      <div class="mb-6">
+        <h4 class="text-sm font-medium text-orange-700 mb-3">This Week's Order Status</h4>
+        <div class="grid grid-cols-2 gap-3">
+          <a class="block p-3 rounded-lg border border-orange-200 hover:bg-orange-50 transition-colors duration-200" href="/admin/orders?status=pending">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                  Pending
+                </span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-lg font-bold text-orange-900"><%= @this_week_orders_by_status['pending'] || 0 %></span>
+                <svg class="h-4 w-4 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
               </div>
             </div>
-            <div>
-              <div class="text-sm font-medium text-orange-700">This Week Total</div>
-              <div class="text-2xl font-bold text-orange-900"><%= @this_week_orders %> orders</div>
-            </div>
-          </div>
+          </a>
           
-          <% if defined?(@last_week_orders) && @last_week_orders > 0 %>
-            <div class="text-right">
-              <div class="text-sm text-orange-600">vs Last Week</div>
-              <% change = @this_week_orders - @last_week_orders %>
-              <div class="text-lg font-semibold <%= change >= 0 ? 'text-green-600' : 'text-red-600' %>">
-                <%= change >= 0 ? '+' : '' %><%= change %>
-                <span class="text-sm font-normal text-orange-600">orders</span>
+          <a class="block p-3 rounded-lg border border-orange-200 hover:bg-orange-50 transition-colors duration-200" href="/admin/orders?status=processing">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  Processing
+                </span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-lg font-bold text-orange-900"><%= @this_week_orders_by_status['processing'] || 0 %></span>
+                <svg class="h-4 w-4 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
               </div>
             </div>
-          <% end %>
-        </div>
-
-        <!-- Order Status Breakdown -->
-        <div class="mt-4">
-          <h4 class="text-sm font-medium text-orange-700 mb-3">This Week's Order Status</h4>
-          <div class="grid grid-cols-2 gap-3">
-            <% 
-              # Define the order we want to display statuses in
-              status_order = ['pending', 'processing', 'completed', 'cancelled']
-              # Filter and sort the statuses according to our preferred order
-              sorted_statuses = status_order.map { |status| [status, @this_week_orders_by_status[status] || 0] }
-            %>
-            <% sorted_statuses.each do |status, count| %>
-              <%= link_to admin_orders_path(status: status), class: "block p-3 rounded-lg border border-orange-200 hover:bg-orange-50 transition-colors duration-200" do %>
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-2">
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
-                      <%= case status
-                          when 'pending' then 'bg-yellow-100 text-yellow-800'
-                          when 'processing' then 'bg-blue-100 text-blue-800'
-                          when 'completed' then 'bg-green-100 text-green-800'
-                          when 'cancelled' then 'bg-red-100 text-red-800'
-                          else 'bg-gray-100 text-gray-800'
-                          end %>">
-                      <%= status.titleize %>
-                    </span>
-                  </div>
-                  <div class="flex items-center space-x-2">
-                    <span class="text-lg font-bold text-orange-900"><%= count %></span>
-                    <svg class="h-4 w-4 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </div>
-              <% end %>
-            <% end %>
-          </div>
+          </a>
+          
+          <a class="block p-3 rounded-lg border border-orange-200 hover:bg-orange-50 transition-colors duration-200" href="/admin/orders?status=completed">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  Completed
+                </span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-lg font-bold text-orange-900"><%= @this_week_orders_by_status['completed'] || 0 %></span>
+                <svg class="h-4 w-4 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          
+          <a class="block p-3 rounded-lg border border-orange-200 hover:bg-orange-50 transition-colors duration-200" href="/admin/orders?status=cancelled">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                  Cancelled
+                </span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-lg font-bold text-orange-900"><%= @this_week_orders_by_status['cancelled'] || 0 %></span>
+                <svg class="h-4 w-4 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          </a>
         </div>
       </div>
     </div>
   </div>
-
 </div>
-  
-<!-- Recent Orders -->
-<div class="admin-container">
+
+
+
+<!-- New & Actionable Orders -->
+<div class="admin-container" data-tab-container="dashboard_orders">
   <div class="admin-container-header">
     <div class="flex items-center justify-between">
       <div>
-        <h3 class="admin-container-title">Recent Orders</h3>
-        <p class="admin-container-subtitle">Latest orders from customers</p>
+        <h3 class="admin-container-title">New & Actionable Orders</h3>
+        <p class="admin-container-subtitle">Orders requiring attention or action</p>
       </div>
       <div class="flex items-center space-x-3">
         <%= link_to "View All", admin_orders_path, class: "admin-btn admin-btn-primary" %>
       </div>
     </div>
   </div>
+  
+  <!-- Order Status Tabs -->
+  <div class="border-b border-orange-200">
+    <nav class="flex space-x-8 px-6" aria-label="Order status tabs">
+      <% 
+        new_count = @new_orders&.count || 0
+        processing_count = @actionable_orders&.count || 0
+        total_count = new_count + processing_count
+        show_all_tab = new_count > 0 && processing_count > 0
+      %>
+      
+      <% if show_all_tab %>
+        <button class="tab-button active" data-tab="all" data-container-type="dashboard_orders">
+          All Orders (<%= total_count %>)
+        </button>
+      <% end %>
+      
+      <% if new_count > 0 %>
+        <button class="tab-button <%= show_all_tab ? '' : 'active' %>" data-tab="pending" data-container-type="dashboard_orders">
+          New (<%= new_count %>)
+        </button>
+      <% end %>
+      
+      <% if processing_count > 0 %>
+        <button class="tab-button <%= show_all_tab ? '' : 'active' %>" data-tab="processing" data-container-type="dashboard_orders">
+          In Progress (<%= processing_count %>)
+        </button>
+      <% end %>
+    </nav>
+  </div>
+  
   <div class="admin-container-content">
     <table class="admin-table">
       <thead class="admin-table-header">
@@ -222,8 +236,8 @@
         </tr>
       </thead>
       <tbody class="admin-table-body">
-        <% @recent_orders.each do |order| %>
-          <tr class="admin-table-row" data-order-id="<%= order.id %>">
+        <% (@new_orders + @actionable_orders).each do |order| %>
+          <tr class="admin-table-row" data-order-id="<%= order.id %>" data-status="<%= order.status %>">
             <td class="admin-table-cell">
               <div class="text-sm font-medium text-orange-950"><%= order.customer_name %></div>
               <div class="text-xs text-orange-600"><%= order.email %></div>
@@ -247,7 +261,8 @@
                     when 'completed' then 'admin-status-completed'
                     when 'cancelled' then 'admin-status-cancelled'
                     else 'admin-status-default'
-                    end %>">
+                    end %>"
+                data-status="<%= order.status %>">
                 <%= order.status.titleize %>
               </span>
             </td>
@@ -270,7 +285,7 @@
                         data-order-id="<%= order.id %>"
                         title="View Order Contents">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
                 
@@ -280,6 +295,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
                 <% end %>
+                
                 <%= link_to edit_admin_order_path(order), class: "admin-action-btn", title: "Edit" do %>
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -290,11 +306,11 @@
           </tr>
           
           <!-- Expandable Order Details Row -->
-          <tr class="order-contents-details hidden" data-order-id="<%= order.id %>">
+          <tr class="order-contents-details hidden" data-order-id="<%= order.id %>" data-status="<%= order.status %>">
             <td colspan="6" class="px-6 py-4 bg-orange-50 border-t border-orange-200">
               <div class="bg-white rounded-lg p-4 border border-orange-200">
-                <h4 class="text-sm font-medium text-orange-950 mb-3 flex items-center">
-                  <svg class="w-4 h-4 mr-2 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <h4 class="text-lg font-medium text-orange-950 mb-4 flex items-center">
+                  <svg class="w-5 h-5 mr-2 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
                   Order Items
@@ -333,7 +349,7 @@
                           <td class="admin-table-cell-center text-sm text-orange-600">
                             $<%= number_with_precision(item.price, precision: 2) %>
                           </td>
-                          <td class="admin-table-cell-center text-sm font-semibold text-green-600">
+                          <td class="admin-table-cell-center text-sm text-orange-600">
                             $<%= number_with_precision(item.subtotal, precision: 2) %>
                           </td>
                         </tr>
@@ -342,7 +358,7 @@
                     <tfoot class="bg-orange-50">
                       <tr>
                         <td colspan="3" class="px-6 py-4 text-right text-sm font-medium text-orange-950">Total:</td>
-                        <td class="px-6 py-4 text-center text-sm font-bold text-green-700">
+                        <td class="px-6 py-4 text-center text-sm font-medium text-orange-950">
                           $<%= number_with_precision(order.total_price, precision: 2) %>
                         </td>
                       </tr>
@@ -358,207 +374,246 @@
   </div>
 </div>
 
-<!-- Recent Contact Messages -->
-<div class="admin-container mt-8">
+<!-- New & Actionable Contact Messages -->
+<div class="admin-container mt-8" data-tab-container="dashboard_messages">
   <div class="admin-container-header">
     <div class="flex items-center justify-between">
       <div>
-        <h3 class="admin-container-title">Recent Contact Messages</h3>
-        <p class="admin-container-subtitle">Latest customer inquiries</p>
+        <h3 class="admin-container-title">New & Actionable Messages</h3>
+        <p class="admin-container-subtitle">Messages requiring attention or response</p>
       </div>
       <div class="flex items-center space-x-3">
-        <% if @new_contact_messages > 0 %>
-          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
-            <%= pluralize(@new_contact_messages, 'new message') %>
-          </span>
-        <% end %>
         <%= link_to "View All", admin_contact_messages_path, class: "admin-btn-primary" %>
       </div>
     </div>
   </div>
+  
+  <!-- Message Status Tabs -->
+  <div class="border-b border-orange-200">
+    <nav class="flex space-x-8 px-6" aria-label="Message status tabs">
+      <% 
+        new_msg_count = @new_contact_messages&.count || 0
+        in_progress_count = @actionable_contact_messages&.count || 0
+        total_msg_count = new_msg_count + in_progress_count
+        show_all_msg_tab = new_msg_count > 0 && in_progress_count > 0
+      %>
+      
+      <% if show_all_msg_tab %>
+        <button class="tab-button active" data-tab="all" data-container-type="dashboard_messages">
+          All Messages (<%= total_msg_count %>)
+        </button>
+      <% end %>
+      
+      <% if new_msg_count > 0 %>
+        <button class="tab-button <%= show_all_msg_tab ? '' : 'active' %>" data-tab="new" data-container-type="dashboard_messages">
+          New (<%= new_msg_count %>)
+        </button>
+      <% end %>
+      
+      <% if in_progress_count > 0 %>
+        <button class="tab-button <%= show_all_msg_tab ? '' : 'active' %>" data-tab="in_progress" data-container-type="dashboard_messages">
+          In Progress (<%= in_progress_count %>)
+        </button>
+      <% end %>
+    </nav>
+  </div>
+  
   <div class="admin-container-content">
-    <% if @recent_contact_messages.any? %>
-      <table class="admin-table">
-        <thead class="admin-table-header">
-          <tr>
-            <th scope="col" class="admin-table-header-cell">Customer</th>
-            <th scope="col" class="admin-table-header-cell">Subject</th>
-            <th scope="col" class="admin-table-header-cell-center">Date</th>
-            <th scope="col" class="admin-table-header-cell-center">Status</th>
-            <th scope="col" class="admin-table-header-cell-right">Actions</th>
+    <table class="admin-table">
+      <thead class="admin-table-header">
+        <tr>
+          <th scope="col" class="admin-table-header-cell">Customer</th>
+          <th scope="col" class="admin-table-header-cell">Subject</th>
+          <th scope="col" class="admin-table-header-cell-center">Date</th>
+          <th scope="col" class="admin-table-header-cell-center">Status</th>
+          <th scope="col" class="admin-table-header-cell-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="admin-table-body">
+        <% (@new_contact_messages + @actionable_contact_messages).each do |message| %>
+          <tr class="admin-table-row" data-message-id="<%= message.id %>" data-status="<%= message.status %>">
+            <td class="admin-table-cell">
+              <div class="flex items-center">
+                <div>
+                  <div class="text-sm font-medium text-orange-950 flex items-center">
+                    <%= message.user.display_name %>
+                    <% unless %w[resolved closed].include?(message.status) %>
+                      <% if message.priority == 'urgent' %>
+                        <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                          <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                          </svg>
+                          Urgent
+                        </span>
+                      <% elsif message.priority == 'high' %>
+                        <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                          <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                          </svg>
+                          High
+                        </span>
+                      <% end %>
+                    <% end %>
+                  </div>
+                  <div class="text-xs text-orange-600"><%= message.user.email %></div>
+                </div>
+              </div>
+            </td>
+            <td class="admin-table-cell">
+              <div class="text-sm font-medium text-orange-950"><%= message.subject %></div>
+            </td>
+            <td class="admin-table-cell-center">
+              <div class="text-sm font-medium text-orange-950">
+                <%= message.created_at.strftime("%m/%d/%Y") %>
+              </div>
+              <div class="text-xs text-orange-600">
+                <%= time_ago_in_words(message.created_at) %> ago
+              </div>
+            </td>
+            <td class="admin-table-cell-center text-sm">
+              <span class="admin-status-badge 
+                <%= case message.status
+                    when 'new' then 'bg-blue-100 text-blue-800'
+                    when 'in_progress' then 'bg-yellow-100 text-yellow-800'
+                    when 'resolved' then 'bg-green-100 text-green-800'
+                    when 'closed' then 'bg-gray-100 text-gray-800'
+                    else 'bg-gray-100 text-gray-800'
+                    end %>"
+                data-status="<%= message.status %>">
+                <%= message.status.titleize %>
+              </span>
+            </td>
+            <td class="admin-table-cell-right">
+              <div class="admin-action-btn-group">
+                <!-- Message Details Toggle Button -->
+                <button type="button" 
+                        class="message-details-toggle admin-action-btn" 
+                        data-message-id="<%= message.id %>"
+                        title="View Message Details">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                
+                <%= link_to admin_contact_message_path(message), class: "admin-action-btn", title: "View" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                <% end %>
+                <%= link_to edit_admin_contact_message_path(message), class: "admin-action-btn", title: "Edit" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                <% end %>
+              </div>
+            </td>
           </tr>
-        </thead>
-        <tbody class="admin-table-body">
-          <% @recent_contact_messages.each do |message| %>
-            <tr class="admin-table-row 
-                <%= 'opacity-60' if %w[resolved closed].include?(message.status) %>
-                <%= 'border-l-4' if message.priority == 'urgent' %>
-                <%= 'border-l-4' if message.priority == 'high' %>" 
-                style="<%= 'border-left-color: rgb(249 115 22);' if message.priority == 'urgent' %><%= 'border-left-color: rgb(248 113 113);' if message.priority == 'high' %>"
-                data-message-id="<%= message.id %>">
-              <td class="admin-table-cell">
-                <div class="flex items-center">
+          
+          <!-- Expandable Message Details Row -->
+          <tr class="message-details-row hidden" data-message-id="<%= message.id %>" data-status="<%= message.status %>">
+            <td colspan="5" class="px-6 py-4 bg-orange-50 border-t border-orange-200">
+              <div class="bg-white rounded-lg p-4 border border-orange-200">
+                <h4 class="text-lg font-medium text-orange-950 mb-4 flex items-center">
+                  <svg class="w-5 h-5 mr-2 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                  </svg>
+                  Message Details
+                </h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <div class="text-sm font-medium text-orange-950 flex items-center">
-                      <%= message.user.display_name %>
-                      <% unless %w[resolved closed].include?(message.status) %>
-                        <% if message.priority == 'urgent' %>
-                          <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                            </svg>
-                            Urgent
-                          </span>
-                        <% elsif message.priority == 'high' %>
-                          <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                            </svg>
-                            High
-                          </span>
-                        <% end %>
+                    <h5 class="font-medium text-orange-950 mb-2">Customer Information</h5>
+                    <div class="text-sm text-orange-700 space-y-1">
+                      <p><strong>Name:</strong> <%= message.user.display_name %></p>
+                      <p><strong>Email:</strong> <%= message.user.email %></p>
+                      <% if message.user.phone.present? %>
+                        <p><strong>Phone:</strong> <%= message.user.phone %></p>
+                      <% end %>
+                      <p class="mt-2">
+                        <%= link_to "View Customer Profile", admin_user_path(message.user), 
+                            class: "inline-flex items-center px-3 py-1 border border-orange-300 text-sm font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100" %>
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <h5 class="font-medium text-orange-950 mb-2">Message Information</h5>
+                    <div class="text-sm text-orange-700 space-y-1">
+                      <p><strong>Subject:</strong> <%= message.subject %></p>
+                      <p><strong>Priority:</strong> <%= message.priority.titleize %></p>
+                      <p><strong>Status:</strong> <%= message.status.titleize %></p>
+                      <p><strong>Submitted:</strong> <%= message.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+                      <% if message.respond_to?(:response_count) && message.response_count > 0 %>
+                        <p><strong>Responses:</strong> <%= pluralize(message.response_count, 'response') %></p>
                       <% end %>
                     </div>
-                    <div class="text-xs text-orange-600"><%= message.user.email %></div>
                   </div>
                 </div>
-              </td>
-              <td class="admin-table-cell">
-                <div class="text-sm font-medium text-orange-950"><%= message.subject %></div>
-              </td>
-              <td class="admin-table-cell-center">
-                <div class="text-sm font-medium text-orange-950">
-                  <%= message.created_at.strftime("%m/%d/%Y") %>
-                </div>
-                <div class="text-xs text-orange-600">
-                  <%= time_ago_in_words(message.created_at) %> ago
-                </div>
-              </td>
-              <td class="admin-table-cell-center text-sm">
-                <span class="admin-status-badge 
-                  <%= case message.status
-                      when 'new' then 'bg-blue-100 text-blue-800'
-                      when 'in_progress' then 'bg-yellow-100 text-yellow-800'
-                      when 'resolved' then 'bg-green-100 text-green-800'
-                      when 'closed' then 'bg-gray-100 text-gray-800'
-                      else 'bg-gray-100 text-gray-800'
-                      end %>">
-                  <%= message.status.titleize %>
-                </span>
-              </td>
-              <td class="admin-table-cell-right">
-                <div class="admin-action-btn-group">
-                  <!-- Message Details Toggle Button -->
-                  <button type="button" 
-                          class="message-details-toggle admin-action-btn" 
-                          data-message-id="<%= message.id %>"
-                          title="View Message Details">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                    </svg>
-                  </button>
-                  
-                  <%= link_to admin_contact_message_path(message), class: "admin-action-btn", title: "View" do %>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                  <% end %>
-                  <%= link_to edit_admin_contact_message_path(message), class: "admin-action-btn", title: "Edit" do %>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  <% end %>
-                </div>
-              </td>
-            </tr>
-            
-            <!-- Expandable Message Details Row -->
-            <tr class="message-details-row hidden" data-message-id="<%= message.id %>">
-              <td colspan="5" class="px-6 py-4 bg-orange-50 border-t border-orange-200">
-                <div class="bg-white rounded-lg p-4 border border-orange-200">
-                  <h4 class="text-lg font-medium text-orange-950 mb-4 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                    </svg>
-                    Message Details
-                  </h4>
-                  
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h5 class="font-medium text-orange-950 mb-2">Customer Information</h5>
-                      <div class="text-sm text-orange-700 space-y-1">
-                        <p><strong>Name:</strong> <%= message.user.display_name %></p>
-                        <p><strong>Email:</strong> <%= message.user.email %></p>
-                        <% if message.user.phone.present? %>
-                          <p><strong>Phone:</strong> <%= message.user.phone %></p>
-                        <% end %>
-                        <p class="mt-2">
-                          <%= link_to "View Customer Profile", admin_user_path(message.user), 
-                              class: "inline-flex items-center px-3 py-1 border border-orange-300 text-sm font-medium rounded-md text-orange-700 bg-orange-50 hover:bg-orange-100" %>
-                        </p>
-                      </div>
-                    </div>
-                    <div>
-                      <h5 class="font-medium text-orange-950 mb-2">Message Information</h5>
-                      <div class="text-sm text-orange-700 space-y-1">
-                        <p><strong>Subject:</strong> <%= message.subject %></p>
-                        <p><strong>Priority:</strong> <%= message.priority.titleize %></p>
-                        <p><strong>Status:</strong> <%= message.status.titleize %></p>
-                        <p><strong>Submitted:</strong> <%= message.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
-                        <% if message.respond_to?(:response_count) && message.response_count > 0 %>
-                          <p><strong>Responses:</strong> <%= pluralize(message.response_count, 'response') %></p>
-                        <% end %>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div class="mt-6">
-                    <h5 class="font-medium text-orange-950 mb-2">Customer Message</h5>
-                    <div class="bg-gray-50 p-4 rounded-lg border">
-                      <p class="text-gray-700 whitespace-pre-wrap"><%= message.message %></p>
-                    </div>
+                
+                <div class="mt-6">
+                  <h5 class="font-medium text-orange-950 mb-2">Customer Message</h5>
+                  <div class="bg-gray-50 p-4 rounded-lg border">
+                    <p class="text-gray-700 whitespace-pre-wrap"><%= message.message %></p>
                   </div>
                 </div>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    <% else %>
-      <div class="text-center py-8">
-        <svg class="mx-auto h-12 w-12 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-        </svg>
-        <h3 class="mt-2 text-sm font-medium text-orange-900">No contact messages</h3>
-        <p class="mt-1 text-sm text-orange-500">No customer inquiries have been received yet.</p>
-      </div>
-    <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 </div>
 
 <script>
-// Message details toggle functionality for dashboard
+// Message details toggle functionality (specific to dashboard)
 document.addEventListener('DOMContentLoaded', function() {
+  setupMessageDetailsToggle();
+});
+
+// Also handle Turbo navigation
+document.addEventListener('turbo:load', function() {
+  setupMessageDetailsToggle();
+});
+
+document.addEventListener('turbo:frame-load', function() {
+  setupMessageDetailsToggle();
+});
+
+function setupMessageDetailsToggle() {
   const toggleButtons = document.querySelectorAll('.message-details-toggle');
   
   toggleButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      const messageId = this.dataset.messageId;
-      const detailsRow = document.querySelector(`.message-details-row[data-message-id="${messageId}"]`);
-      
-      if (detailsRow) {
-        detailsRow.classList.toggle('hidden');
-        
-        // Update button icon rotation
-        const svg = this.querySelector('svg');
-        if (detailsRow.classList.contains('hidden')) {
-          svg.style.transform = 'rotate(0deg)';
-        } else {
-          svg.style.transform = 'rotate(180deg)';
-        }
-      }
-    });
+    // Remove existing event listeners to prevent duplicates
+    button.removeEventListener('click', handleMessageDetailsToggle);
+    
+    // Add new event listener
+    button.addEventListener('click', handleMessageDetailsToggle);
   });
-});
+}
+
+function handleMessageDetailsToggle() {
+  const messageId = this.dataset.messageId;
+  const detailsRow = document.querySelector(`.message-details-row[data-message-id="${messageId}"]`);
+  
+  if (detailsRow) {
+    if (detailsRow.classList.contains('hidden')) {
+      detailsRow.classList.remove('hidden');
+      // Update button icon to show expanded state (up arrow)
+      this.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+        </svg>
+      `;
+    } else {
+      detailsRow.classList.add('hidden');
+      // Update button icon to show collapsed state (down arrow)
+      this.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      `;
+    }
+  }
+}
 </script>

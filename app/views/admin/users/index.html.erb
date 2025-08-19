@@ -1,21 +1,7 @@
-<% content_for :title, "User Management" %>
+<% content_for :title, "Customer & Admin Management" %>
 
-<!-- Statistics Cards -->
+<!-- Statistics Cards - Horizontal Flex Row -->
 <div class="flex flex-wrap gap-4 mb-6">
-  <div class="admin-stats-card flex-1 min-w-0">
-    <div class="flex items-center">
-      <div class="admin-stats-icon admin-stats-icon-orange">
-        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      </div>
-      <div class="admin-stats-content">
-        <h2 class="admin-stats-label">Total Users</h2>
-        <p class="admin-stats-value admin-stats-value-orange"><%= @total_users %></p>
-      </div>
-    </div>
-  </div>
-
   <div class="admin-stats-card flex-1 min-w-0">
     <div class="flex items-center">
       <div class="admin-stats-icon admin-stats-icon-green">
@@ -24,7 +10,7 @@
         </svg>
       </div>
       <div class="admin-stats-content">
-        <h2 class="admin-stats-label">Customers</h2>
+        <h2 class="admin-stats-label">Total Customers</h2>
         <p class="admin-stats-value admin-stats-value-green"><%= @total_customers %></p>
       </div>
     </div>
@@ -38,7 +24,7 @@
         </svg>
       </div>
       <div class="admin-stats-content">
-        <h2 class="admin-stats-label">Admins</h2>
+        <h2 class="admin-stats-label">Total Admins</h2>
         <p class="admin-stats-value admin-stats-value-red"><%= @total_admins %></p>
       </div>
     </div>
@@ -57,15 +43,28 @@
       </div>
     </div>
   </div>
+
+  <div class="admin-stats-card flex-1 min-w-0">
+    <div class="flex items-center">
+      <div class="admin-stats-icon admin-stats-icon-purple">
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <div class="admin-stats-content">
+        <h2 class="admin-stats-label">Newsletter Subscribers</h2>
+        <p class="admin-stats-value admin-stats-value-purple"><%= @total_newsletter_subscribers %></p>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- Main Container -->
-<div class="admin-container">
+<!-- Main Users Table with Integrated Filters -->
+<div class="admin-container" data-tab-container="users" data-paginated="true">
   <div class="admin-container-header">
     <div class="flex items-center justify-between">
       <div>
-        <h3 class="admin-container-title">User Management</h3>
-        <p class="admin-container-subtitle">Manage customers and admin accounts</p>
+        <h3 class="admin-container-title">Customers & Admins</h3>
       </div>
       <div class="flex items-center space-x-3">
         <%= link_to "Add New Admin", new_admin_user_path(user_type: 'admin'), class: "admin-btn-primary" %>
@@ -74,8 +73,11 @@
     </div>
   </div>
 
-  <!-- Search and Filters -->
+  <!-- Search and Filters - Two Flex Rows -->
   <%= form_with url: admin_users_path, method: :get, local: true, class: "px-6 py-4 border-b border-orange-200 bg-gray-50", id: "search-form" do |form| %>
+    <!-- Hidden field to preserve tab parameter -->
+    <%= form.hidden_field :tab, value: @current_tab if @current_tab != 'all' %>
+    
     <div class="space-y-4">
       <!-- First Row -->
       <div class="flex flex-wrap gap-4">
@@ -87,43 +89,27 @@
         </div>
         
         <div class="flex-1 min-w-0">
-          <%= form.label :user_type, "User Type", class: "form-label" %>
+          <%= form.label :user_type, "Account Type", class: "form-label" %>
           <div class="mt-1">
             <%= form.select :user_type, 
                 options_for_select([
-                  ['All Users', ''],
-                  ['Customers', 'customer'],
-                  ['Admins', 'admin']
+                  ['All Accounts', ''],
+                  ['Customers Only', 'customer'],
+                  ['Admins Only', 'admin']
                 ], params[:user_type]),
                 {},
                 class: "form-select" %>
           </div>
         </div>
-        
-        <div class="flex-1 min-w-0">
-          <%= form.label :admin_status, "Admin Status", class: "form-label" %>
-          <div class="mt-1">
-            <%= form.select :admin_status, 
-                options_for_select([
-                  ['All Admins', ''],
-                  ['Activated', 'activated'],
-                  ['Pending Activation', 'pending']
-                ], params[:admin_status]),
-                {},
-                class: "form-select" %>
-          </div>
-        </div>
       </div>
-      
-
     </div>
   <% end %>
 
-  <!-- Filter Buttons -->
+    <!-- Filter Buttons Section -->
   <div class="px-6 py-3 border-b border-orange-200 bg-gray-50">
     <div class="flex justify-between items-center">
       <div class="text-sm text-orange-600">
-        Showing <%= @users.offset_value + 1 %> to <%= @users.offset_value + @users.length %> of <%= @users.total_count %> results
+        Showing <span id="filtered-count"><%= @filtered_users_count %></span> results
       </div>
       <div class="flex items-center space-x-2">
         <button type="submit" form="search-form" class="admin-btn-primary">
@@ -134,30 +120,53 @@
     </div>
   </div>
 
-  <!-- User Type Tabs -->
+  <!-- Account Type Tabs -->
   <div class="border-b border-orange-200">
     <nav class="flex space-x-8 px-6" aria-label="Tabs">
-      <button class="tab-button active" data-tab="all">
-        All Users (<%= @total_users %>)
-      </button>
-      <button class="tab-button" data-tab="customers">
-        Customers (<%= @total_customers %>)
-      </button>
-      <button class="tab-button" data-tab="admins">
-        Admins (<%= @total_admins %>)
-      </button>
+      <% 
+        # Get counts from the controller (total counts, not just current page)
+        all_count = @total_customers + @total_admins
+        customers_count = @total_customers
+        admins_count = @total_admins
+        
+        # Only show tabs that have data
+        types_with_data = []
+        types_with_data << 'customer' if customers_count > 0
+        types_with_data << 'admin' if admins_count > 0
+        
+        show_all_tab = types_with_data.length > 1
+        current_tab = @current_tab
+      %>
+      
+      <% if show_all_tab %>
+        <button class="tab-button <%= current_tab == 'all' ? 'active' : '' %>" data-tab="all" data-container-type="users">
+          All Accounts (<%= all_count %>)
+        </button>
+      <% end %>
+      
+      <% if customers_count > 0 %>
+        <button class="tab-button <%= current_tab == 'customer' ? 'active' : '' %>" data-tab="customer" data-container-type="users">
+          Customers (<%= customers_count %>)
+        </button>
+      <% end %>
+      
+      <% if admins_count > 0 %>
+        <button class="tab-button <%= current_tab == 'admin' ? 'active' : '' %>" data-tab="admin" data-container-type="users">
+          Admins (<%= admins_count %>)
+        </button>
+      <% end %>
     </nav>
   </div>
 
-  <!-- Users Table -->
+  <!-- Accounts Table -->
   <div class="admin-container-content">
     <table class="admin-table">
       <thead class="admin-table-header">
         <tr>
-          <th scope="col" class="admin-table-header-cell">User</th>
+          <th scope="col" class="admin-table-header-cell">Account Details</th>
           <th scope="col" class="admin-table-header-cell-center">Type</th>
           <th scope="col" class="admin-table-header-cell-center">Status</th>
-          <th scope="col" class="admin-table-header-cell-center">Joined</th>
+          <th scope="col" class="admin-table-header-cell-center">Created</th>
           <th scope="col" class="admin-table-header-cell-center">Orders</th>
           <th scope="col" class="admin-table-header-cell-right">Actions</th>
         </tr>
@@ -181,11 +190,6 @@
                   <div class="text-sm text-orange-600">
                     <%= user.email %>
                   </div>
-                  <% if user.phone.present? %>
-                    <div class="text-xs text-orange-500">
-                      <%= user.phone %>
-                    </div>
-                  <% end %>
                 </div>
               </div>
             </td>
@@ -243,13 +247,13 @@
             <td class="admin-table-cell-right">
               <div class="admin-action-btn-group">
                 <%= link_to admin_user_path(user), class: "admin-action-btn", title: "View Details" do %>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
                 <% end %>
                 <%= link_to edit_admin_user_path(user), class: "admin-action-btn", title: "Edit" do %>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 <% end %>
@@ -261,25 +265,60 @@
     </table>
   </div>
 
-  <!-- Pagination -->
-  <% if @users.respond_to?(:total_pages) && @users.total_pages > 1 %>
-    <div class="px-6 py-3 border-t border-orange-200 bg-orange-50">
+  <!-- Client-side pagination info -->
+  <div class="px-6 py-3 border-t border-orange-200 bg-orange-50">
+    <div class="flex items-center justify-between">
+      <div class="text-sm text-orange-600">
+        Showing <span id="visible-count"><%= @users.count %></span> of <span id="total-count"><%= @filtered_users_count %></span> results
+      </div>
+      <div class="text-sm text-orange-600">
+        Use tabs above to filter results
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination Controls -->
+  <% if @users.total_pages > 1 %>
+    <div class="px-6 py-4 border-t border-orange-200 bg-orange-50">
       <div class="flex items-center justify-between">
         <div class="text-sm text-orange-600">
-          Showing <%= @users.offset_value + 1 %> to <%= @users.offset_value + @users.length %> of <%= @users.total_count %> results
+          Page <%= @users.current_page %> of <%= @users.total_pages %> (<%= @filtered_users_count %> total results)
         </div>
-        <div class="flex space-x-2">
+        <div class="flex items-center space-x-2">
           <% if @users.prev_page %>
-            <%= link_to "Previous", admin_users_path(page: @users.prev_page, **request.query_parameters), 
-                class: "px-3 py-1 text-sm font-medium text-orange-600 bg-white border border-orange-300 rounded hover:bg-orange-50" %>
+            <%= link_to "Previous", admin_users_path(page: @users.prev_page, tab: @current_tab, search: params[:search], user_type: params[:user_type]), class: "admin-btn-secondary" %>
           <% end %>
           
           <% if @users.next_page %>
-            <%= link_to "Next", admin_users_path(page: @users.next_page, **request.query_parameters), 
-                class: "px-3 py-1 text-sm font-medium text-orange-600 bg-white border border-orange-300 rounded hover:bg-orange-50" %>
+            <%= link_to "Next", admin_users_path(page: @users.next_page, tab: @current_tab, search: params[:search], user_type: params[:user_type]), class: "admin-btn-secondary" %>
           <% end %>
         </div>
       </div>
     </div>
   <% end %>
 </div> 
+
+<style>
+  /* Tab button styles */
+  .tab-button {
+    @apply px-3 py-2 text-sm font-medium text-orange-600 border-b-2 border-transparent hover:text-orange-800 hover:border-orange-300 transition-colors duration-200;
+  }
+  
+  .tab-button.active {
+    @apply text-orange-800 border-orange-500;
+  }
+  
+  .tab-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+</style> 

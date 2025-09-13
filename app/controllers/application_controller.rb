@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   include RecaptchaHelper
-  helper_method :current_cart, :show_recaptcha?, :verify_recaptcha_if_needed
+  helper_method :current_cart, :show_recaptcha?
 
   # Add error handling for custom error pages
   rescue_from StandardError, with: :handle_error

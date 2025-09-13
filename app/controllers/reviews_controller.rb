@@ -35,7 +35,7 @@ class ReviewsController < ApplicationController
 
   def create
     # Verify reCAPTCHA first
-    unless verify_recaptcha_if_needed
+    unless verify_recaptcha(action: 'review_form', minimum_score: 0.5)
       @order = current_user&.orders&.find(params[:order_id]) if params[:order_id]
       @review_invite = @current_review_invite if @current_review_invite
       flash.now[:alert] = 'Please complete the reCAPTCHA verification.'

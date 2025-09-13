@@ -3,7 +3,7 @@ class ContactMessagesController < ApplicationController
 
   def create
     # Verify reCAPTCHA first
-    unless verify_recaptcha_if_needed
+    unless verify_recaptcha(action: 'contact_form', minimum_score: 0.5)
       redirect_to contact_path, alert: 'Please complete the reCAPTCHA verification.'
       return
     end

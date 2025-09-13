@@ -89,9 +89,17 @@
       </script>
     <% end %>
     
-    <!-- reCAPTCHA v3 Script -->
-    <% if show_recaptcha? %>
+    <!-- reCAPTCHA v3 Script - Load on all pages that need it -->
+    <% if show_recaptcha? && (request.path.include?('contact') || request.path.include?('reviews') || request.path.include?('newsletter') || request.path.include?('orders')) %>
       <%= recaptcha_v3(action: 'page_view') %>
+    <% end %>
+    
+    <!-- Make reCAPTCHA site key available to JavaScript -->
+    <% if show_recaptcha? %>
+      <script>
+        window.RECAPTCHA_SITE_KEY = '<%= ENV["RECAPTCHA_SITE_KEY"] %>';
+      </script>
+      <%= javascript_include_tag "recaptcha_handler" %>
     <% end %>
   </head>
   <body class="bg-orange-50">

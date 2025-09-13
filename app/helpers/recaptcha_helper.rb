@@ -19,39 +19,6 @@ module RecaptchaHelper
     true
   end
   
-  def verify_recaptcha_if_needed(model = nil)
-    # Allow reCAPTCHA verification on admin login for security
-    return true if request.path == '/admin/login' || request.path == '/admin/sign_in'
-    
-    # Skip reCAPTCHA verification on other admin routes
-    return true if request.path.start_with?('/admin')
-    
-    # Skip verification if reCAPTCHA shouldn't be shown
-    return true unless show_recaptcha?
-    
-    # Use the gem's verification method with better error handling
-    begin
-      result = verify_recaptcha(
-        action: get_recaptcha_action,
-        minimum_score: 0.5
-      )
-      
-      if result
-        Rails.logger.info "reCAPTCHA verification successful for action: #{get_recaptcha_action}"
-        return true
-      else
-        Rails.logger.warn "reCAPTCHA verification failed for action: #{get_recaptcha_action}"
-        return false
-      end
-    rescue => e
-      Rails.logger.error "reCAPTCHA verification error: #{e.message}"
-      # For now, allow the request to proceed if verification fails
-      # This prevents the site from breaking while we debug
-      return true
-    end
-  end
-  
-  private
   
   def get_recaptcha_action
     # Different actions for different forms

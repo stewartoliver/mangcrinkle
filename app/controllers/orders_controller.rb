@@ -14,7 +14,7 @@ class OrdersController < ApplicationController
 
   def create
     # Verify reCAPTCHA first
-    unless verify_recaptcha_if_needed
+    unless verify_recaptcha(action: 'order_form', minimum_score: 0.5)
       @cart_items = @cart.cart_items.includes(:product, :crinkle_package)
       flash.now[:alert] = 'Please complete the reCAPTCHA verification.'
       render :new, status: :unprocessable_entity
@@ -59,26 +59,13 @@ class OrdersController < ApplicationController
       @order.save!
       
       # Send order confirmation email to customer
-      puts "🍪 DEBUG: Sending order confirmation email to: #{@order.email}"
       CustomerMailer.order_confirmation(@order).deliver_now
-      puts "✅ DEBUG: Customer email sent successfully"
       
       # Send notification to admins who have new order notifications enabled
-      admin_users = User.admins
-      
-      puts "🍪 DEBUG: Found #{admin_users.count} total admin users"
-      
-      admin_users.find_each do |admin|
-        # Ensure admin has notification preferences (creates with defaults if missing)
+      User.admins.find_each do |admin|
         prefs = admin.notification_preferences
-        puts "🍪 DEBUG: Admin #{admin.email} - new_order_notifications: #{prefs.new_order_notifications}"
-        
         if prefs.new_order_notifications?
-          puts "🍪 DEBUG: Sending admin notification to: #{admin.email}"
           AdminMailer.new_order_notification(@order, admin).deliver_now
-          puts "✅ DEBUG: Admin email sent successfully to #{admin.email}"
-        else
-          puts "⚠️  DEBUG: Admin #{admin.email} has notifications disabled"
         end
       end
       

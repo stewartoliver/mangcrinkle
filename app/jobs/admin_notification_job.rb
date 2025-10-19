@@ -31,8 +31,9 @@ class AdminNotificationJob < ApplicationJob
     # Check if admin still wants notifications
     prefs = admin.notification_preferences
     if prefs.new_order_notifications?
-      AdminMailer.new_order_notification(order, admin).deliver_now
-      Rails.logger.info "Admin notification email sent for order #{order_id} to admin #{admin_id}"
+      # Use deliver_later for better performance and to avoid blocking the request
+      AdminMailer.new_order_notification(order, admin).deliver_later
+      Rails.logger.info "Admin notification email queued for order #{order_id} to admin #{admin_id}"
     else
       Rails.logger.info "Admin #{admin_id} has notifications disabled, skipping order #{order_id}"
     end

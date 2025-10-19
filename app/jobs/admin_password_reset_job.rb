@@ -14,8 +14,9 @@ class AdminPasswordResetJob < ApplicationJob
       return
     end
     
-    AdminMailer.admin_password_reset(user).deliver_now
-    Rails.logger.info "Admin password reset email sent for user #{user_id}"
+    # Use deliver_later for better performance and to avoid blocking the request
+    AdminMailer.admin_password_reset(user).deliver_later
+    Rails.logger.info "Admin password reset email queued for user #{user_id}"
   rescue ActiveRecord::RecordNotFound => e
     Rails.logger.error "AdminPasswordResetJob failed: User #{user_id} not found - #{e.message}"
   rescue => e

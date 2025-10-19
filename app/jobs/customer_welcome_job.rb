@@ -9,8 +9,9 @@ class CustomerWelcomeJob < ApplicationJob
       return
     end
     
-    CustomerMailer.welcome_email(user).deliver_now
-    Rails.logger.info "Welcome email sent for customer #{user_id}"
+    # Use deliver_later for better performance and to avoid blocking the request
+    CustomerMailer.welcome_email(user).deliver_later
+    Rails.logger.info "Welcome email queued for customer #{user_id}"
   rescue ActiveRecord::RecordNotFound => e
     Rails.logger.error "CustomerWelcomeJob failed: User #{user_id} not found - #{e.message}"
   rescue => e

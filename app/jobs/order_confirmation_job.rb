@@ -27,8 +27,9 @@ class OrderConfirmationJob < ApplicationJob
       return
     end
     
-    CustomerMailer.order_confirmation(order).deliver_now
-    Rails.logger.info "Order confirmation email sent for order #{order_id}"
+    # Use deliver_later for better performance and to avoid blocking the request
+    CustomerMailer.order_confirmation(order).deliver_later
+    Rails.logger.info "Order confirmation email queued for order #{order_id}"
   rescue ActiveRecord::RecordNotFound => e
     Rails.logger.error "OrderConfirmationJob failed: Order #{order_id} not found - #{e.message}"
   rescue => e

@@ -14,8 +14,9 @@ class AdminActivationJob < ApplicationJob
       return
     end
     
-    AdminMailer.admin_activation(user).deliver_now
-    Rails.logger.info "Admin activation email sent for user #{user_id}"
+    # Use deliver_later for better performance and to avoid blocking the request
+    AdminMailer.admin_activation(user).deliver_later
+    Rails.logger.info "Admin activation email queued for user #{user_id}"
   rescue ActiveRecord::RecordNotFound => e
     Rails.logger.error "AdminActivationJob failed: User #{user_id} not found - #{e.message}"
   rescue => e

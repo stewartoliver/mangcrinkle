@@ -4,8 +4,9 @@ class ReviewNotificationJob < ApplicationJob
   def perform(review_id)
     review = Review.find(review_id)
     
-    ReviewMailer.new_review_notification(review).deliver_now
-    Rails.logger.info "Review notification email sent for review #{review_id}"
+    # Use deliver_later for better performance and to avoid blocking the request
+    ReviewMailer.new_review_notification(review).deliver_later
+    Rails.logger.info "Review notification email queued for review #{review_id}"
   rescue ActiveRecord::RecordNotFound => e
     Rails.logger.error "ReviewNotificationJob failed: Review #{review_id} not found - #{e.message}"
   rescue => e

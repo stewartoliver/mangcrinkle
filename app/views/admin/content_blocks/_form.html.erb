@@ -35,7 +35,7 @@
             </div>
 
             <!-- Text Content -->
-            <div id="text_content" class="content-type-field form-group" style="<%= content_block.content_type == 'text' ? '' : 'display: none;' %>">
+            <div id="text_content" class="content-type-field form-group <%= 'hidden' unless content_block.content_type == 'text' %>">
               <%= form.label :content, "Content", class: "form-label" %>
               <%= form.text_area :content, 
                   class: "form-textarea", 
@@ -47,7 +47,7 @@
             </div>
 
             <!-- JSON Content -->
-            <div id="json_content" class="content-type-field form-group" style="<%= content_block.content_type == 'json' ? '' : 'display: none;' %>">
+            <div id="json_content" class="content-type-field form-group <%= 'hidden' unless content_block.content_type == 'json' %>">
               <%= form.label :content, "JSON Data", class: "form-label" %>
               
               <!-- Special Company Values Editor -->
@@ -112,7 +112,7 @@
             </div>
 
             <!-- Image Content -->
-            <div id="image_content" class="content-type-field form-group" style="<%= content_block.content_type == 'image' ? '' : 'display: none;' %>">
+            <div id="image_content" class="content-type-field form-group <%= 'hidden' unless content_block.content_type == 'image' %>">
               <%= form.label :image, "Upload Image", class: "form-label" %>
               <%= form.file_field :image, class: "form-input", accept: "image/*" %>
               <% if content_block.image.attached? %>
@@ -202,22 +202,22 @@
   <!-- Action Buttons -->
   <div class="flex justify-end space-x-3 pt-6 border-t border-orange-200">
     <%= link_to "Cancel", admin_content_blocks_path, class: "admin-btn-secondary" %>
-    <button type="button" onclick="showDebugInfo()" class="text-xs bg-gray-200 px-3 py-2 rounded">Show Debug</button>
+    <button type="button" data-action="toggle-debug" class="text-xs bg-gray-200 px-3 py-2 rounded">Show Debug</button>
     <%= form.submit content_block.new_record? ? "Create Content Block" : "Update Content Block", 
                     class: "admin-btn-primary", 
                     data: { disable_with: "Saving..." } %>
   </div>
   
   <!-- Debugging Info (remove after fixing) -->
-  <div id="debug-info" class="mt-4 p-4 bg-gray-100 border border-gray-300 rounded text-xs" style="display: none;">
+  <div id="debug-info" class="mt-4 p-4 bg-gray-100 border border-gray-300 rounded text-xs debug-info-hidden">
     <h5 class="font-bold mb-2">Debug Information:</h5>
     <div id="debug-content"></div>
-    <button type="button" onclick="document.getElementById('debug-info').style.display='none'" class="mt-2 text-red-600">Hide Debug</button>
+    <button type="button" data-action="hide-debug" class="mt-2 text-red-600">Hide Debug</button>
   </div>
 <% end %>
 
 <!-- Ensure script is loaded after form -->
-<script>
+<script nonce="<%= content_security_policy_nonce %>">
 // Inline script to ensure it always loads
 document.addEventListener('DOMContentLoaded', function() {
   console.log('Form script loading...');
@@ -263,7 +263,7 @@ function initializeContentBlockForm() {
     
     // Hide all content fields first
     contentFields.forEach(field => {
-      field.style.display = 'none';
+      field.classList.add('content-field-hidden');
     });
     
     // Update form field names to ensure only the active field is submitted
@@ -282,7 +282,8 @@ function initializeContentBlockForm() {
     // Show the selected field
     const activeField = document.getElementById(selectedType + '_content');
     if (activeField) {
-      activeField.style.display = 'block';
+      activeField.classList.remove('content-field-hidden');
+      activeField.classList.add('content-field-visible');
       console.log('Showing field:', activeField.id);
       
       // Focus on the appropriate content input
@@ -366,10 +367,12 @@ function initializeContentBlockForm() {
     
     if (isHidden) {
       content.classList.remove('hidden');
-      chevron.style.transform = 'rotate(180deg)';
+      chevron.classList.remove('chevron-normal');
+      chevron.classList.add('chevron-rotated');
     } else {
       content.classList.add('hidden');
-      chevron.style.transform = 'rotate(0deg)';
+      chevron.classList.remove('chevron-rotated');
+      chevron.classList.add('chevron-normal');
     }
   }
   
@@ -453,7 +456,7 @@ function initializeContentBlockForm() {
 window.showDebugInfo = function() {
   const debugDiv = document.getElementById('debug-info');
   if (debugDiv) {
-    debugDiv.style.display = 'block';
+    debugDiv.classList.remove('debug-info-hidden');
     const debugContent = document.getElementById('debug-content');
     if (debugContent) {
       const contentTypeSelect = document.getElementById('content_type_select');
@@ -466,7 +469,7 @@ window.showDebugInfo = function() {
       debugHtml += '<strong>Available Fields:</strong><br>';
       
       contentFields.forEach(field => {
-        const isVisible = field.style.display !== 'none';
+        const isVisible = !field.classList.contains('content-field-hidden');
         debugHtml += '- ' + field.id + ': ' + (isVisible ? 'VISIBLE' : 'HIDDEN') + '<br>';
       });
       

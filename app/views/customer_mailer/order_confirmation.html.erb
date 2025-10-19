@@ -302,7 +302,7 @@
           
           <% if @order.line_items.any? %>
             <div class="content-section">
-              <h3 style="color: #7e2a0c; margin-bottom: 12px; font-size: 16px; font-weight: 600;">Items Ordered</h3>
+              <h3 class="email-section-title">Items Ordered</h3>
               
               <table class="line-items-table">
                 <thead>
@@ -338,8 +338,8 @@
                 </tbody>
                 <tfoot class="table-footer">
                   <tr>
-                    <td colspan="3" style="text-align: right;">Total:</td>
-                    <td style="text-align: right;">$<%= sprintf('%.2f', @order.total_price) %></td>
+                    <td colspan="3" class="email-table-total-right">Total:</td>
+                    <td class="email-table-total-right">$<%= sprintf('%.2f', @order.total_price) %></td>
                   </tr>
                 </tfoot>
               </table>
@@ -348,15 +348,15 @@
           
           <% if @order.address.present? %>
             <div class="content-section">
-              <h3 style="color: #7e2a0c; margin-bottom: 12px; font-size: 16px; font-weight: 600;">Delivery Address</h3>
-              <div style="background-color: #fff7ed; padding: 12px; border-radius: 6px; border: 1px solid #fed7aa; margin: 0;">
+              <h3 class="email-section-title">Delivery Address</h3>
+              <div class="email-address-box">
                 <%= simple_format(@order.address) %>
               </div>
             </div>
           <% end %>
           
           <div class="content-section">
-            <h3 style="color: #7e2a0c; margin-bottom: 12px; font-size: 16px; font-weight: 600;">What's Next?</h3>
+            <h3 class="email-section-title">What's Next?</h3>
             <p>We'll start preparing your order right away! You'll receive another email with tracking information once your order ships.</p>
             <p>If you have any questions about your order, please don't hesitate to contact us.</p>
           </div>

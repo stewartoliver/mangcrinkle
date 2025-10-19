@@ -1,0 +1,30 @@
+/* Holiday Package Form Styles */
+.holiday-preset-btn {
+    @apply px-3 py-1 text-xs bg-orange-100 text-orange-700 rounded-full hover:bg-orange-200 transition-colors cursor-pointer;
+}
+
+.holiday-preset-btn:hover {
+    @apply bg-orange-200;
+}
+
+.holiday-preset-btn:active {
+    @apply bg-orange-300;
+}
+
+/* Holiday toggle title styling */
+#holiday-toggle {
+    @apply transition-colors duration-200 select-none;
+}
+
+#holiday-toggle:hover {
+    @apply text-orange-700 bg-orange-50 rounded-md px-2 py-1;
+}
+
+#holiday-toggle svg {
+    @apply transition-transform duration-200;
+}
+
+/* Make it more obvious it's clickable */
+#holiday-toggle:active {
+    @apply bg-orange-100;
+}

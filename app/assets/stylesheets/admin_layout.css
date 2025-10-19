@@ -1,0 +1,11 @@
+/* Admin Layout Styles */
+/* Hide scrollbars in navigation */
+nav::-webkit-scrollbar {
+    display: none;
+}
+
+/* Ensure navigation doesn't overlap with user info */
+#sidebar nav {
+    max-height: calc(100vh - 80px);
+    /* Account for header (64px) + padding (16px) */
+}

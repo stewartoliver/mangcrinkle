@@ -1,13 +1,14 @@
 <!-- Package Selection Modal -->
-<div id="packageModal" class="fixed inset-0 hidden z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+<div id="packageModal" class="fixed inset-0 hidden z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true" data-customer-package-modal-target="modal">
   <!-- Backdrop with blur only -->
-  <div class="fixed inset-0 backdrop-blur-sm" data-action="package-modal#close"></div>
+  <div class="fixed inset-0 backdrop-blur-sm" data-action="customer-package-modal#close"></div>
   
   <div class="fixed inset-0 z-10 overflow-y-auto">
-    <div class="flex min-h-full items-center justify-center p-4">
-      <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all w-full max-w-md sm:p-6">
+    <div class="flex min-h-full items-center justify-center p-2 sm:p-4">
+      <!-- Responsive modal container -->
+      <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all w-full max-w-7xl p-4 sm:p-6">
         <div class="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
-          <button type="button" data-action="package-modal#close" class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+          <button type="button" data-action="customer-package-modal#close" class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
             <span class="sr-only">Close</span>
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -15,6 +16,7 @@
           </button>
         </div>
 
+        <!-- Modal Header -->
         <div class="sm:flex sm:items-start">
           <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
             <h3 class="text-2xl font-semibold leading-6 text-orange-950" id="modal-title">Select Your Package Items</h3>
@@ -25,26 +27,62 @@
         </div>
 
         <%= form_with url: add_package_cart_path, method: :post, id: "packageForm", data: { turbo: false } do |f| %>
-          <%= f.hidden_field :package_id, id: "packageId" %>
+          <%= f.hidden_field :package_id, id: "packageId", data: { "customer-package-modal-target": "packageId" } %>
           
-          <div class="mt-6 space-y-3" id="productSelectionContainer">
-            <!-- Product selection fields will be dynamically added here -->
+          <!-- Main Content Area -->
+          <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Product Selection Area -->
+            <div class="lg:col-span-2">
+              <!-- Package Limit Display -->
+              <div class="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-medium text-orange-800">Package Limit</span>
+                  <span class="text-sm text-orange-700">
+                    <span id="totalItems" data-customer-package-modal-target="totalItems">0</span> / <span id="packageLimit" data-customer-package-modal-target="packageLimit">0</span> items
+                  </span>
+                </div>
+                <div class="mt-2 w-full bg-orange-200 rounded-full h-2">
+                  <div id="progressBar" class="bg-orange-600 h-2 rounded-full transition-all duration-300 w-0" data-customer-package-modal-target="progressBar"></div>
+                </div>
+              </div>
+
+              <!-- Product Selection Container -->
+              <div id="productSelectionContainer" class="space-y-4" data-customer-package-modal-target="container">
+                <!-- Product selection fields will be dynamically added here -->
+              </div>
+            </div>
+
+            <!-- Package Preview Area (Desktop Only) -->
+            <div class="hidden lg:block lg:col-span-1">
+              <div class="sticky top-4">
+                <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                  <h4 class="text-lg font-semibold text-orange-950 mb-4">Your Package</h4>
+                  <div id="packagePreview" class="space-y-3" data-customer-package-modal-target="packagePreview">
+                    <div class="text-sm text-orange-600 text-center py-8">
+                      Select items to see your package preview
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
+          <!-- Action Buttons -->
           <div class="mt-6 flex items-center justify-between">
             <div class="text-sm text-orange-700">
               <span>Total Items: </span>
-              <span id="totalItems">0</span>
+              <span id="totalItemsBottom" data-customer-package-modal-target="totalItemsBottom">0</span>
               <span>/</span>
-              <span id="packageLimit">0</span>
+              <span id="packageLimitBottom" data-customer-package-modal-target="packageLimitBottom">0</span>
             </div>
             <div class="flex space-x-3">
-              <button type="button" data-action="package-modal#close" class="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-orange-700 shadow-sm ring-1 ring-inset ring-orange-300 hover:bg-orange-50">
+              <button type="button" data-action="customer-package-modal#close" class="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-orange-700 shadow-sm ring-1 ring-inset ring-orange-300 hover:bg-orange-50">
                 Cancel
               </button>
               <%= f.submit "Add to Cart", 
                   class: "inline-flex justify-center rounded-md bg-orange-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600",
-                  id: "submitButton" %>
+                  id: "submitButton",
+                  data: { "customer-package-modal-target": "submitButton" } %>
             </div>
           </div>
         <% end %>

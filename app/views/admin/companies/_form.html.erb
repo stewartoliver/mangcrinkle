@@ -154,7 +154,7 @@
                     is_closed,
                     class: "rounded border-orange-300 text-orange-600 focus:ring-orange-500",
                     id: "company_business_hours_#{day_key}_closed",
-                    onchange: "toggleBusinessHours('#{day_key}')" %>
+                    data: { action: "toggle-business-hours", day_key: day_key } %>
                 <%= label_tag "company_business_hours_#{day_key}_closed", "Closed", 
                     class: "ml-2 text-sm text-orange-700 whitespace-nowrap" %>
               </div>
@@ -259,7 +259,7 @@
   </div>
 <% end %>
 
-<script>
+<script nonce="<%= content_security_policy_nonce %>">
 function initializeImageManager() {
   const container = document.getElementById('imageManagerContainer');
   if (!container) return;
@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<script>
+<script nonce="<%= content_security_policy_nonce %>">
 function toggleBusinessHours(day) {
   const closedCheckbox = document.getElementById(`company_business_hours_${day}_closed`);
   const openField = document.getElementById(`company_business_hours_${day}_open`);
@@ -373,13 +373,13 @@ function toggleBusinessHours(day) {
   if (closedCheckbox.checked) {
     openField.disabled = true;
     closeField.disabled = true;
-    openField.style.opacity = '0.5';
-    closeField.style.opacity = '0.5';
+    openField.classList.add('field-disabled');
+    closeField.classList.add('field-disabled');
   } else {
     openField.disabled = false;
     closeField.disabled = false;
-    openField.style.opacity = '1';
-    closeField.style.opacity = '1';
+    openField.classList.remove('field-disabled');
+    closeField.classList.remove('field-disabled');
   }
 }
 

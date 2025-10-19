@@ -9,6 +9,8 @@ class ContentBlock < ApplicationRecord
   scope :by_type, ->(type) { where(content_type: type) }
   scope :ordered, -> { order(:title) }
   scope :by_page, ->(page) { where("page_locations @> ARRAY[?]::text[]", page) }
+  scope :active, -> { where(is_active: true) }
+  scope :legal_pages, -> { where(key: %w[privacy-policy terms-of-service cookie-policy refund-policy]) }
   
   # Helper method to get content by key (no longer filtering by active)
   def self.get(key)
@@ -94,5 +96,22 @@ class ContentBlock < ApplicationRecord
   def remove_page_location(page_name)
     self.page_locations = page_locations - [page_name]
     save
+  end
+  
+  # Legal page methods
+  def self.current_legal_page(key)
+    legal_pages.active.find_by(key: key)
+  end
+  
+  def legal_page_status
+    return "Not a legal page" unless %w[privacy-policy terms-of-service cookie-policy refund-policy].include?(key)
+    
+    status = is_active? ? "Active" : "Inactive"
+    effective_info = effective_date.present? ? " (Effective: #{effective_date.strftime('%B %d, %Y')})" : ""
+    "#{status}#{effective_info}"
+  end
+  
+  def is_legal_page?
+    %w[privacy-policy terms-of-service cookie-policy refund-policy].include?(key)
   end
 end 

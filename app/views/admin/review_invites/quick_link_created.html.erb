@@ -40,7 +40,7 @@
                readonly 
                class="flex-1 form-input bg-white"
                id="review-link-input">
-        <button onclick="copyToClipboard()" 
+        <button data-action="copy-to-clipboard" 
                 class="admin-btn-primary">
           Copy Link
         </button>
@@ -64,7 +64,7 @@
   </div>
 </div>
 
-<script>
+<script nonce="<%= content_security_policy_nonce %>">
 function copyToClipboard() {
   const input = document.getElementById('review-link-input');
   input.select();

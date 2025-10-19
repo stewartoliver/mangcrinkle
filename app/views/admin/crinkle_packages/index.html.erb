@@ -17,6 +17,8 @@
           <th scope="col" class="admin-table-header-cell">Package</th>
           <th scope="col" class="admin-table-header-cell-center">Price</th>
           <th scope="col" class="admin-table-header-cell-center">Quantity</th>
+          <th scope="col" class="admin-table-header-cell-center">Products</th>
+          <th scope="col" class="admin-table-header-cell-center">Status</th>
           <th scope="col" class="admin-table-header-cell-right">Actions</th>
         </tr>
       </thead>
@@ -37,6 +39,11 @@
                 <div class="product-info">
                   <div class="product-name">
                     <%= package.name %>
+                    <% if package.holiday_package? %>
+                      <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        Holiday
+                      </span>
+                    <% end %>
                   </div>
                   <div class="product-description">
                     <%= truncate(package.description, length: 50) %>
@@ -52,6 +59,16 @@
             <td class="admin-table-cell-center">
               <span class="product-price">
                 <%= package.quantity %>
+              </span>
+            </td>
+            <td class="admin-table-cell-center">
+              <span class="text-sm text-gray-600">
+                <%= package.package_products.active.count %> products
+              </span>
+            </td>
+            <td class="admin-table-cell-center">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= package.active? ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                <%= package.active? ? 'Active' : 'Inactive' %>
               </span>
             </td>
             <td class="admin-table-cell-right">

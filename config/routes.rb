@@ -25,6 +25,9 @@ Rails.application.routes.draw do
   get 'contact', to: 'pages#contact'
   get 'contact/success', to: 'pages#contact_success', as: :contact_success
   
+  # Legal pages
+  get 'legal/:key', to: 'pages#legal_page', as: :legal_page, constraints: { key: /privacy-policy|terms-of-service|cookie-policy|refund-policy/ }
+  
   resources :products, only: [:index, :show]
   resources :orders, only: [:new, :create, :show]
   
@@ -54,6 +57,7 @@ Rails.application.routes.draw do
   namespace :admin do
     get 'dashboard', to: 'dashboard#index'
     get 'analytics', to: 'analytics#index'
+    get 'analytics/export', to: 'analytics#export'
     get 'login', to: 'sessions#new'
     post 'login', to: 'sessions#create'
     delete 'logout', to: 'sessions#destroy'
@@ -63,7 +67,11 @@ Rails.application.routes.draw do
         delete :remove_image
       end
     end
-    resources 'crinkle-packages', controller: 'crinkle_packages', as: 'crinkle_packages'
+    resources 'crinkle-packages', controller: 'crinkle_packages', as: 'crinkle_packages' do
+      member do
+        patch :update_products
+      end
+    end
     resources :companies
     
     resources :orders, only: [:index, :new, :create, :show, :edit, :update, :destroy] do

@@ -5,7 +5,7 @@ Hello <%= @admin_user.display_name %>,
 You've been granted administrator access to the <%= company_name %> admin system. To get started, you'll need to set up your password.
 
 Set up your password here:
-<%= edit_password_url(@admin_user, reset_password_token: @admin_user.reset_password_token) %>
+<%= @activation_url %>
 
 Your administrator privileges include:
 - Managing orders and customer information

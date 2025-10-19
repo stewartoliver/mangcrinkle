@@ -24,7 +24,7 @@ function initializeAdminNavigation() {
         if (mobileMenuOverlay) {
             mobileMenuOverlay.classList.remove('hidden');
         }
-        document.body.style.overflow = 'hidden';
+        document.body.classList.add('modal-body-overflow-hidden');
     }
 
     function closeSidebar() {
@@ -34,7 +34,7 @@ function initializeAdminNavigation() {
         if (mobileMenuOverlay) {
             mobileMenuOverlay.classList.add('hidden');
         }
-        document.body.style.overflow = '';
+        document.body.classList.remove('modal-body-overflow-hidden');
     }
 
     // Add event listeners for mobile sidebar

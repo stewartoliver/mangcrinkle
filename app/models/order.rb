@@ -131,7 +131,7 @@ class Order < ApplicationRecord
     
     if review_invite.save
       # Send the invitation email with a slight delay to ensure order completion processes finish
-      ReviewMailer.review_invite(review_invite).deliver_later(wait: 5.minutes)
+      ReviewInviteJob.set(wait: 5.minutes).perform_later(review_invite.id)
       review_invite.update!(sent_at: Time.current)
       Rails.logger.info "Review invite created and sent for Order ##{id}"
     else

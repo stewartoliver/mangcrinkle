@@ -51,6 +51,13 @@ gem "image_processing", "~> 1.2"
 gem "chartkick"
 gem "groupdate"
 
+# PDF Generation
+gem "prawn"
+gem "prawn-table"
+
+# CSV Export
+gem "csv"
+
 # Authentication
 gem "devise"
 
@@ -68,6 +75,10 @@ gem "kaminari"
 
 # Security
 gem "recaptcha", require: "recaptcha/rails"
+gem "rack-attack"
+
+# Background Jobs
+gem "good_job"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

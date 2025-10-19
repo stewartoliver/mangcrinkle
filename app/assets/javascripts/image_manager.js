@@ -37,13 +37,12 @@ class ImageManager {
           <!-- Images will be rendered here -->
         </div>
         
-        <div class="image-manager-upload" id="uploadArea" style="display: none;">
+        <div class="image-manager-upload image-manager-upload-hidden" id="uploadArea">
           <input type="file" 
                  id="imageInput" 
                  multiple 
                  accept="image/*" 
-                 class="admin-file-input"
-                 style="display: none;">
+                 class="admin-file-input image-input-hidden">
           <div class="upload-dropzone" id="dropzone">
             <div class="upload-content">
               <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,6 +87,20 @@ class ImageManager {
             e.preventDefault();
             dropzone.classList.remove('drag-over');
             this.handleFileSelect(e.dataTransfer.files);
+        });
+
+        // Event delegation for remove and primary buttons
+        this.container.addEventListener('click', (e) => {
+            if (e.target.closest('.remove-image')) {
+                const button = e.target.closest('.remove-image');
+                const imageId = button.dataset.imageId;
+                const isNew = button.dataset.isNew === 'true';
+                this.removeImage(imageId, isNew);
+            } else if (e.target.closest('.primary-toggle')) {
+                const button = e.target.closest('.primary-toggle');
+                const imageId = button.dataset.imageId;
+                this.setPrimary(imageId);
+            }
         });
     }
 
@@ -328,7 +341,7 @@ class ImageManager {
                 <div class="image-item" data-image-id="${imageId}">
                     <div class="image-preview">
                         <img src="${img.url}" alt="Product image" class="image-thumbnail ${isPrimary ? 'primary-selected' : ''}">
-                        <button type="button" class="remove-image" onclick="window.imageManager.removeImage('${imageId}', ${img.isNew || false})">
+                        <button type="button" class="remove-image" data-image-id="${imageId}" data-is-new="${img.isNew || false}">
                             <svg fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                             </svg>
@@ -338,7 +351,7 @@ class ImageManager {
                     ${this.options.allowPrimary ? `
                         <button type="button" 
                                 class="primary-toggle ${isPrimary ? 'selected' : ''}"
-                                onclick="window.imageManager.setPrimary('${imageId}')">
+                                data-image-id="${imageId}">
                             <span class="primary-label">Primary</span>
                         </button>
                     ` : ''}
@@ -365,9 +378,9 @@ class ImageManager {
         const totalImages = this.currentImages.length + this.newFiles.length;
 
         if (totalImages < this.options.maxImages) {
-            uploadArea.style.display = 'block';
+            uploadArea.classList.remove('image-manager-upload-hidden');
         } else {
-            uploadArea.style.display = 'none';
+            uploadArea.classList.add('image-manager-upload-hidden');
         }
     }
 

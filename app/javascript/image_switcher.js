@@ -21,11 +21,11 @@ function initializeShowPageSwitcher() {
         // Update images
         images.forEach((img, index) => {
             if (index === currentIndex) {
-                img.style.opacity = '1';
+                img.classList.add('image-visible');
                 img.classList.remove('opacity-0');
                 img.classList.add('opacity-100');
             } else {
-                img.style.opacity = '0';
+                img.classList.add('image-hidden');
                 img.classList.remove('opacity-100');
                 img.classList.add('opacity-0');
             }
@@ -78,12 +78,12 @@ function initializeShowPageSwitcher() {
     // Handle arrow visibility
     container.addEventListener('mouseenter', function () {
         const arrows = document.querySelectorAll('.image-arrow');
-        arrows.forEach(arrow => arrow.style.opacity = '1');
+        arrows.forEach(arrow => arrow.classList.add('arrow-visible'));
     });
 
     container.addEventListener('mouseleave', function () {
         const arrows = document.querySelectorAll('.image-arrow');
-        arrows.forEach(arrow => arrow.style.opacity = '0');
+        arrows.forEach(arrow => arrow.classList.add('arrow-hidden'));
     });
 
     // Keyboard navigation
@@ -143,7 +143,8 @@ function initializeIndexPageSwitchers() {
         function updateDisplay() {
             // Update images
             images.forEach((img, index) => {
-                img.style.opacity = index === currentIndex ? '1' : '0';
+                img.classList.toggle('image-visible', index === currentIndex);
+                img.classList.toggle('image-hidden', index !== currentIndex);
             });
 
             // Update indicators

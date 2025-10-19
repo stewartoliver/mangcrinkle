@@ -128,14 +128,14 @@
             <button 
               id="styled-view-btn"
               class="px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200"
-              onclick="switchView('styled')"
+              data-action="switch-view" data-view-type="styled"
             >
               Styled View
             </button>
             <button 
               id="code-view-btn"
               class="px-3 py-1 text-sm font-medium rounded-md transition-colors duration-200"
-              onclick="switchView('code')"
+              data-action="switch-view" data-view-type="code"
             >
               Code View
             </button>
@@ -159,7 +159,7 @@
                 <span>Rendered with sample data</span>
               </div>
             </div>
-            <div class="bg-white" style="height: 500px; overflow-y: auto;">
+            <div class="bg-white email-template-preview">
               <div class="p-4">
                 <%= @rendered_template.html_safe %>
               </div>
@@ -241,7 +241,7 @@
   </div>
 </div>
 
-<script>
+<script nonce="<%= content_security_policy_nonce %>">
   function switchView(viewType) {
     const codeView = document.getElementById('code-view');
     const styledView = document.getElementById('styled-view');

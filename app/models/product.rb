@@ -11,6 +11,7 @@ class Product < ApplicationRecord
   validates :ingredients, length: { maximum: 2000 }
   validates :allergen_info, length: { maximum: 2000 }
   validates :storage_instructions, length: { maximum: 1000 }
+  validates :primary_image_id, format: { with: /\A\d+\z/, message: "must be a valid image ID" }, allow_blank: true
 
   scope :active, -> { where(active: true) }
   scope :by_category, ->(category) { where(category: category) }
@@ -108,6 +109,11 @@ class Product < ApplicationRecord
 
   def formatted_price
     "$#{format('%.2f', price)}"
+  end
+
+  def primary_image_url
+    return nil unless primary_image
+    Rails.application.routes.url_helpers.rails_blob_url(primary_image, only_path: true)
   end
 
   def category_display_name

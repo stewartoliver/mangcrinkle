@@ -3,8 +3,13 @@ import { application } from "./application"
 
 // Register controllers manually to avoid import.meta issues
 // You can add more controllers here as needed
-import PackageModalController from "./package_modal_controller"
-application.register("package-modal", PackageModalController)
+import AdminPackageModalController from "./admin_package_modal_controller"
+import CustomerPackageModalController from "./customer_package_modal_controller"
+import ApplicationController from "./application_controller"
 
-// For now, we're handling the package modal functionality in application.js
-// so we don't need to register the Stimulus controller
+application.register("admin-package-modal", AdminPackageModalController)
+application.register("customer-package-modal", CustomerPackageModalController)
+application.register("application", ApplicationController)
+
+// Import admin order handlers
+import "../admin_order_handlers"

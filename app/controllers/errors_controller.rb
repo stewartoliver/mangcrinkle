@@ -34,7 +34,7 @@ class ErrorsController < ApplicationController
     @error_message = 'We encountered an unexpected error. Please try again.'
     
     # Create a fake exception for testing admin error details
-    if user_signed_in? && current_user.admin?
+    if admin_user?
       @exception = StandardError.new("This is a test exception to demonstrate admin error details")
       @exception.set_backtrace([
         "app/controllers/test_controller.rb:42:in `test_method'",
@@ -49,7 +49,11 @@ class ErrorsController < ApplicationController
   private
 
   def render_error_page(status: :not_found)
-    @is_admin = user_signed_in? && current_user.admin?
+    # Use centralized admin detection
+    @is_admin = admin_user?
+    
+    # Log the decision for debugging
+    Rails.logger.info "Error page decision: user_signed_in=#{user_signed_in?}, current_user=#{current_user&.id}, admin=#{current_user&.admin?}, activated=#{current_user&.activated?}, is_admin=#{@is_admin}"
     
     if @is_admin
       render 'admin_error', layout: 'admin', status: status

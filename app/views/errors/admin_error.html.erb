@@ -91,7 +91,7 @@
         Back to Dashboard
       <% end %>
       
-      <%= link_to "javascript:history.back()", class: "inline-flex items-center px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors duration-200" do %>
+      <%= link_to "#", class: "inline-flex items-center px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors duration-200", data: { action: "click->application#goBack" } do %>
         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
         </svg>

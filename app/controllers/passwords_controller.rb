@@ -11,6 +11,7 @@ class PasswordsController < Devise::PasswordsController
       # Mark admin as activated when they set their password
       if resource.admin? && resource.pending_activation?
         resource.activate!
+        Rails.logger.info "Admin user #{resource.id} activated via password reset"
       end
       
       # Clear any existing custom session first
@@ -35,6 +36,7 @@ class PasswordsController < Devise::PasswordsController
       # Redirect based on user type
       redirect_to after_resetting_password_path_for(resource)
     else
+      Rails.logger.error "Password reset failed for user #{resource.id}: #{resource.errors.full_messages.join(', ')}"
       set_minimum_password_length
       respond_with resource
     end

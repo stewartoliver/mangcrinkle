@@ -120,24 +120,17 @@ class HeroAnimations {
         if (isFlipped) transform += ' scaleX(-1)';
         if (isFlippedVertically) transform += ' scaleY(-1)';
 
-        // Apply styles
-        Object.assign(crinkle.style, {
-            left: `${left}%`,
-            top: '-60px',
-            animationDuration: `${duration}s`,
-            animationDelay: `${delay}s`,
-            position: 'absolute',
-            transform: transform
-        });
+        // Apply styles using CSS custom properties (CSP-compliant with unsafe-inline)
+        crinkle.style.setProperty('--crinkle-left', `${left}%`);
+        crinkle.style.setProperty('--crinkle-top', '-60px');
+        crinkle.style.setProperty('--crinkle-duration', `${duration}s`);
+        crinkle.style.setProperty('--crinkle-delay', `${delay}s`);
+        crinkle.style.setProperty('--crinkle-transform', transform);
 
         // Create and append image
         const img = document.createElement('img');
         img.src = this.crinkleImage.src;
         img.alt = 'Falling Crinkle';
-        Object.assign(img.style, {
-            width: '100%',
-            height: '100%'
-        });
 
         crinkle.appendChild(img);
         this.heroContainer.appendChild(crinkle);

@@ -297,7 +297,7 @@
           
           <% if @order.line_items.any? %>
             <div class="content-section">
-              <h3 style="color: #7e2a0c; margin-bottom: 12px; font-size: 16px; font-weight: 600;">Items Shipped</h3>
+              <h3 class="email-section-title">Items Shipped</h3>
               
               <table class="line-items-table">
                 <thead>
@@ -333,8 +333,8 @@
                 </tbody>
                 <tfoot class="table-footer">
                   <tr>
-                    <td colspan="3" style="text-align: right;">Total:</td>
-                    <td style="text-align: right;">$<%= sprintf('%.2f', @order.total_price) %></td>
+                    <td colspan="3" class="email-table-total-right">Total:</td>
+                    <td class="email-table-total-right">$<%= sprintf('%.2f', @order.total_price) %></td>
                   </tr>
                 </tfoot>
               </table>
@@ -343,15 +343,15 @@
           
           <% if @order.address.present? %>
             <div class="content-section">
-              <h3 style="color: #7e2a0c; margin-bottom: 12px; font-size: 16px; font-weight: 600;">Delivery Address</h3>
-              <div style="background-color: #fff7ed; padding: 12px; border-radius: 6px; border: 1px solid #fed7aa; margin: 0;">
+              <h3 class="email-section-title">Delivery Address</h3>
+              <div class="email-address-box">
                 <%= simple_format(@order.address) %>
               </div>
             </div>
           <% end %>
           
           <div class="content-section">
-            <h3 style="color: #7e2a0c; margin-bottom: 12px; font-size: 16px; font-weight: 600;">What's Next?</h3>
+            <h3 class="email-section-title">What's Next?</h3>
             <p>Use your tracking number to monitor your package's progress. You'll receive updates as your order makes its way to you!</p>
             <p>Once your delicious treats arrive, store them in a cool, dry place and enjoy within 7 days for the best taste and freshness.</p>
           </div>

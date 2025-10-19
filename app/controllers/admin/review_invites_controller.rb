@@ -42,7 +42,7 @@ class Admin::ReviewInvitesController < Admin::BaseController
     
     if @review_invite.save
       # Send the invitation email
-      ReviewMailer.review_invite(@review_invite).deliver_later
+      ReviewInviteJob.perform_later(@review_invite.id)
       @review_invite.update!(sent_at: Time.current)
       
       redirect_to admin_review_invites_path, notice: 'Review invitation created and sent successfully!'
@@ -59,7 +59,7 @@ class Admin::ReviewInvitesController < Admin::BaseController
 
   def resend
     if @review_invite.active?
-      ReviewMailer.review_invite(@review_invite).deliver_later
+      ReviewInviteJob.perform_later(@review_invite.id)
       @review_invite.update!(sent_at: Time.current)
       redirect_back(fallback_location: admin_review_invites_path, notice: 'Review invitation resent successfully!')
     else

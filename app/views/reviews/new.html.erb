@@ -57,7 +57,7 @@
       <% end %>
 
       <!-- Honeypot field for spam protection (hidden from users) -->
-      <div style="display: none;">
+      <div class="honeypot-field">
         <%= form.text_field :website, placeholder: "Leave this field empty", tabindex: -1, autocomplete: "off" %>
       </div>
 
@@ -194,7 +194,7 @@
   </div>
 </div>
 
-<script>
+<script nonce="<%= content_security_policy_nonce %>">
 document.addEventListener('DOMContentLoaded', function() {
   const starButtons = document.querySelectorAll('.star-btn');
   const ratingInput = document.getElementById('rating-input');

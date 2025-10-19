@@ -44,6 +44,12 @@ class ApplicationController < ActionController::Base
     current_user.present?
   end
 
+  # Helper method to determine if current user is a fully activated admin
+  def admin_user?
+    user_signed_in? && current_user&.admin? && current_user&.activated?
+  end
+  helper_method :admin_user?
+
   # Error handling methods
   def handle_not_found
     @error_code = '404'
@@ -56,7 +62,7 @@ class ApplicationController < ActionController::Base
     @error_code = '500'
     @error_title = 'Something Went Wrong'
     @error_message = 'We encountered an unexpected error. Please try again.'
-    @exception = exception if user_signed_in? && current_user.admin?
+    @exception = exception if admin_user?
     
     Rails.logger.error "Error #{exception.class}: #{exception.message}"
     Rails.logger.error exception.backtrace.join("\n")
@@ -65,7 +71,11 @@ class ApplicationController < ActionController::Base
   end
 
   def render_error_page(status: :not_found)
-    @is_admin = user_signed_in? && current_user.admin?
+    # Use centralized admin detection
+    @is_admin = admin_user?
+    
+    # Log the decision for debugging
+    Rails.logger.info "Error page decision: user_signed_in=#{user_signed_in?}, current_user=#{current_user&.id}, admin=#{current_user&.admin?}, activated=#{current_user&.activated?}, is_admin=#{@is_admin}"
     
     if @is_admin
       render 'errors/admin_error', layout: 'admin', status: status

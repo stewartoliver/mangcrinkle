@@ -1,3 +1,5 @@
+<!-- Products Page with Package Modal Controller -->
+<div data-controller="customer-package-modal">
 <!-- Products Header -->
 <div class="customer-page-header">
   <div class="customer-page-header-container">
@@ -28,9 +30,10 @@
             <p class="customer-feature-description mb-4"><%= package.description %></p>
             <div class="flex justify-between items-center">
               <span class="customer-price">$<%= number_with_precision(package.price, precision: 2) %></span>
-              <button data-package-modal-package-id-param="<%= package.id %>"
-                      data-package-modal-package-limit-param="<%= package.quantity %>"
-                      data-package-modal-products-param='<%= raw Product.active.map { |p| { id: p.id, name: p.name, image_url: p.primary_image ? rails_blob_url(p.primary_image) : nil } }.to_json %>'
+              <button data-action="click->customer-package-modal#open"
+                      data-customer-package-modal-package-id-param="<%= package.id %>"
+                      data-customer-package-modal-package-limit-param="<%= package.quantity %>"
+                      data-customer-package-modal-products-param='<%= raw package.products_for_modal.to_json %>'
                       class="customer-btn-sm">
                 Select Package
               </button>
@@ -212,3 +215,4 @@
 </div>
 
 <%= render 'shared/package_selection_modal' %>
+</div> <!-- End package-modal controller -->

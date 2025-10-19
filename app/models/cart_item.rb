@@ -6,7 +6,7 @@ class CartItem < ApplicationRecord
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validate :has_product_or_package
 
-  serialize :product_quantities, JSON
+  serialize :product_quantities, coder: JSON
 
   def subtotal
     if product.present?
@@ -51,11 +51,15 @@ class CartItem < ApplicationRecord
   def selected_products
     return [] unless crinkle_package.present? && product_quantities.present?
     
+    # Get all product IDs at once to avoid N+1 queries
+    product_ids = product_quantities.keys.map(&:to_i).select { |id| id > 0 }
+    products = Product.where(id: product_ids).index_by(&:id)
+    
     selected_items = []
     product_quantities.each do |product_id, quantity|
       next if quantity.to_i <= 0
       
-      product = Product.find_by(id: product_id)
+      product = products[product_id.to_i]
       if product
         selected_items << {
           product: product,
@@ -70,11 +74,15 @@ class CartItem < ApplicationRecord
   def selected_products_description
     return nil unless crinkle_package.present? && product_quantities.present?
     
+    # Get all product IDs at once to avoid N+1 queries
+    product_ids = product_quantities.keys.map(&:to_i).select { |id| id > 0 }
+    products = Product.where(id: product_ids).index_by(&:id)
+    
     selected_items = []
     product_quantities.each do |product_id, quantity|
       next if quantity.to_i <= 0
       
-      product = Product.find_by(id: product_id)
+      product = products[product_id.to_i]
       if product
         selected_items << "#{quantity}x #{product.name}"
       end

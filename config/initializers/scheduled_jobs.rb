@@ -5,7 +5,7 @@ Rails.application.config.after_initialize do
   # Schedule the cleanup job to run every 24 hours
   # This will clean up old spam tracking records
   if Rails.env.production?
-    # In production, you would typically use a proper job scheduler like cron or sidekiq-cron
+    # In production, you would typically use a proper job scheduler like cron
     # For now, we'll just log that this should be set up
     Rails.logger.info "Review system cleanup job should be scheduled to run daily"
     Rails.logger.info "Run: CleanupSpamTrackersJob.perform_later"

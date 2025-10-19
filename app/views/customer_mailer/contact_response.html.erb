@@ -275,8 +275,8 @@
             <h3>📞 Need More Help?</h3>
             <ul>
               <li>Email us at <strong><%= company_email %></strong></li>
-              <li>Browse our <a href="<%= root_url %>#faq" style="color: #1e40af;">frequently asked questions</a></li>
-              <li>Visit our website at <a href="<%= root_url %>" style="color: #1e40af;">mangcrinkle.com</a></li>
+              <li>Browse our <a href="<%= root_url %>#faq" class="contact-response-link">frequently asked questions</a></li>
+              <li>Visit our website at <a href="<%= root_url %>" class="contact-response-link">mangcrinkle.com</a></li>
             </ul>
           </div>
           
@@ -295,7 +295,7 @@
 
         <div class="footer">
           <p>This email was sent to <%= @user&.email || 'your email' %> in response to your inquiry.</p>
-          <p style="margin-top: 20px;">
+          <p class="email-margin-top">
             &copy; <%= Date.current.year %> <%= company_name %>. All rights reserved.
           </p>
         </div>

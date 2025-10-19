@@ -142,7 +142,7 @@ class Admin::EmailTemplatesController < Admin::BaseController
     
     if request.post?
       # Send preview email
-      AdminMailer.template_preview(current_admin_user, @email_template, variables).deliver_later
+      EmailTemplatePreviewJob.perform_later(current_admin_user.id, @email_template.id, variables)
       redirect_to admin_email_template_path(@email_template), notice: 'Preview email sent!'
     else
       # Show preview form

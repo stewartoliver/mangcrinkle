@@ -55,18 +55,14 @@ class AdminReviews {
     }
 
     setupFeaturedButtons() {
-        console.log('Setting up featured buttons...');
         // Remove existing event listeners
         document.querySelectorAll('.review-feature, .review-unfeature').forEach(button => {
-            console.log('Removing event listener from:', button);
             button.removeEventListener('click', this.handleFeaturedAction.bind(this));
         });
 
         // Add new event listeners
         const featuredButtons = document.querySelectorAll('.review-feature, .review-unfeature');
-        console.log('Found featured buttons:', featuredButtons.length);
         featuredButtons.forEach((button, index) => {
-            console.log(`Setting up featured button ${index}:`, button);
             button.addEventListener('click', this.handleFeaturedAction.bind(this));
         });
     }
@@ -84,30 +80,17 @@ class AdminReviews {
     }
 
     setupExpandButtons() {
-        console.log('Setting up expand buttons...');
-
         // Check if expandable rows exist
         const expandableRows = document.querySelectorAll('.review-expand-details');
-        console.log('Found expandable rows:', expandableRows.length);
-        expandableRows.forEach((row, index) => {
-            console.log(`Expandable row ${index}:`, row);
-            console.log(`Row data-review-id:`, row.dataset.reviewId);
-            console.log(`Row classes:`, row.className);
-            console.log(`Row collapsed state:`, row.classList.contains('review-row-collapsed'));
-        });
 
         // Remove existing event listeners
         document.querySelectorAll('.review-expand-toggle').forEach(button => {
-            console.log('Removing expand event listener from:', button);
             button.removeEventListener('click', this.handleExpandAction.bind(this));
         });
 
         // Add new event listeners
         const expandButtons = document.querySelectorAll('.review-expand-toggle');
-        console.log('Found expand buttons:', expandButtons.length);
         expandButtons.forEach((button, index) => {
-            console.log(`Setting up expand button ${index}:`, button);
-            console.log(`Button data-review-id:`, button.dataset.reviewId);
             button.addEventListener('click', this.handleExpandAction.bind(this));
         });
     }
@@ -119,8 +102,6 @@ class AdminReviews {
         const button = event.currentTarget;
         const reviewRow = button.closest('tr[data-review-id]');
         const reviewId = reviewRow.dataset.reviewId;
-
-        console.log('Toggling expand for review ID:', reviewId);
 
         // Find the expandable row
         const expandableRow = document.querySelector(`.review-expand-details[data-review-id="${reviewId}"]`);
@@ -137,7 +118,6 @@ class AdminReviews {
                 `;
                 // Add visual feedback
                 button.classList.add('active');
-                console.log('Review details expanded');
             } else {
                 // Hide the expandable row
                 expandableRow.classList.add('review-row-collapsed');
@@ -149,7 +129,6 @@ class AdminReviews {
                 `;
                 // Remove visual feedback
                 button.classList.remove('active');
-                console.log('Review details collapsed');
             }
         } else {
             console.error('Could not find expandable row for review ID:', reviewId);
@@ -422,10 +401,7 @@ class AdminReviews {
     }
 
     createFeaturedButton(reviewData) {
-        console.log('Creating featured button with data:', reviewData);
-
         if (reviewData.featured) {
-            console.log('Review is featured, creating unfeature button');
             return this.createButton(
                 'unfeature',
                 'Remove from Featured',
@@ -434,7 +410,6 @@ class AdminReviews {
                 `/admin/reviews/${reviewData.id}/toggle_featured`
             );
         } else if (reviewData.can_be_featured) {
-            console.log('Review can be featured, creating feature button');
             return this.createButton(
                 'feature',
                 'Add to Featured',
@@ -443,7 +418,6 @@ class AdminReviews {
                 `/admin/reviews/${reviewData.id}/toggle_featured`
             );
         } else {
-            console.log('Review cannot be featured, creating disabled button');
             return this.createDisabledButton(
                 'Review must be approved before it can be featured',
                 'admin-action-btn review-disabled'
@@ -452,7 +426,6 @@ class AdminReviews {
     }
 
     createButton(action, title, className, svgPath, url) {
-        console.log(`Creating button: ${action} with URL: ${url}`);
         const button = document.createElement('a');
         button.href = url;
         button.className = className;
@@ -484,12 +457,10 @@ class AdminReviews {
             `;
         }
 
-        console.log('Created button:', button);
         return button;
     }
 
     createDisabledButton(title, className) {
-        console.log(`Creating disabled button: ${title}`);
         const button = document.createElement('span');
         button.className = className;
         button.title = title;
@@ -498,7 +469,6 @@ class AdminReviews {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
             </svg>
         `;
-        console.log('Created disabled button:', button);
         return button;
     }
 
@@ -510,9 +480,11 @@ class AdminReviews {
         const featuredBadge = previewRow.querySelector('.bg-blue-100.text-blue-800');
         if (featuredBadge) {
             if (reviewData.featured) {
-                featuredBadge.style.display = 'inline-flex';
+                featuredBadge.classList.remove('featured-badge-hidden');
+                featuredBadge.classList.add('featured-badge-visible');
             } else {
-                featuredBadge.style.display = 'none';
+                featuredBadge.classList.remove('featured-badge-visible');
+                featuredBadge.classList.add('featured-badge-hidden');
             }
         }
 
@@ -542,19 +514,13 @@ class AdminReviews {
 
     hideReviewRow(reviewRow) {
         // Add fade out animation
-        reviewRow.style.transition = 'opacity 0.3s ease-out, height 0.3s ease-out';
-        reviewRow.style.opacity = '0';
-        reviewRow.style.height = '0';
-        reviewRow.style.overflow = 'hidden';
+        reviewRow.classList.add('review-row-deleting');
 
         // Also hide the expandable row if it exists
         const reviewId = reviewRow.dataset.reviewId;
         const expandableRow = document.querySelector(`.review-expand-details[data-review-id="${reviewId}"]`);
         if (expandableRow) {
-            expandableRow.style.transition = 'opacity 0.3s ease-out, height 0.3s ease-out';
-            expandableRow.style.opacity = '0';
-            expandableRow.style.height = '0';
-            expandableRow.style.overflow = 'hidden';
+            expandableRow.classList.add('expandable-row-collapsing');
         }
 
         // Remove the rows after animation
@@ -566,8 +532,6 @@ class AdminReviews {
 
     updateStats() {
         // This could be enhanced to update the stats cards at the top
-        // For now, we'll just log that stats should be updated
-        console.log('Stats should be updated');
     }
 
     updateVisibleCount() {
@@ -630,7 +594,7 @@ class AdminReviews {
         notification.innerHTML = `
             <div class="flex items-center">
                 <span class="mr-2">${message}</span>
-                <button class="ml-4 text-white hover:text-gray-200" onclick="this.parentElement.parentElement.remove()">
+                <button class="ml-4 text-white hover:text-gray-200" data-action="remove-review-item">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -761,13 +725,11 @@ class AdminReviews {
 
 // Initialize admin reviews when the script loads
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM Content Loaded - Initializing AdminReviews');
     new AdminReviews();
 });
 
 // Also initialize on Turbo events
 document.addEventListener('turbo:load', () => {
-    console.log('Turbo Load - Initializing AdminReviews');
     new AdminReviews();
 });
 

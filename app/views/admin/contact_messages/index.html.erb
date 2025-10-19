@@ -325,7 +325,7 @@
   </div>
 </div>
 
-<script>
+<script nonce="<%= content_security_policy_nonce %>">
 // Message details toggle functionality
 function setupMessageDetailsToggle() {
   const toggleButtons = document.querySelectorAll('.message-details-toggle');
@@ -353,11 +353,11 @@ function handleMessageDetailsToggle(event) {
     // Update button icon rotation
     const svg = this.querySelector('svg');
     if (detailsRow.classList.contains('hidden')) {
-      svg.style.transform = 'rotate(0deg)';
-      svg.style.transition = 'transform 0.2s ease-in-out';
+      svg.classList.remove('svg-rotated');
+      svg.classList.add('svg-normal');
     } else {
-      svg.style.transform = 'rotate(180deg)';
-      svg.style.transition = 'transform 0.2s ease-in-out';
+      svg.classList.remove('svg-normal');
+      svg.classList.add('svg-rotated');
     }
   }
 }

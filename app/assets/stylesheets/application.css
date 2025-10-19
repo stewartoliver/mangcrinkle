@@ -495,3 +495,647 @@
 .notification-slide-out {
     animation: slideOutRight 0.3s ease-out;
 }
+
+/* Scrollbar hide utility */
+.scrollbar-hide {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+    /* WebKit */
+}
+
+/* Mobile menu styles */
+#mobile-menu {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+/* Content type field visibility */
+.content-type-field {
+    transition: display 0.2s ease-in-out;
+}
+
+.content-type-field.hidden {
+    display: none;
+}
+
+/* Debug info visibility */
+.debug-info-hidden {
+    display: none;
+}
+
+/* Honeypot field */
+.honeypot-field {
+    display: none;
+}
+
+/* Email template preview */
+.email-template-preview {
+    height: 500px;
+    overflow-y: auto;
+}
+
+/* Image manager upload area */
+.image-manager-upload-hidden {
+    display: none;
+}
+
+.image-input-hidden {
+    display: none;
+}
+
+/* Email template styles */
+.email-section-title {
+    color: #7e2a0c;
+    margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.email-table-total-right {
+    text-align: right;
+}
+
+.email-address-box {
+    background-color: #fff7ed;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #fed7aa;
+    margin: 0;
+}
+
+.email-margin-top {
+    margin-top: 20px;
+}
+
+/* Admin mailer styles */
+.admin-email-section-title {
+    color: #374151;
+    margin-bottom: 12px;
+}
+
+/* Newsletter styles */
+.newsletter-social-text {
+    margin-bottom: 12px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.newsletter-footer-margin {
+    margin-top: 8px;
+}
+
+/* Contact response styles */
+.contact-response-link {
+    color: #1e40af;
+}
+
+/* Modal body styles */
+.modal-body-overflow-hidden {
+    overflow: hidden;
+}
+
+.modal-body-position-fixed {
+    position: fixed;
+}
+
+.modal-body-width-full {
+    width: 100%;
+}
+
+/* Display utilities */
+.display-none {
+    display: none;
+}
+
+.display-block {
+    display: block;
+}
+
+/* Content field visibility */
+.content-field-hidden {
+    display: none;
+}
+
+.content-field-visible {
+    display: block;
+}
+
+/* Chevron rotation */
+.chevron-rotated {
+    transform: rotate(180deg);
+}
+
+.chevron-normal {
+    transform: rotate(0deg);
+}
+
+/* Hero animation styles using CSS custom properties */
+.falling-crinkle.dynamic {
+    position: absolute;
+    left: var(--crinkle-left, 0%);
+    top: var(--crinkle-top, -60px);
+    animation-duration: var(--crinkle-duration, 10s);
+    animation-delay: var(--crinkle-delay, 0s);
+    transform: var(--crinkle-transform, none);
+}
+
+.falling-crinkle.dynamic img {
+    width: 100%;
+}
+
+.crinkle-rotation-60 {
+    transform: rotate(60deg);
+}
+
+.crinkle-rotation-75 {
+    transform: rotate(75deg);
+}
+
+.crinkle-rotation-90 {
+    transform: rotate(90deg);
+}
+
+.crinkle-rotation-105 {
+    transform: rotate(105deg);
+}
+
+.crinkle-rotation-120 {
+    transform: rotate(120deg);
+}
+
+.crinkle-rotation-135 {
+    transform: rotate(135deg);
+}
+
+.crinkle-rotation-150 {
+    transform: rotate(150deg);
+}
+
+.crinkle-rotation-165 {
+    transform: rotate(165deg);
+}
+
+.crinkle-rotation-180 {
+    transform: rotate(180deg);
+}
+
+.crinkle-rotation-195 {
+    transform: rotate(195deg);
+}
+
+.crinkle-rotation-210 {
+    transform: rotate(210deg);
+}
+
+.crinkle-rotation-225 {
+    transform: rotate(225deg);
+}
+
+.crinkle-rotation-240 {
+    transform: rotate(240deg);
+}
+
+.crinkle-rotation-255 {
+    transform: rotate(255deg);
+}
+
+.crinkle-rotation-270 {
+    transform: rotate(270deg);
+}
+
+.crinkle-rotation-285 {
+    transform: rotate(285deg);
+}
+
+.crinkle-rotation-300 {
+    transform: rotate(300deg);
+}
+
+.crinkle-rotation-315 {
+    transform: rotate(315deg);
+}
+
+.crinkle-rotation-330 {
+    transform: rotate(330deg);
+}
+
+.crinkle-rotation-345 {
+    transform: rotate(345deg);
+}
+
+/* Hero animation flip classes */
+.crinkle-flipped {
+    transform: scaleX(-1);
+}
+
+.crinkle-flipped-vertical {
+    transform: scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical {
+    transform: scaleX(-1) scaleY(-1);
+}
+
+/* Combine rotation with flips */
+.crinkle-flipped.crinkle-rotation-0 {
+    transform: rotate(0deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-15 {
+    transform: rotate(15deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-30 {
+    transform: rotate(30deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-45 {
+    transform: rotate(45deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-60 {
+    transform: rotate(60deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-75 {
+    transform: rotate(75deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-90 {
+    transform: rotate(90deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-105 {
+    transform: rotate(105deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-120 {
+    transform: rotate(120deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-135 {
+    transform: rotate(135deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-150 {
+    transform: rotate(150deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-165 {
+    transform: rotate(165deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-180 {
+    transform: rotate(180deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-195 {
+    transform: rotate(195deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-210 {
+    transform: rotate(210deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-225 {
+    transform: rotate(225deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-240 {
+    transform: rotate(240deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-255 {
+    transform: rotate(255deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-270 {
+    transform: rotate(270deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-285 {
+    transform: rotate(285deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-300 {
+    transform: rotate(300deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-315 {
+    transform: rotate(315deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-330 {
+    transform: rotate(330deg) scaleX(-1);
+}
+
+.crinkle-flipped.crinkle-rotation-345 {
+    transform: rotate(345deg) scaleX(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-0 {
+    transform: rotate(0deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-15 {
+    transform: rotate(15deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-30 {
+    transform: rotate(30deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-45 {
+    transform: rotate(45deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-60 {
+    transform: rotate(60deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-75 {
+    transform: rotate(75deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-90 {
+    transform: rotate(90deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-105 {
+    transform: rotate(105deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-120 {
+    transform: rotate(120deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-135 {
+    transform: rotate(135deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-150 {
+    transform: rotate(150deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-165 {
+    transform: rotate(165deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-180 {
+    transform: rotate(180deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-195 {
+    transform: rotate(195deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-210 {
+    transform: rotate(210deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-225 {
+    transform: rotate(225deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-240 {
+    transform: rotate(240deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-255 {
+    transform: rotate(255deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-270 {
+    transform: rotate(270deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-285 {
+    transform: rotate(285deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-300 {
+    transform: rotate(300deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-315 {
+    transform: rotate(315deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-330 {
+    transform: rotate(330deg) scaleY(-1);
+}
+
+.crinkle-flipped-vertical.crinkle-rotation-345 {
+    transform: rotate(345deg) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-0 {
+    transform: rotate(0deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-15 {
+    transform: rotate(15deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-30 {
+    transform: rotate(30deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-45 {
+    transform: rotate(45deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-60 {
+    transform: rotate(60deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-75 {
+    transform: rotate(75deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-90 {
+    transform: rotate(90deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-105 {
+    transform: rotate(105deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-120 {
+    transform: rotate(120deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-135 {
+    transform: rotate(135deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-150 {
+    transform: rotate(150deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-165 {
+    transform: rotate(165deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-180 {
+    transform: rotate(180deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-195 {
+    transform: rotate(195deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-210 {
+    transform: rotate(210deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-225 {
+    transform: rotate(225deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-240 {
+    transform: rotate(240deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-255 {
+    transform: rotate(255deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-270 {
+    transform: rotate(270deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-285 {
+    transform: rotate(285deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-300 {
+    transform: rotate(300deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-315 {
+    transform: rotate(315deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-330 {
+    transform: rotate(330deg) scaleX(-1) scaleY(-1);
+}
+
+.crinkle-flipped.crinkle-flipped-vertical.crinkle-rotation-345 {
+    transform: rotate(345deg) scaleX(-1) scaleY(-1);
+}
+
+/* Disabled field opacity */
+.field-disabled {
+    opacity: 0.5;
+}
+
+.field-enabled {
+    opacity: 1;
+}
+
+/* SVG rotation states */
+.svg-rotated {
+    transform: rotate(180deg);
+    transition: transform 0.2s ease-in-out;
+}
+
+.svg-normal {
+    transform: rotate(0deg);
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Featured badge visibility */
+.featured-badge-visible {
+    display: inline-flex;
+}
+
+.featured-badge-hidden {
+    display: none;
+}
+
+/* Review row animation states */
+.review-row-deleting {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease-out, height 0.3s ease-out;
+}
+
+.expandable-row-collapsing {
+    opacity: 0;
+    height: 0;
+    transition: opacity 0.3s ease-out, height 0.3s ease-out;
+}
+
+/* Dropdown visibility */
+.dropdown-visible {
+    display: block;
+}
+
+.dropdown-hidden {
+    display: none;
+}
+
+/* Message fade animation */
+.message-fading {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+/* Mobile menu animation states */
+.mobile-menu-open {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.mobile-menu-closing {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.mobile-menu-closed {
+    display: none;
+}
+
+/* Row visibility */
+.row-visible {
+    display: table-row;
+}
+
+.row-hidden {
+    display: none;
+}
+
+.pagination-hidden {
+    display: none;
+}
+
+.pagination-visible {
+    display: block;
+}
+
+/* Image opacity states */
+.image-visible {
+    opacity: 1;
+}
+
+.image-hidden {
+    opacity: 0;
+}
+
+.arrow-visible {
+    opacity: 1;
+}
+
+.arrow-hidden {
+    opacity: 0;
+}

@@ -30,14 +30,30 @@
       <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
         <dt class="text-sm font-medium text-orange-700">Status</dt>
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
-          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @crinkle_package.active? ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
-            <%= @crinkle_package.active? ? 'Active' : 'Inactive' %>
-          </span>
+          <div class="flex items-center space-x-2">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @crinkle_package.active? ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+              <%= @crinkle_package.active? ? 'Active' : 'Inactive' %>
+            </span>
+            <% if @crinkle_package.holiday_package? %>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                Holiday Package
+              </span>
+            <% end %>
+          </div>
         </dd>
       </div>
       <div class="bg-orange-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
         <dt class="text-sm font-medium text-orange-700">Description</dt>
         <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2"><%= @crinkle_package.description %></dd>
+      </div>
+      <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <dt class="text-sm font-medium text-orange-700">Package Products</dt>
+        <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+          <div class="flex items-center space-x-2">
+            <span><%= @crinkle_package.package_products.active.count %> products configured</span>
+            <%= link_to "Manage Products", manage_products_admin_crinkle_package_path(@crinkle_package), class: "admin-link" %>
+          </div>
+        </dd>
       </div>
     </dl>
   </div>

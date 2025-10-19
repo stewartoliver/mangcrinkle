@@ -68,16 +68,24 @@ class User < ApplicationRecord
     save!
   end
 
+  # Debug method to check activation status
+  def activation_status
+    return "Not an admin" unless admin?
+    return "Activated at #{activated_at}" if activated?
+    return "Pending activation (no password)" unless encrypted_password.present?
+    "Pending activation (has password)"
+  end
+
   # Override Devise's password requirement for different user types
   def password_required?
     # Skip password validation if explicitly set
     return false if skip_password_validation
     
     if admin?
-      # Admin users need password only when:
-      # 1. They are activated AND
-      # 2. They are setting a password (new record with password, or updating with password)
-      activated? && (password.present? || password_confirmation.present?)
+      # Admin users need password when:
+      # 1. They are setting a password (new record with password, or updating with password)
+      # 2. OR they are activated and have a password
+      password.present? || password_confirmation.present? || (activated? && encrypted_password.present?)
     else
       # Customers don't need passwords in this system
       false

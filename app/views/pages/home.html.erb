@@ -34,15 +34,35 @@
     <div class="customer-product-grid">
       <% @products.each do |product| %>
         <div class="customer-product-card">
-          <% if product.has_image? %>
-            <%= image_tag product.image, class: "w-full h-48 object-cover" %>
-          <% else %>
-            <%= image_tag product.fallback_image_path, class: "w-full h-48 object-cover" %>
-          <% end %>
+          <div class="relative product-card-image-container h-48">
+            <% product_images = product.all_images.any? ? product.all_images : [nil] %>
+            
+            <!-- Main Image Display -->
+            <% product_images.each_with_index do |image, index| %>
+              <div class="product-card-image absolute inset-0 transition-opacity duration-300 <%= index == 0 ? 'opacity-100' : 'opacity-0' %>" 
+                   data-image-index="<%= index %>">
+                <% if image %>
+                  <%= image_tag image, class: "w-full h-full object-cover" %>
+                <% else %>
+                  <div class="h-full customer-image-placeholder"></div>
+                <% end %>
+              </div>
+            <% end %>
+            
+            <%= link_to product_path(product), class: "absolute top-4 right-4 inline-flex items-center justify-center w-6 h-6 rounded-full bg-white bg-opacity-90 border border-orange-300 text-orange-600 hover:bg-opacity-100 hover:border-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-orange-500 customer-transition shadow-sm", title: "View details" do %>
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+              </svg>
+            <% end %>
+            
+            <!-- Image Indicators (mini squares, no arrows) -->
+            <%= render 'shared/image_indicators', images: product_images, show_arrows: false %>
+          </div>
+          
           <div class="p-6">
             <h3 class="customer-feature-title"><%= product.name %></h3>
             <div class="flex justify-between items-center">
-              <span class="customer-price">$<%= number_with_precision(product.price, precision: 2) %></span>
+              <span class="customer-price-large">$<%= number_with_precision(product.price, precision: 2) %></span>
               <%= link_to "View Details", product_path(product), class: "customer-btn-sm" %>
             </div>
           </div>
@@ -217,3 +237,7 @@
 4. Baking process animation/video
 5. Seasonal specials carousel
 -->
+
+<% content_for :javascript do %>
+  <%= javascript_import_module_tag "image_switcher" %>
+<% end %>

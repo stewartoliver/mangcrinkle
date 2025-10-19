@@ -46,13 +46,27 @@ class Admin::UsersController < Admin::BaseController
       @orders_by_status = @all_orders.group_by(&:status)
       @recent_orders = @all_orders.first(5)
       
-      # Monthly spending for the last 12 months
+      # Monthly spending for the last 12 months - optimized with database queries
       @monthly_spending = {}
       12.times do |i|
         month_start = i.months.ago.beginning_of_month
         month_end = i.months.ago.end_of_month
-        month_orders = @all_orders.select { |order| order.created_at.between?(month_start, month_end) }
-        @monthly_spending[month_start.strftime("%B %Y")] = month_orders.sum(&:total_price)
+        
+        # Query orders by email and phone for this month
+        month_orders_by_email = Order.where("LOWER(email) = LOWER(?)", @user.email)
+                                   .where(created_at: month_start..month_end)
+                                   .where.not(user: @user)
+        month_orders_by_phone = Order.where(phone: @user.phone)
+                                   .where(created_at: month_start..month_end)
+                                   .where.not(user: @user)
+        month_user_orders = @user_orders.where(created_at: month_start..month_end)
+        
+        # Sum all orders for this month
+        total_spent = month_user_orders.sum(:total_price) + 
+                     month_orders_by_email.sum(:total_price) + 
+                     month_orders_by_phone.sum(:total_price)
+        
+        @monthly_spending[month_start.strftime("%B %Y")] = total_spent
       end
       
       # Get contact messages for this user
@@ -129,8 +143,8 @@ class Admin::UsersController < Admin::BaseController
       return
     end
 
-    # Send activation email (token generation handled in mailer)
-    AdminMailer.admin_activation(@user).deliver_later
+    # Send activation email using background job
+    AdminActivationJob.perform_later(@user.id)
     
     redirect_to admin_user_path(@user), notice: 'Activation email sent successfully! The admin will receive an email with instructions to set up their password.'
   end
@@ -148,8 +162,8 @@ class Admin::UsersController < Admin::BaseController
       return
     end
 
-    # Send password reset email (token generation handled in mailer)
-    AdminMailer.admin_password_reset(@user).deliver_later
+    # Send password reset email using background job
+    AdminPasswordResetJob.perform_later(@user.id)
     
     redirect_to admin_user_path(@user), notice: 'Password reset email sent successfully! The admin will receive an email with instructions to reset their password.'
   end

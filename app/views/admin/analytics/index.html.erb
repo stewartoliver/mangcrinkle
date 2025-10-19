@@ -75,23 +75,36 @@
         <p class="text-sm text-orange-600">12-month revenue overview</p>
       </div>
       <div class="p-6">
-        <%= column_chart @lifetime_stats[:revenue_by_month], 
-            colors: ["#ea580c"],
-            library: {
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  ticks: {
-                    callback: "function(value) { return '$' + value.toLocaleString(); }"
+        <div style="height: 300px;">
+          <%= column_chart @lifetime_stats[:revenue_by_month], 
+              colors: ["#ea580c"],
+              height: "300px",
+              library: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    ticks: {
+                      callback: "function(value) { return '$' + value.toLocaleString(); }"
+                    },
+                    grid: {
+                      color: "rgba(0,0,0,0.1)"
+                    }
+                  },
+                  x: {
+                    grid: {
+                      color: "rgba(0,0,0,0.1)"
+                    }
+                  }
+                },
+                plugins: {
+                  legend: {
+                    display: false
                   }
                 }
-              },
-              plugins: {
-                legend: {
-                  display: false
-                }
-              }
-            } %>
+              } %>
+        </div>
       </div>
     </div>
 
@@ -102,25 +115,38 @@
         <p class="text-sm text-orange-600">Monthly new customer acquisition</p>
       </div>
       <div class="p-6">
-        <%= line_chart @lifetime_stats[:customer_growth], 
-            colors: ["#ea580c"],
-            curve: true,
-            points: false,
-            library: {
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  ticks: {
-                    stepSize: 1
+        <div style="height: 300px;">
+          <%= line_chart @lifetime_stats[:customer_growth], 
+              colors: ["#ea580c"],
+              height: "300px",
+              curve: true,
+              points: false,
+              library: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    ticks: {
+                      stepSize: 1
+                    },
+                    grid: {
+                      color: "rgba(0,0,0,0.1)"
+                    }
+                  },
+                  x: {
+                    grid: {
+                      color: "rgba(0,0,0,0.1)"
+                    }
+                  }
+                },
+                plugins: {
+                  legend: {
+                    display: false
                   }
                 }
-              },
-              plugins: {
-                legend: {
-                  display: false
-                }
-              }
-            } %>
+              } %>
+        </div>
       </div>
     </div>
   </div>
@@ -162,6 +188,28 @@
         <%= link_to "Reset to Last 30 Days", admin_analytics_path, class: "admin-btn admin-btn-secondary" %>
       </div>
     <% end %>
+    
+    <!-- Export Options -->
+    <div class="mt-6 pt-6 border-t border-orange-200">
+      <h4 class="text-sm font-medium text-orange-700 mb-3">Export Sales Reports</h4>
+      <div class="flex flex-wrap gap-2">
+        <%= link_to admin_analytics_export_path(start_date: @start_date, end_date: @end_date, format: 'pdf'), 
+            class: "px-4 py-2 text-sm font-medium rounded-md border border-red-200 text-red-700 hover:bg-red-50 transition-colors duration-200" do %>
+          <svg class="w-4 h-4 mr-2 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Export Sales PDF
+        <% end %>
+        <%= link_to admin_analytics_export_path(start_date: @start_date, end_date: @end_date, format: 'csv'), 
+            class: "px-4 py-2 text-sm font-medium rounded-md border border-green-200 text-green-700 hover:bg-green-50 transition-colors duration-200" do %>
+          <svg class="w-4 h-4 mr-2 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Export Sales CSV
+        <% end %>
+      </div>
+      <p class="text-xs text-orange-500 mt-2">Professional sales reports perfect for bank loan applications and investor presentations</p>
+    </div>
   </div>
 </div>
 
@@ -225,21 +273,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Contact Messages -->
-    <div class="bg-white shadow rounded-lg border border-orange-200 p-6">
-      <div class="flex items-center">
-        <div class="p-3 bg-yellow-100 rounded-full">
-          <svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-          </svg>
-        </div>
-        <div class="ml-4">
-          <h3 class="text-sm font-medium text-gray-600">Contact Messages</h3>
-          <p class="text-2xl font-semibold text-yellow-950"><%= @period_stats[:contact_messages] %></p>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- Charts Section -->
@@ -251,20 +284,35 @@
         <p class="admin-container-subtitle">Daily revenue for the selected period</p>
       </div>
       <div class="admin-container-content">
-        <div class="px-6 pt-6 flex flex-col gap-6">
-          <div class="h-64">
+        <div class="p-6">
+          <div style="height: 400px;">
             <%= line_chart @period_stats[:revenue_by_day], 
                 colors: ["#ea580c"],
-                height: "300px",
+                height: "400px",
                 curve: true,
                 points: false,
                 library: {
+                  responsive: true,
+                  maintainAspectRatio: false,
                   scales: {
                     y: {
                       beginAtZero: true,
                       ticks: {
                         callback: "function(value) { return '$' + value.toLocaleString(); }"
+                      },
+                      grid: {
+                        color: "rgba(0,0,0,0.1)"
                       }
+                    },
+                    x: {
+                      grid: {
+                        color: "rgba(0,0,0,0.1)"
+                      }
+                    }
+                  },
+                  plugins: {
+                    legend: {
+                      display: false
                     }
                   }
                 } %>
@@ -297,20 +345,35 @@
         <p class="admin-container-subtitle">Daily order count for the selected period</p>
       </div>
       <div class="admin-container-content">
-        <div class="px-6 pt-6 flex flex-col gap-6">
-          <div class="h-64">
+        <div class="p-6">
+          <div style="height: 400px;">
             <%= line_chart @period_stats[:orders_by_day], 
                 colors: ["#ea580c"],
-                height: "300px",
+                height: "400px",
                 curve: true,
                 points: false,
                 library: {
+                  responsive: true,
+                  maintainAspectRatio: false,
                   scales: {
                     y: {
                       beginAtZero: true,
                       ticks: {
                         stepSize: 1
+                      },
+                      grid: {
+                        color: "rgba(0,0,0,0.1)"
                       }
+                    },
+                    x: {
+                      grid: {
+                        color: "rgba(0,0,0,0.1)"
+                      }
+                    }
+                  },
+                  plugins: {
+                    legend: {
+                      display: false
                     }
                   }
                 } %>
@@ -537,7 +600,7 @@
   </div>
 </div>
 
-<script>
+<script nonce="<%= content_security_policy_nonce %>">
 document.addEventListener('DOMContentLoaded', function() {
   // Add any additional JavaScript for the analytics page
   console.log('Analytics dashboard loaded');

@@ -144,9 +144,32 @@
             <%= link_to "Continue Shopping", products_path, class: "text-orange-600 hover:text-orange-950 text-center sm:text-left" %>
           </div>
           <div class="text-center sm:text-right">
-            <%= link_to "Proceed to Checkout", new_order_path, class: "w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors duration-200" %>
+            <% if Rails.application.config.orders_enabled %>
+              <%= link_to "Proceed to Checkout", new_order_path, class: "w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors duration-200" %>
+            <% else %>
+              <div class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-orange-800 bg-orange-200 cursor-not-allowed opacity-75">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+                Orders Temporarily Disabled
+              </div>
+            <% end %>
           </div>
         </div>
+        
+        <% unless Rails.application.config.orders_enabled %>
+          <div class="mt-4 p-4 bg-orange-100 border border-orange-300 rounded-md">
+            <div class="flex items-start">
+              <svg class="w-5 h-5 text-orange-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <div>
+                <h3 class="text-sm font-medium text-orange-800">Orders Currently Unavailable</h3>
+                <p class="mt-1 text-sm text-orange-700"><%= Rails.application.config.orders_disabled_reason %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
       </div>
     </div>
   <% end %>

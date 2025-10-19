@@ -189,7 +189,7 @@ Can be frozen up to 1 month — thaw at room temperature." %>
   </div>
 <% end %>
 
-<script>
+<script nonce="<%= content_security_policy_nonce %>">
 // Simple form submission test
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.querySelector('form');

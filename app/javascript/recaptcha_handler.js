@@ -10,7 +10,6 @@ class RecaptchaHandler {
 
     init() {
         if (!this.siteKey) {
-            console.warn('reCAPTCHA site key not found');
             return;
         }
 
@@ -35,7 +34,6 @@ class RecaptchaHandler {
         };
 
         script.onerror = () => {
-            console.error('Failed to load reCAPTCHA script');
             this.handleRecaptchaError();
         };
 
@@ -88,6 +86,10 @@ class RecaptchaHandler {
     setupForm(form, action) {
         if (!form) return;
 
+        // Prevent duplicate event listeners
+        if (form.dataset.recaptchaSetup === 'true') return;
+        form.dataset.recaptchaSetup = 'true';
+
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleFormSubmit(form, action);
@@ -98,7 +100,15 @@ class RecaptchaHandler {
         const submitButton = form.querySelector('input[type="submit"], button[type="submit"]');
         const originalText = submitButton ? submitButton.value || submitButton.textContent : '';
 
+        // Prevent double submission
+        if (form.dataset.submitting === 'true') {
+            return;
+        }
+
         try {
+            // Mark form as submitting
+            form.dataset.submitting = 'true';
+
             // Show loading state
             this.setButtonLoading(submitButton, 'Processing...');
 
@@ -116,9 +126,10 @@ class RecaptchaHandler {
             form.submit();
 
         } catch (error) {
-            console.error('reCAPTCHA error:', error);
             this.handleRecaptchaError();
             this.setButtonLoading(submitButton, originalText);
+            // Reset submitting flag on error
+            form.dataset.submitting = 'false';
         }
     }
 
@@ -172,9 +183,6 @@ class RecaptchaHandler {
     handleRecaptchaError() {
         // Show user-friendly error message
         this.showErrorMessage('reCAPTCHA verification failed. Please refresh the page and try again.');
-
-        // Log for debugging
-        console.warn('reCAPTCHA verification failed - this may be due to network issues or browser compatibility');
     }
 
     showErrorMessage(message) {
@@ -184,21 +192,40 @@ class RecaptchaHandler {
             existingError.remove();
         }
 
-        // Create error message
+        // Create error message using DOM methods (CSP-compliant)
         const errorDiv = document.createElement('div');
         errorDiv.className = 'recaptcha-error bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4';
-        errorDiv.innerHTML = `
-      <div class="flex">
-        <div class="flex-shrink-0">
-          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-          </svg>
-        </div>
-        <div class="ml-3">
-          <p class="text-sm font-medium">${message}</p>
-        </div>
-      </div>
-    `;
+
+        const flexDiv = document.createElement('div');
+        flexDiv.className = 'flex';
+
+        const iconDiv = document.createElement('div');
+        iconDiv.className = 'flex-shrink-0';
+
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('class', 'h-5 w-5 text-red-400');
+        svg.setAttribute('viewBox', '0 0 20 20');
+        svg.setAttribute('fill', 'currentColor');
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('fill-rule', 'evenodd');
+        path.setAttribute('d', 'M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z');
+        path.setAttribute('clip-rule', 'evenodd');
+
+        svg.appendChild(path);
+        iconDiv.appendChild(svg);
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'ml-3';
+
+        const messageP = document.createElement('p');
+        messageP.className = 'text-sm font-medium';
+        messageP.textContent = message;
+
+        contentDiv.appendChild(messageP);
+        flexDiv.appendChild(iconDiv);
+        flexDiv.appendChild(contentDiv);
+        errorDiv.appendChild(flexDiv);
 
         // Insert error message at the top of the form
         const form = document.querySelector('form');
@@ -208,16 +235,22 @@ class RecaptchaHandler {
     }
 }
 
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    new RecaptchaHandler();
-});
+// Initialize only once to prevent duplicate handlers
+if (!window.recaptchaHandlerInitialized) {
+    window.recaptchaHandlerInitialized = true;
 
-// Also initialize if DOM is already loaded (for dynamic content)
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        new RecaptchaHandler();
-    });
-} else {
-    new RecaptchaHandler();
+    const initializeRecaptcha = () => {
+        // Only initialize if site key is available
+        if (window.RECAPTCHA_SITE_KEY && window.RECAPTCHA_SITE_KEY.trim() !== '') {
+            new RecaptchaHandler();
+        } else {
+            console.log('reCAPTCHA site key not available, skipping initialization');
+        }
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeRecaptcha);
+    } else {
+        initializeRecaptcha();
+    }
 }

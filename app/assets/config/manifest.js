@@ -3,9 +3,11 @@
 //= link_tree ../builds
 //= link_tree ../../../vendor/javascript .js
 //= link controllers/application.js
+//= link controllers/application_controller.js
 //= link controllers/hello_controller.js
 //= link controllers/index.js
-//= link controllers/package_modal_controller.js
+//= link controllers/admin_package_modal_controller.js
+//= link controllers/customer_package_modal_controller.js
 //= link image_manager.js
 //= link favicon/site.webmanifest
 //= link favicon/favicon-96x96.png

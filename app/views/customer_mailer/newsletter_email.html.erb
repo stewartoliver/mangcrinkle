@@ -300,7 +300,7 @@
           </div>
           
           <div class="social-links">
-            <p style="margin-bottom: 12px; color: #6b7280; font-size: 14px;">Follow us for daily updates:</p>
+            <p class="newsletter-social-text">Follow us for daily updates:</p>
             <a href="#">Facebook</a> |
             <a href="#">Instagram</a> |
             <a href="#">Twitter</a>
@@ -316,7 +316,7 @@
 
         <div class="newsletter-footer">
           <p>You're receiving this newsletter because you subscribed to <%= company_name %> updates.</p>
-          <p style="margin-top: 8px;">
+          <p class="newsletter-footer-margin">
             <a href="<%= root_url %>#newsletter">Manage preferences</a> | 
             <a href="#">Unsubscribe</a>
           </p>
@@ -324,7 +324,7 @@
 
         <div class="footer">
           <p>This email was sent to <%= @user&.email || 'your email' %> because you subscribed to our newsletter.</p>
-          <p style="margin-top: 20px;">
+          <p class="email-margin-top">
             &copy; <%= Date.current.year %> <%= company_name %>. All rights reserved.
           </p>
         </div>

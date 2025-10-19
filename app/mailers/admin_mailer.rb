@@ -52,9 +52,14 @@ class AdminMailer < ApplicationMailer
     raw_token, encrypted_token = Devise.token_generator.generate(User, :reset_password_token)
     @admin_user.reset_password_token = encrypted_token
     @admin_user.reset_password_sent_at = Time.current
-    @admin_user.save!
     
-    @activation_url = edit_user_password_url(reset_password_token: raw_token)
+    if @admin_user.save!
+      @activation_url = edit_user_password_url(reset_password_token: raw_token)
+      Rails.logger.info "Admin activation email generated for user #{@admin_user.id} with token #{raw_token[0..10]}..."
+    else
+      Rails.logger.error "Failed to save admin user #{@admin_user.id}: #{@admin_user.errors.full_messages.join(', ')}"
+      raise "Failed to save admin user for activation"
+    end
     
     mail(
       to: @admin_user.email,
@@ -69,9 +74,14 @@ class AdminMailer < ApplicationMailer
     raw_token, encrypted_token = Devise.token_generator.generate(User, :reset_password_token)
     @admin_user.reset_password_token = encrypted_token
     @admin_user.reset_password_sent_at = Time.current
-    @admin_user.save!
     
-    @reset_url = edit_user_password_url(reset_password_token: raw_token)
+    if @admin_user.save!
+      @reset_url = edit_user_password_url(reset_password_token: raw_token)
+      Rails.logger.info "Admin password reset email generated for user #{@admin_user.id} with token #{raw_token[0..10]}..."
+    else
+      Rails.logger.error "Failed to save admin user #{@admin_user.id}: #{@admin_user.errors.full_messages.join(', ')}"
+      raise "Failed to save admin user for password reset"
+    end
     
     mail(
       to: @admin_user.email,

@@ -3,24 +3,13 @@ let contentBlocksInitialized = false;
 
 // Main initialization function
 function initializeContentBlocks() {
-    console.log('Initializing Admin Content Blocks...');
-
     const contentTypeSelect = document.getElementById('content_type_select');
     const contentFields = document.querySelectorAll('.content-type-field');
     const jsonTextarea = document.querySelector('#json_content textarea');
     const jsonStatus = document.getElementById('json-status');
     const formatBtn = document.getElementById('format-json-btn');
 
-    console.log('Elements found:', {
-        contentTypeSelect: !!contentTypeSelect,
-        contentFields: contentFields.length,
-        jsonTextarea: !!jsonTextarea,
-        jsonStatus: !!jsonStatus,
-        formatBtn: !!formatBtn
-    });
-
     if (!contentTypeSelect) {
-        console.log('Content type select not found, skipping initialization');
         return;
     }
 
@@ -30,26 +19,23 @@ function initializeContentBlocks() {
     // Content field visibility management
     function showContentField() {
         const selectedType = contentTypeSelect.value || 'text';
-        console.log('Showing content field for type:', selectedType);
 
         // Hide all content fields first
         contentFields.forEach(field => {
-            field.style.display = 'none';
+            field.classList.add('content-field-hidden');
         });
 
         // Show the selected field
         const activeField = document.getElementById(selectedType + '_content');
         if (activeField) {
-            activeField.style.display = 'block';
-            console.log('Showing field:', activeField.id);
+            activeField.classList.remove('content-field-hidden');
+            activeField.classList.add('content-field-visible');
 
             // Focus on the content input if it exists
             const contentInput = activeField.querySelector('textarea, input[type="text"], input[type="file"]');
             if (contentInput && selectedType !== 'image') {
                 setTimeout(() => contentInput.focus(), 100);
             }
-        } else {
-            console.warn('Could not find content field for type:', selectedType);
         }
 
         updateDebugInfo();
@@ -117,10 +103,12 @@ function initializeContentBlocks() {
 
         if (isHidden) {
             content.classList.remove('hidden');
-            chevron.style.transform = 'rotate(180deg)';
+            chevron.classList.remove('chevron-normal');
+            chevron.classList.add('chevron-rotated');
         } else {
             content.classList.add('hidden');
-            chevron.style.transform = 'rotate(0deg)';
+            chevron.classList.remove('chevron-rotated');
+            chevron.classList.add('chevron-normal');
         }
     }
 
@@ -134,7 +122,7 @@ function initializeContentBlocks() {
         debugHtml += '<strong>Available Fields:</strong><br>';
 
         contentFields.forEach(field => {
-            const isVisible = field.style.display !== 'none';
+            const isVisible = !field.classList.contains('content-field-hidden');
             debugHtml += '- ' + field.id + ': ' + (isVisible ? 'VISIBLE' : 'HIDDEN') + '<br>';
         });
 
@@ -146,7 +134,6 @@ function initializeContentBlocks() {
         // Content type change handler
         if (contentTypeSelect) {
             contentTypeSelect.addEventListener('change', function (e) {
-                console.log('Content type changed to:', this.value);
                 showContentField();
             });
         }
@@ -210,15 +197,13 @@ function initializeContentBlocks() {
 
     // Set flag to prevent re-initialization
     contentBlocksInitialized = true;
-
-    console.log('Content blocks initialization complete');
 }
 
 // Global functions
 window.showDebugInfo = function () {
     const debugDiv = document.getElementById('debug-info');
     if (debugDiv) {
-        debugDiv.style.display = 'block';
+        debugDiv.classList.remove('debug-info-hidden');
         const debugContent = document.getElementById('debug-content');
         if (debugContent) {
             const contentTypeSelect = document.getElementById('content_type_select');
@@ -229,7 +214,7 @@ window.showDebugInfo = function () {
             debugHtml += '<strong>Available Fields:</strong><br>';
 
             contentFields.forEach(field => {
-                const isVisible = field.style.display !== 'none';
+                const isVisible = !field.classList.contains('content-field-hidden');
                 debugHtml += '- ' + field.id + ': ' + (isVisible ? 'VISIBLE' : 'HIDDEN') + '<br>';
             });
 
@@ -239,19 +224,16 @@ window.showDebugInfo = function () {
 };
 
 window.refreshContentFields = function () {
-    console.log('Manual refresh triggered');
     contentBlocksInitialized = false;
     initializeContentBlocks();
 };
 
 // Event listeners for different loading scenarios
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('DOMContentLoaded - initializing content blocks');
     initializeContentBlocks();
 });
 
 document.addEventListener('turbo:load', function () {
-    console.log('Turbo:load - re-initializing content blocks');
     contentBlocksInitialized = false;
     // Small delay to ensure DOM is ready
     setTimeout(() => {
@@ -260,7 +242,6 @@ document.addEventListener('turbo:load', function () {
 });
 
 document.addEventListener('turbo:frame-load', function () {
-    console.log('Turbo:frame-load - checking for content blocks');
     if (!contentBlocksInitialized) {
         setTimeout(() => {
             initializeContentBlocks();
@@ -285,5 +266,3 @@ window.addEventListener('focus', function () {
         }, 100);
     }
 });
-
-console.log('Admin Content Blocks JS loaded and ready'); 

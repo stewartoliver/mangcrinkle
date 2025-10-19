@@ -2,9 +2,15 @@ class ContactMessagesController < ApplicationController
   before_action :find_or_create_user, only: [:create]
 
   def create
-    # Verify reCAPTCHA first
-    unless verify_recaptcha(action: 'contact_form', minimum_score: 0.5)
-      redirect_to contact_path, alert: 'Please complete the reCAPTCHA verification.'
+    # Verify reCAPTCHA with error handling
+    begin
+      unless verify_recaptcha(action: 'contact_form', minimum_score: 0.5)
+        redirect_to contact_path, alert: 'Please complete the reCAPTCHA verification.'
+        return
+      end
+    rescue => e
+      Rails.logger.error "reCAPTCHA verification failed: #{e.message}"
+      redirect_to contact_path, alert: 'Security verification failed. Please refresh the page and try again.'
       return
     end
     
@@ -12,7 +18,7 @@ class ContactMessagesController < ApplicationController
     
     if @contact_message.save
       # Send confirmation to customer
-      CustomerMailer.contact_confirmation(@contact_message).deliver_now
+      ContactConfirmationJob.perform_later(@contact_message.id)
       
       # Send notifications to admins who want contact form notifications
       notify_admins_of_new_contact
@@ -55,7 +61,7 @@ class ContactMessagesController < ApplicationController
     User.admins.includes(:admin_notification_preference).each do |admin|
       preferences = admin.notification_preferences
       if preferences.contact_form_notifications?
-        AdminMailer.new_contact_message(@contact_message, admin).deliver_now
+        AdminContactNotificationJob.perform_later(@contact_message.id, admin.id)
       end
     end
   end

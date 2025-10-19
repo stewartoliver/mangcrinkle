@@ -1,8 +1,14 @@
 class NewsletterSubscriptionsController < ApplicationController
   def create
-    # Verify reCAPTCHA first
-    unless verify_recaptcha(action: 'newsletter_subscription', minimum_score: 0.5)
-      redirect_to root_path, alert: 'Please complete the reCAPTCHA verification.'
+    # Verify reCAPTCHA with error handling
+    begin
+      unless verify_recaptcha(action: 'newsletter_subscription', minimum_score: 0.5)
+        redirect_to root_path, alert: 'Please complete the reCAPTCHA verification.'
+        return
+      end
+    rescue => e
+      Rails.logger.error "reCAPTCHA verification failed: #{e.message}"
+      redirect_to root_path, alert: 'Security verification failed. Please refresh the page and try again.'
       return
     end
     
@@ -59,7 +65,7 @@ class NewsletterSubscriptionsController < ApplicationController
   private
 
   def send_welcome_email(user)
-    CustomerMailer.welcome_email(user).deliver_later
+    CustomerWelcomeJob.perform_later(user.id)
   end
 
   def generate_unsubscribe_token(email)

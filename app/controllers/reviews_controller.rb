@@ -34,11 +34,20 @@ class ReviewsController < ApplicationController
   end
 
   def create
-    # Verify reCAPTCHA first
-    unless verify_recaptcha(action: 'review_form', minimum_score: 0.5)
+    # Verify reCAPTCHA with error handling
+    begin
+      unless verify_recaptcha(action: 'review_form', minimum_score: 0.5)
+        @order = current_user&.orders&.find(params[:order_id]) if params[:order_id]
+        @review_invite = @current_review_invite if @current_review_invite
+        flash.now[:alert] = 'Please complete the reCAPTCHA verification.'
+        render :new, status: :unprocessable_entity
+        return
+      end
+    rescue => e
+      Rails.logger.error "reCAPTCHA verification failed: #{e.message}"
       @order = current_user&.orders&.find(params[:order_id]) if params[:order_id]
       @review_invite = @current_review_invite if @current_review_invite
-      flash.now[:alert] = 'Please complete the reCAPTCHA verification.'
+      flash.now[:alert] = 'Security verification failed. Please refresh the page and try again.'
       render :new, status: :unprocessable_entity
       return
     end
@@ -83,10 +92,10 @@ class ReviewsController < ApplicationController
       )
       
       # Send notification to admin
-      ReviewMailer.new_review_notification(@review).deliver_later
+      ReviewNotificationJob.perform_later(@review.id)
       
       # Send confirmation to customer
-      ReviewMailer.review_confirmation(@review).deliver_later
+      ReviewConfirmationJob.perform_later(@review.id)
       
       redirect_to reviews_path, notice: 'Thank you for your review! It will be published after approval.'
     else

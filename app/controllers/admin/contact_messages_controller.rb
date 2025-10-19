@@ -49,7 +49,7 @@ class Admin::ContactMessagesController < Admin::BaseController
       @contact_message.update(status: 'responded', responded_at: Time.current, admin_user: current_admin_user.email)
       
       # Send the response email
-      ContactMailer.response_email(@contact_response).deliver_later
+      ContactResponseJob.perform_later(@contact_response.id)
       
       redirect_to admin_contact_message_path(@contact_message), notice: 'Response sent successfully.'
     else

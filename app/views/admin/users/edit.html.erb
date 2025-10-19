@@ -139,7 +139,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const isAdmin = userTypeSelect.value === 'admin';
     
     customerFields.forEach(field => {
-      field.style.display = isAdmin ? 'none' : 'block';
+      field.classList.toggle('row-hidden', isAdmin);
+      field.classList.toggle('row-visible', !isAdmin);
     });
   }
 

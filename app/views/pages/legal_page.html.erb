@@ -1,0 +1,119 @@
+<% content_for :title, @page_title %>
+
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
+      <div class="px-6 py-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2"><%= @legal_page.title %></h1>
+        <% if @legal_page.effective_date.present? %>
+          <p class="text-sm text-gray-600">
+            Effective Date: <%= @legal_page.effective_date.strftime('%B %d, %Y') %>
+          </p>
+        <% end %>
+        <p class="text-sm text-gray-500 mt-1">
+          Last Updated: <%= @legal_page.updated_at.strftime('%B %d, %Y') %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div class="px-6 py-8">
+        <div class="prose prose-lg max-w-none">
+          <%= @legal_page.display_content %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Information -->
+    <div class="bg-orange-50 rounded-lg border border-orange-200 mt-8">
+      <div class="px-6 py-6">
+        <h3 class="text-lg font-semibold text-orange-900 mb-3">Questions About This Policy?</h3>
+        <p class="text-orange-800 mb-4">
+          If you have any questions about this policy or need clarification on any terms, please don't hesitate to contact us.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="<%= contact_path %>" class="inline-flex items-center px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-md hover:bg-orange-700 transition-colors">
+            Contact Us
+          </a>
+          <a href="<%= root_path %>" class="inline-flex items-center px-4 py-2 bg-white text-orange-600 text-sm font-medium rounded-md border border-orange-300 hover:bg-orange-50 transition-colors">
+            Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    color: #1f2937;
+    font-weight: 600;
+  }
+  
+  .prose h2 {
+    color: #ea580c;
+    border-bottom: 2px solid #fed7aa;
+    padding-bottom: 0.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .prose h3 {
+    color: #ea580c;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .prose p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+  }
+  
+  .prose ul, .prose ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+  
+  .prose li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .prose strong {
+    color: #ea580c;
+    font-weight: 600;
+  }
+  
+  .prose a {
+    color: #ea580c;
+    text-decoration: underline;
+  }
+  
+  .prose a:hover {
+    color: #c2410c;
+  }
+  
+  .prose blockquote {
+    border-left: 4px solid #fed7aa;
+    background-color: #fff7ed;
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 0.375rem 0.375rem 0;
+  }
+  
+  @media print {
+    .prose {
+      font-size: 12pt;
+      line-height: 1.5;
+    }
+    
+    .prose h1, .prose h2, .prose h3 {
+      page-break-after: avoid;
+    }
+    
+    .prose p, .prose ul, .prose ol {
+      page-break-inside: avoid;
+    }
+  }
+</style>

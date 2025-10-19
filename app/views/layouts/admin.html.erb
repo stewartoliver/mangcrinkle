@@ -15,147 +15,32 @@
 
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "admin_layout", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    <%= javascript_include_tag "image_manager", "data-turbo-track": "reload" %>
-    <%= javascript_include_tag "chartkick" %>
-    <%= javascript_include_tag "Chart.bundle" %>
     
-    <script>
-      // Admin Navigation JavaScript
-      document.addEventListener('DOMContentLoaded', function () {
-          initializeAdminNavigation();
+    <!-- Conditional asset loading based on current page -->
+    <!-- Debug: Current controller and action -->
+    <script nonce="<%= content_security_policy_nonce %>">
+      console.log('Admin Layout Debug:', {
+        controller_name: '<%= controller_name %>',
+        action_name: '<%= action_name %>',
+        should_load_holiday: <%= controller_name == 'crinkle_packages' && ['new', 'edit'].include?(action_name) %>
       });
-
-      // Also handle Turbo navigation
-      document.addEventListener('turbo:load', function () {
-          initializeAdminNavigation();
-      });
-
-      function initializeAdminNavigation() {
-          const sidebar = document.getElementById('sidebar');
-          const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-          const openSidebarBtn = document.getElementById('open-sidebar');
-          const closeSidebarBtn = document.getElementById('close-sidebar');
-          const userMenuButton = document.getElementById('user-menu-button');
-          const userMenuDropdown = document.getElementById('user-menu-dropdown');
-
-          // Mobile sidebar toggle
-          function openSidebar() {
-              if (sidebar) {
-                  sidebar.classList.remove('-translate-x-full');
-              }
-              if (mobileMenuOverlay) {
-                  mobileMenuOverlay.classList.remove('hidden');
-              }
-              document.body.style.overflow = 'hidden';
-          }
-
-          function closeSidebar() {
-              if (sidebar) {
-                  sidebar.classList.add('-translate-x-full');
-              }
-              if (mobileMenuOverlay) {
-                  mobileMenuOverlay.classList.add('hidden');
-              }
-              document.body.style.overflow = '';
-          }
-
-          // Add event listeners for mobile sidebar
-          if (openSidebarBtn) {
-              openSidebarBtn.addEventListener('click', openSidebar);
-          }
-          if (closeSidebarBtn) {
-              closeSidebarBtn.addEventListener('click', closeSidebar);
-          }
-          if (mobileMenuOverlay) {
-              mobileMenuOverlay.addEventListener('click', closeSidebar);
-          }
-
-          // User dropdown toggle - More robust implementation
-          if (userMenuButton) {
-              userMenuButton.addEventListener('click', function (e) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  
-                  // Find the dropdown again in case it was re-rendered
-                  const dropdown = document.getElementById('user-menu-dropdown');
-                  
-                  if (dropdown) {
-                      const isCurrentlyVisible = dropdown.style.display === 'block' && !dropdown.classList.contains('hidden');
-                      
-                      if (isCurrentlyVisible) {
-                          // Hide the dropdown
-                          dropdown.classList.add('hidden');
-                          dropdown.style.display = 'none';
-                      } else {
-                          // Show the dropdown
-                          dropdown.classList.remove('hidden');
-                          dropdown.style.display = 'block';
-                      }
-                  }
-              });
-
-              // Close dropdown when clicking outside
-              document.addEventListener('click', function (event) {
-                  const dropdown = document.getElementById('user-menu-dropdown');
-                  if (dropdown && !userMenuButton.contains(event.target) && !dropdown.contains(event.target)) {
-                      dropdown.classList.add('hidden');
-                      dropdown.style.display = 'none';
-                  }
-              });
-          }
-
-          // Close sidebar on window resize if mobile
-          window.addEventListener('resize', function () {
-              if (window.innerWidth >= 1024) {
-                  closeSidebar();
-              }
-          });
-
-          // Auto-dismiss flash messages after 5 seconds
-          const flashMessages = document.querySelectorAll('[role="alert"]');
-          flashMessages.forEach(function(message) {
-              setTimeout(function() {
-                  message.style.transition = 'opacity 0.5s ease-out';
-                  message.style.opacity = '0';
-                  setTimeout(function() {
-                      if (message.parentNode) {
-                          message.parentNode.removeChild(message);
-                      }
-                  }, 500);
-              }, 5000);
-          });
-
-          // Handle manual dismissal of flash messages
-          const closeButtons = document.querySelectorAll('.flash-close-btn');
-          closeButtons.forEach(function(button) {
-              button.addEventListener('click', function() {
-                  const message = this.closest('[role="alert"]');
-                  if (message) {
-                      message.style.transition = 'opacity 0.5s ease-out';
-                      message.style.opacity = '0';
-                      setTimeout(function() {
-                          if (message.parentNode) {
-                              message.parentNode.removeChild(message);
-                          }
-                      }, 500);
-                  }
-              });
-          });
-      }
     </script>
     
-    <style>
-      /* Hide scrollbars in navigation */
-      nav::-webkit-scrollbar {
-        display: none;
-      }
-      
-      /* Ensure navigation doesn't overlap with user info */
-      #sidebar nav {
-        max-height: calc(100vh - 80px); /* Account for header (64px) + padding (16px) */
-      }
-    </style>
+    <% if controller_name == 'crinkle_packages' && ['new', 'edit'].include?(action_name) %>
+      <%= stylesheet_link_tag "holiday_package_form", "data-turbo-track": "reload" %>
+      <%= javascript_include_tag "holiday_package_form", "data-turbo-track": "reload" %>
+    <% end %>
+    
+    <% if ['products', 'crinkle_packages'].include?(controller_name) && ['new', 'edit'].include?(action_name) %>
+      <%= javascript_include_tag "image_manager", "data-turbo-track": "reload" %>
+    <% end %>
+    
+    <% if controller_name == 'analytics' %>
+      <%= javascript_include_tag "chartkick" %>
+      <%= javascript_include_tag "Chart.bundle" %>
+    <% end %>
   </head>
 
   <body class="bg-orange-50">
@@ -178,7 +63,7 @@
         </div>
 
         <!-- Navigation -->
-        <nav class="mt-6 px-3 flex-1 overflow-y-auto pb-20" style="scrollbar-width: none; -ms-overflow-style: none;">
+        <nav class="mt-6 px-3 flex-1 overflow-y-auto pb-20 scrollbar-hide">
           <div class="space-y-1">
             <%= link_to admin_dashboard_path, class: "group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 #{current_page?(admin_dashboard_path) ? 'bg-orange-800 text-white shadow-lg' : 'text-orange-200 hover:bg-orange-800 hover:text-white'}" do %>
               <svg class="mr-3 h-5 w-5 #{current_page?(admin_dashboard_path) ? 'text-orange-300' : 'text-orange-400 group-hover:text-orange-300'}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -191,7 +76,7 @@
               <svg class="mr-3 h-5 w-5 #{current_page?(admin_analytics_path) ? 'text-orange-300' : 'text-orange-400 group-hover:text-orange-300'}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
-              Analytics
+              Analytics Dashboard
             <% end %>
 
             <!-- Store Management Section -->
@@ -333,7 +218,7 @@
                   </button>
                   
                   <!-- Dropdown menu -->
-                  <div id="user-menu-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-md shadow-xl py-1 z-50 border border-orange-200 transform origin-top-right" style="display: none;">
+                  <div id="user-menu-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-md shadow-xl py-1 z-50 border border-orange-200 transform origin-top-right">
                     <div class="px-4 py-2 text-sm text-orange-600 border-b border-orange-100">
                       <p class="font-medium break-all"><%= current_user.email %></p>
                       <p class="text-xs text-orange-500">Administrator</p>

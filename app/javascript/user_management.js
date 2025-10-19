@@ -27,13 +27,13 @@ function initializeUserManagementTabs() {
                 const userType = row.dataset.userType;
 
                 if (tab === 'all') {
-                    row.style.display = '';
+                    row.classList.add('row-visible');
                 } else if (tab === 'customers' && userType === 'customer') {
-                    row.style.display = '';
+                    row.classList.add('row-visible');
                 } else if (tab === 'admins' && userType === 'admin') {
-                    row.style.display = '';
+                    row.classList.add('row-visible');
                 } else {
-                    row.style.display = 'none';
+                    row.classList.add('row-hidden');
                 }
             });
         });

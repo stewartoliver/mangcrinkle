@@ -23,6 +23,7 @@
           <span class="admin-status-badge 
             <%= case @content_block.content_type
                 when 'text' then 'bg-blue-100 text-blue-800'
+                when 'html' then 'bg-red-100 text-red-800'
                 when 'json' then 'bg-yellow-100 text-yellow-800'
                 when 'image' then 'bg-green-100 text-green-800'
                 when 'icon' then 'bg-purple-100 text-purple-800'
@@ -32,6 +33,32 @@
           </span>
         </dd>
       </div>
+      
+      <% if @content_block.is_legal_page? %>
+        <!-- Legal Page Fields -->
+        <div class="bg-white px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-orange-700">Legal Page Status</dt>
+          <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+            <span class="admin-status-badge <%= @content_block.is_active? ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+              <%= @content_block.is_active? ? 'ACTIVE' : 'INACTIVE' %>
+            </span>
+            <% if @content_block.effective_date.present? %>
+              <span class="ml-2 text-orange-600">
+                (Effective: <%= @content_block.effective_date.strftime('%B %d, %Y') %>)
+              </span>
+            <% end %>
+          </dd>
+        </div>
+        
+        <% if @content_block.effective_date.present? %>
+          <div class="bg-orange-50 px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-orange-700">Effective Date</dt>
+            <dd class="mt-1 text-sm text-orange-950 sm:mt-0 sm:col-span-2">
+              <%= @content_block.effective_date.strftime('%B %d, %Y') %>
+            </dd>
+          </div>
+        <% end %>
+      <% end %>
       
       <% if @content_block.page_locations&.any? %>
         <div class="bg-white px-6 py-5 sm:grid sm:grid-cols-3 sm:gap-4">
@@ -193,7 +220,7 @@
               <div class="mt-6 pt-6 border-t border-orange-200">
                 <button type="button" 
                         class="text-sm text-orange-600 hover:text-orange-800 underline"
-                        onclick="document.getElementById('raw-json-<%= @content_block.id %>').classList.toggle('hidden')">
+                        data-action="toggle-debug" data-target="raw-json-<%= @content_block.id %>">
                   Show/Hide Raw JSON Data
                 </button>
                 <div id="raw-json-<%= @content_block.id %>" class="hidden mt-3 bg-gray-50 rounded p-3 border">
@@ -229,6 +256,82 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             <p class="mt-2">No image uploaded</p>
+          </div>
+        <% end %>
+      <% when 'html' %>
+        <% if @content_block.is_legal_page? %>
+          <!-- Legal Page Preview -->
+          <div class="bg-orange-50 rounded-md p-6 border border-orange-200">
+            <div class="text-sm text-orange-600 mb-4">
+              <p class="font-medium">Live Site Preview - Legal Page:</p>
+            </div>
+            
+            <!-- Legal Page Preview Layout -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+              <!-- Header -->
+              <div class="px-6 py-4 border-b border-gray-200">
+                <h1 class="text-2xl font-bold text-gray-900"><%= @content_block.title %></h1>
+                <% if @content_block.effective_date.present? %>
+                  <p class="text-sm text-gray-600 mt-1">
+                    Effective Date: <%= @content_block.effective_date.strftime('%B %d, %Y') %>
+                  </p>
+                <% end %>
+                <p class="text-sm text-gray-500 mt-1">
+                  Last Updated: <%= @content_block.updated_at.strftime('%B %d, %Y') %>
+                </p>
+              </div>
+
+              <!-- Content -->
+              <div class="px-6 py-6">
+                <div class="prose prose-lg max-w-none" style="max-height: 400px; overflow-y: auto;">
+                  <%= @content_block.display_content %>
+                </div>
+              </div>
+
+              <!-- Contact Section -->
+              <div class="px-6 py-4 bg-orange-50 border-t border-orange-200">
+                <h3 class="text-sm font-semibold text-orange-900 mb-2">Questions About This Policy?</h3>
+                <p class="text-xs text-orange-800 mb-3">
+                  If you have any questions about this policy or need clarification on any terms, please don't hesitate to contact us.
+                </p>
+                <div class="flex gap-2">
+                  <span class="inline-flex items-center px-2 py-1 bg-orange-600 text-white text-xs font-medium rounded">
+                    Contact Us
+                  </span>
+                  <span class="inline-flex items-center px-2 py-1 bg-white text-orange-600 text-xs font-medium rounded border border-orange-300">
+                    Back to Home
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Legal Page Info -->
+            <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <div class="flex items-start">
+                <div class="flex-shrink-0">
+                  <svg class="h-4 w-4 text-blue-400 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="ml-3 flex-1">
+                  <p class="text-sm text-blue-800">
+                    <strong>Legal Page Status:</strong> <%= @content_block.legal_page_status %>
+                  </p>
+                  <p class="text-xs text-blue-600 mt-1">
+                    This page is accessible at: <code>/legal/<%= @content_block.key %></code>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% elsif @content_block.content.present? %>
+          <!-- Standard HTML Preview -->
+          <div class="prose prose-orange max-w-none bg-orange-50 rounded-md p-4 border border-orange-200">
+            <%= @content_block.display_content %>
+          </div>
+        <% else %>
+          <div class="text-center py-8 text-orange-400 bg-orange-50 rounded-md border border-orange-200">
+            <p>No content available</p>
           </div>
         <% end %>
       <% end %>
